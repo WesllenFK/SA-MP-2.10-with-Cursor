@@ -1684,6 +1684,15 @@ size_t OS_FileRead_hook(OSFile a1, void *buffer, size_t numBytes)
     return OS_FileRead(a1, buffer, numBytes);
 }
 
+extern char g_iLastBlock[123];
+int *(*LoadFullTexture)(TextureDatabaseRuntime *thiz, unsigned int a2);
+int *LoadFullTexture_hook(TextureDatabaseRuntime *thiz, unsigned int a2)
+{
+	strcpy(g_iLastBlock, thiz->name);
+
+    return LoadFullTexture(thiz, a2);
+}
+
 void (*RLEDecompress)(uint8_t* pDest, size_t uiDestSize, uint8_t const* pSrc, size_t uiSegSize, uint32_t uiEscape);
 void RLEDecompress_hook(uint8_t* pDest, size_t uiDestSize, const uint8_t* pSrc, size_t uiSegSize, uint32_t uiEscape) {
 
@@ -1985,6 +1994,7 @@ void InstallSpecialHooks()
     CHook::RET("_ZN4CPed31RemoveWeaponWhenEnteringVehicleEi"); // CPed::RemoveWeaponWhenEnteringVehicle
 
 //    CHook::InstallPLT(g_libGTASA + (VER_x32 ? 0x6701D4 : 0x840708), &RLEDecompress_hook, &RLEDecompress); // Maybe comment fix bug with widgets, because hook was written by ChatGPT (not mine code)
+	CHook::InlineHook("_ZN22TextureDatabaseRuntime15LoadFullTextureEj", &LoadFullTexture_hook, &LoadFullTexture);
 
     CHook::InlineHook("_Z11OS_FileReadPvS_i", &OS_FileRead_hook, &OS_FileRead);
 
