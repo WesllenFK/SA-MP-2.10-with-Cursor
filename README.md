@@ -18,8 +18,8 @@
 > * Compatibility with SA:MP 0.3.7
 
 # ᐳ Credit's
-> - **x1y2z** — author 
-> - [**kuzia15**](https://github.com/kuzia15) — OpenGL, small improvements
+> - **x1y2z** — main author of client 
+> - [**kuzia15**](https://github.com/kuzia15) — OpenGL, WaterShader, small improvements
 > - [**psychobye**](https://github.com/psychobye) — CSkyBox, small improvements
 
 <img width="1650" height="720" alt="image" src="https://github.com/user-attachments/assets/20197d82-3046-44e2-a2ad-eea36ea756a5" />
