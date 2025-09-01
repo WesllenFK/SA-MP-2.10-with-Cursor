@@ -1684,7 +1684,8 @@ size_t OS_FileRead_hook(OSFile a1, void *buffer, size_t numBytes)
     return OS_FileRead(a1, buffer, numBytes);
 }
 
-extern char g_iLastBlock[123];
+char g_iLastBlock[123];
+
 int *(*LoadFullTexture)(TextureDatabaseRuntime *thiz, unsigned int a2);
 int *LoadFullTexture_hook(TextureDatabaseRuntime *thiz, unsigned int a2)
 {
