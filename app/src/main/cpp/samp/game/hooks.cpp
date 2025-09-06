@@ -1867,7 +1867,7 @@ void InjectHooks()
     CHook::Write(g_libGTASA+(VER_x32 ? 0xA45790:0xCE8538), &COcclusion::NumOccludersOnMap);
 }
 
-void InstallUrezHooks()
+void InstallCutHooks()
 {
 // pvr
     CHook::UnFuck(g_libGTASA + (VER_x32 ? 0x1E87A0 : 0x714003 ));
@@ -1934,7 +1934,8 @@ void InstallSpecialHooks()
 {
     InjectHooks();
 
-    //InstallUrezHooks(); //If u use CRMP cache, u need to use this
+	// change etc/unc/pvr -> dxt
+    //InstallCutHooks(); //If u use CRMP cache, u need to use this
 
     CHook::Redirect("_ZN5CGame20InitialiseRenderWareEv", &CGame::InitialiseRenderWare);
     CHook::InstallPLT(g_libGTASA + (VER_x32 ? 0x6785FC : 0x84EC20), &StartGameScreen__OnNewGameCheck_hook, &StartGameScreen__OnNewGameCheck);
@@ -1950,7 +1951,7 @@ void InstallSpecialHooks()
 
     CHook::RET("_ZN4CPed31RemoveWeaponWhenEnteringVehicleEi"); // CPed::RemoveWeaponWhenEnteringVehicle
 
-//    CHook::InstallPLT(g_libGTASA + (VER_x32 ? 0x6701D4 : 0x840708), &RLEDecompress_hook, &RLEDecompress); // Maybe comment fix bug with widgets, because hook was written by ChatGPT (not mine code)
+//    CHook::InstallPLT(g_libGTASA + (VER_x32 ? 0x6701D4 : 0x840708), &RLEDecompress_hook, &RLEDecompress); // comment fix bug with widgets, cause hook was written by ChatGPT (not mine code)
 	CHook::InlineHook("_ZN22TextureDatabaseRuntime15LoadFullTextureEj", &LoadFullTexture_hook, &LoadFullTexture);
 
     CHook::InlineHook("_Z11OS_FileReadPvS_i", &OS_FileRead_hook, &OS_FileRead);
@@ -1977,8 +1978,6 @@ void InstallHooks()
     CHook::Redirect("_Z10GetTexturePKc", &CUtil::GetTexture);
 
     CHook::InlineHook("_ZN14MainMenuScreen6OnExitEv", &MainMenuScreen__OnExit_hook, &MainMenuScreen__OnExit);
-
-    CHook::InlineHook("_ZN10MobileMenu12InitForPauseEv", &MobileMenu_InitForPause_hook, &MobileMenu_InitForPause); //pause
 
     CHook::InlineHook("_ZN17CTaskSimpleUseGun17RemoveStanceAnimsEP4CPedf", &CTaskSimpleUseGun__RemoveStanceAnims_hook, &CTaskSimpleUseGun__RemoveStanceAnims);
 
@@ -2039,7 +2038,6 @@ void InstallHooks()
     // retexture
     CHook::InlineHook("_ZN7CEntity6RenderEv", &CEntity_Render_hook, &CEntity_Render);
 
-    //CHook::InlineHook("_ZN26CAEGlobalWeaponAudioEntity21ServiceAmbientGunFireEv", &TaskEnterVehicleHook, &TaskEnterVehicle);
 #if VER_x32
     CHook::UnFuck(g_libGTASA + 0x4DD9E8);
     *(float*)(g_libGTASA + 0x4DD9E8) = 0.015f;
@@ -2048,21 +2046,6 @@ void InstallHooks()
     CHook::Write(g_libGTASA + 0x5DF794, 0xBD48D521);
 #endif
 
-    CHook::InlineHook("_ZN5CDraw6SetFOVEfb", &CDraw__SetFOV_hook, &CDraw__SetFOV);
-
     CHook::InlineHook("_ZN10CStreaming5Init2Ev", &CStreaming__Init2_hook, &CStreaming__Init2);
-
-/*#if VER_x32
-    CHook::InstallPLT( g_libGTASA + 0x66F3D4, &mpg123_param_hook, &mpg123_param);
-#else
-    CHook::Write(g_libGTASA + 0x339134, 0x52846C02);
-    CHook::Write(g_libGTASA + 0x339404, 0x52846C02);
-#endif*/
-
-
-    //m_pSkyObject = CreateObjectScaled(18659, 2.92f);
-    //SetTexturkaka("daily_sky_1");
-
-    HookCPad();
+HookCPad();
 }
-//static CObject* CreateObjectScaled(int iModel, float fScale);
