@@ -58,7 +58,13 @@ public class Util {
     }
 
     public static CharSequence getColoredString(String str) {
-        return Html.fromHtml(getStringWithColors(str));
+        String htmlString = getStringWithColors(str);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return Html.fromHtml(htmlString, Html.FROM_HTML_MODE_LEGACY);
+        } else {
+            // Para versões antigas do Android, usar o método deprecated (ainda funciona)
+            return Html.fromHtml(htmlString);
+        }
     }
 
     public static String getStringWithColors(String str) {
@@ -165,7 +171,12 @@ public class Util {
     }
 
     public static int getTextWidth(String str, TextPaint textPaint) {
-        return (int) new StaticLayout(str, textPaint, Integer.MAX_VALUE, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false).getLineWidth(0);
+        StaticLayout layout = StaticLayout.Builder.obtain(str, 0, str.length(), textPaint, Integer.MAX_VALUE)
+                .setAlignment(Layout.Alignment.ALIGN_NORMAL)
+                .setLineSpacing(0.0f, 1.0f)
+                .setIncludePad(false)
+                .build();
+        return (int) layout.getLineWidth(0);
     }
 
     public static String getStringWithoutColors(String str) {
