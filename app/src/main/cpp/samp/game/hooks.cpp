@@ -1896,16 +1896,21 @@ void InjectHooks()
 
 void InstallCutHooks()
 {
+    // Modifica extensões de arquivo de texturas: pvr/etc/unc → dxt
+    // Fluxo W^X: UnFuck → Write → ReFuck
+    
 // pvr
     CHook::UnFuck(g_libGTASA + (VER_x32 ? 0x1E87A0 : 0x714003 ));
     *(char*)(g_libGTASA + (VER_x32 ? 0x1E87A0 : 0x714003 ) + 12) = 'd';
     *(char*)(g_libGTASA + (VER_x32 ? 0x1E87A0 : 0x714003 ) + 13) = 'x';
     *(char*)(g_libGTASA + (VER_x32 ? 0x1E87A0 : 0x714003 ) + 14) = 't';
+    CHook::ReFuck(g_libGTASA + (VER_x32 ? 0x1E87A0 : 0x714003 ));
 
     CHook::UnFuck(g_libGTASA + (VER_x32 ? 0x1E8C04 : 0x71406F));
     *(char*)(g_libGTASA + (VER_x32 ? 0x1E8C04 : 0x71406F) + 12) = 'd';
     *(char*)(g_libGTASA + (VER_x32 ? 0x1E8C04 : 0x71406F) + 13) = 'x';
     *(char*)(g_libGTASA + (VER_x32 ? 0x1E8C04 : 0x71406F) + 14) = 't';
+    CHook::ReFuck(g_libGTASA + (VER_x32 ? 0x1E8C04 : 0x71406F));
 
 // etc
 
@@ -1913,11 +1918,13 @@ void InstallCutHooks()
     *(char*)(g_libGTASA + (VER_x32 ? 0x1E878C : 0x714017 ) + 12) = 'd';
     *(char*)(g_libGTASA + (VER_x32 ? 0x1E878C : 0x714017 ) + 13) = 'x';
     *(char*)(g_libGTASA + (VER_x32 ? 0x1E878C : 0x714017 ) + 14) = 't';
+    CHook::ReFuck(g_libGTASA + (VER_x32 ? 0x1E878C : 0x714017 ));
 
     CHook::UnFuck(g_libGTASA + (VER_x32 ? 0x1E8BF4 : 0x71407F));
     *(char*)(g_libGTASA + (VER_x32 ? 0x1E8BF4 : 0x71407F) + 12) = 'd';
     *(char*)(g_libGTASA + (VER_x32 ? 0x1E8BF4 : 0x71407F) + 13) = 'x';
     *(char*)(g_libGTASA + (VER_x32 ? 0x1E8BF4 : 0x71407F) + 14) = 't';
+    CHook::ReFuck(g_libGTASA + (VER_x32 ? 0x1E8BF4 : 0x71407F));
 
 // unc
 
@@ -1925,6 +1932,7 @@ void InstallCutHooks()
     *(char*)(g_libGTASA + (VER_x32 ? 0x1E87F0 : 0x713FB3 ) + 12) = 'd';
     *(char*)(g_libGTASA + (VER_x32 ? 0x1E87F0 : 0x713FB3 ) + 13) = 'x';
     *(char*)(g_libGTASA + (VER_x32 ? 0x1E87F0 : 0x713FB3 ) + 14) = 't';
+    CHook::ReFuck(g_libGTASA + (VER_x32 ? 0x1E87F0 : 0x713FB3 ));
 }
 
 
@@ -2066,8 +2074,10 @@ void InstallHooks()
     CHook::InlineHook("_ZN7CEntity6RenderEv", &CEntity_Render_hook, &CEntity_Render);
 
 #if VER_x32
+    // Fluxo W^X: UnFuck → Write → ReFuck
     CHook::UnFuck(g_libGTASA + 0x4DD9E8);
     *(float*)(g_libGTASA + 0x4DD9E8) = 0.015f;
+    CHook::ReFuck(g_libGTASA + 0x4DD9E8);
 #else
     CHook::Write(g_libGTASA + 0x5DF790, 0x90000AA9);
     CHook::Write(g_libGTASA + 0x5DF794, 0xBD48D521);
