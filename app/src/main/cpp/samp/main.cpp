@@ -556,75 +556,7 @@ jint JNI_OnLoad(JavaVM* vm, void* reserved)
 uint32_t GetTickCount()
 {
     return CTimer::m_snTimeInMillisecondsNonClipped;
-}
-
-void ShowToastAndExit(const char* message)
-{
-	JNIEnv* env = nullptr;
-	if (javaVM == nullptr) {
-		LOGE("ShowToastAndExit: javaVM is null, exiting without toast");
-		exit(1);
-		return;
-	}
-
-	bool needsDetach = false;
-	int getEnvResult = javaVM->GetEnv((void**)&env, JNI_VERSION_1_6);
-	
-	if (getEnvResult == JNI_EDETACHED) {
-		if (javaVM->AttachCurrentThread(&env, nullptr) != 0) {
-			LOGE("ShowToastAndExit: Failed to attach thread");
-			exit(1);
-			return;
-		}
-		needsDetach = true;
-	} else if (getEnvResult != JNI_OK) {
-		LOGE("ShowToastAndExit: Failed to get JNI env");
-		exit(1);
-		return;
-	}
-
-	// Mostra Toast via JNI
-	jclass toastClass = env->FindClass("android/widget/Toast");
-	if (toastClass != nullptr) {
-		jclass activityThread = env->FindClass("android/app/ActivityThread");
-		if (activityThread != nullptr) {
-			jmethodID currentActivityThread = env->GetStaticMethodID(activityThread, "currentActivityThread", "()Landroid/app/ActivityThread;");
-			jmethodID getApplication = env->GetMethodID(activityThread, "getApplication", "()Landroid/app/Application;");
-			
-			jobject at = env->CallStaticObjectMethod(activityThread, currentActivityThread);
-			if (at != nullptr) {
-				jobject context = env->CallObjectMethod(at, getApplication);
-				if (context != nullptr) {
-					jmethodID makeText = env->GetStaticMethodID(toastClass, "makeText", 
-						"(Landroid/content/Context;Ljava/lang/CharSequence;I)Landroid/widget/Toast;");
-					jmethodID show = env->GetMethodID(toastClass, "show", "()V");
-					
-					jstring jMessage = env->NewStringUTF(message);
-					jobject toast = env->CallStaticObjectMethod(toastClass, makeText, context, jMessage, 1); // 1 = LENGTH_LONG
-					if (toast != nullptr) {
-						env->CallVoidMethod(toast, show);
-					}
-					env->DeleteLocalRef(jMessage);
-				}
-			}
-		}
-	}
-
-	// Limpa exceções se houver
-	if (env->ExceptionCheck()) {
-		env->ExceptionClear();
-	}
-
-	if (needsDetach) {
-		javaVM->DetachCurrentThread();
-	}
-
-	LOGE("ShowToastAndExit: %s", message);
-	
-	// Aguarda um pouco para o Toast aparecer e depois fecha
-	usleep(500000); // 500ms
-	exit(1);
-}
+}	
 
 void FLog(const char* fmt, ...)
 {
