@@ -3,10 +3,7 @@ package com.samp.mobile.launcher.other;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Point;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.text.Html;
 import android.text.Layout;
 import android.text.StaticLayout;
@@ -18,48 +15,7 @@ import android.widget.TextView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-
 public class Util {
-
-    public static String responseFiles = "";
-    public static int responseFilesInt = 0;
-
-    public static String InputStreamToString(InputStream inputStream) {
-        StringBuilder sb = new StringBuilder();
-        try {
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8), 8192);
-            while (true) {
-                String readLine = bufferedReader.readLine();
-                if (readLine == null) {
-                    break;
-                }
-                sb.append(readLine);
-                sb.append('\n');
-            }
-            bufferedReader.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return sb.toString();
-    }
-
-
-    public static void delete(File file) {
-        if (file.exists()) {
-            if (file.isDirectory()) {
-                for (File f : file.listFiles()) {
-                    delete(f);
-                }
-            }
-            file.delete();
-        }
-    }
 
     public static void ShowLayout(View view, boolean isAnim) {
         if (view != null) {
@@ -212,25 +168,5 @@ public class Util {
             i2++;
         }
         return sb.toString();
-    }
-
-    public static String convertToReadableValue(int i) {
-        StringBuilder sb = new StringBuilder(String.valueOf(i));
-        int i2 = 0;
-        for (int length = sb.length() - 1; length >= 0; length--) {
-            i2++;
-            if (!(i2 != 3 || length == 0 || sb.charAt(length - 1) == '-')) {
-                sb.insert(length, ' ');
-                i2 = 0;
-            }
-        }
-        return sb.toString();
-    }
-
-    public static boolean isNetworkConnected(Context context)
-    {
-        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
 }
