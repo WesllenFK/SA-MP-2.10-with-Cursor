@@ -1386,9 +1386,30 @@ void NvUtilInit_hook()
 {
     FLog("NvUtilInit");
 
+    // Chama a função original da libGTASA.so
     NvUtilInit();
 
-    g_pszStorage = (char*)(g_libGTASA + (VER_x32 ? 0x6D687C : 0x8B46A8)); // StorageRootBuffer
+    // Verifica se o storage path já foi definido via JNI
+    if (g_bStoragePathSetViaJNI && g_pszStorage != nullptr && g_pszStorage[0] != '\0') {
+        // Path já foi definido via JNI, não sobrescrever
+        FLog("Storage path already set via JNI: %s", g_pszStorage);
+    } else {
+        // Fallback: usa o buffer da libGTASA.so (comportamento antigo)
+        g_pszStorage = (char*)(g_libGTASA + (VER_x32 ? 0x6D687C : 0x8B46A8)); // StorageRootBuffer
+        FLog("Storage path from libGTASA buffer: %s", g_pszStorage);
+
+        // Aviso: este path pode estar incorreto no Android 11+
+        FLog("WARNING: Using libGTASA buffer - may not work on Android 11+");
+    }
+
+    // Verifica se o path é válido
+    if (g_pszStorage == nullptr || g_pszStorage[0] == '\0') {
+        FLog("ERROR: Storage path is empty or null!");
+    } else if (access(g_pszStorage, F_OK) != 0) {
+        FLog("ERROR: Storage path does not exist: %s", g_pszStorage);
+    } else {
+        FLog("Storage path OK: %s", g_pszStorage);
+    }
 
     ReadSettingFile();
 
@@ -1405,6 +1426,12 @@ char lastFile[123];
 
 stFile* NvFOpen(const char* r0, const char* r1, int r2, int r3)
 {
+    // Verifica se g_pszStorage é válido
+    if (g_pszStorage == nullptr || g_pszStorage[0] == '\0') {
+        FLog("NvFOpen failed: storage path not set");
+        return nullptr;
+    }
+
     strcpy(lastFile, r1);
 
     static char path[255]{};
@@ -1869,16 +1896,21 @@ void InjectHooks()
 
 void InstallCutHooks()
 {
+    // Modifica extensões de arquivo de texturas: pvr/etc/unc → dxt
+    // Fluxo W^X: UnFuck → Write → ReFuck
+    
 // pvr
     CHook::UnFuck(g_libGTASA + (VER_x32 ? 0x1E87A0 : 0x714003 ));
     *(char*)(g_libGTASA + (VER_x32 ? 0x1E87A0 : 0x714003 ) + 12) = 'd';
     *(char*)(g_libGTASA + (VER_x32 ? 0x1E87A0 : 0x714003 ) + 13) = 'x';
     *(char*)(g_libGTASA + (VER_x32 ? 0x1E87A0 : 0x714003 ) + 14) = 't';
+    CHook::ReFuck(g_libGTASA + (VER_x32 ? 0x1E87A0 : 0x714003 ));
 
     CHook::UnFuck(g_libGTASA + (VER_x32 ? 0x1E8C04 : 0x71406F));
     *(char*)(g_libGTASA + (VER_x32 ? 0x1E8C04 : 0x71406F) + 12) = 'd';
     *(char*)(g_libGTASA + (VER_x32 ? 0x1E8C04 : 0x71406F) + 13) = 'x';
     *(char*)(g_libGTASA + (VER_x32 ? 0x1E8C04 : 0x71406F) + 14) = 't';
+    CHook::ReFuck(g_libGTASA + (VER_x32 ? 0x1E8C04 : 0x71406F));
 
 // etc
 
@@ -1886,11 +1918,13 @@ void InstallCutHooks()
     *(char*)(g_libGTASA + (VER_x32 ? 0x1E878C : 0x714017 ) + 12) = 'd';
     *(char*)(g_libGTASA + (VER_x32 ? 0x1E878C : 0x714017 ) + 13) = 'x';
     *(char*)(g_libGTASA + (VER_x32 ? 0x1E878C : 0x714017 ) + 14) = 't';
+    CHook::ReFuck(g_libGTASA + (VER_x32 ? 0x1E878C : 0x714017 ));
 
     CHook::UnFuck(g_libGTASA + (VER_x32 ? 0x1E8BF4 : 0x71407F));
     *(char*)(g_libGTASA + (VER_x32 ? 0x1E8BF4 : 0x71407F) + 12) = 'd';
     *(char*)(g_libGTASA + (VER_x32 ? 0x1E8BF4 : 0x71407F) + 13) = 'x';
     *(char*)(g_libGTASA + (VER_x32 ? 0x1E8BF4 : 0x71407F) + 14) = 't';
+    CHook::ReFuck(g_libGTASA + (VER_x32 ? 0x1E8BF4 : 0x71407F));
 
 // unc
 
@@ -1898,6 +1932,7 @@ void InstallCutHooks()
     *(char*)(g_libGTASA + (VER_x32 ? 0x1E87F0 : 0x713FB3 ) + 12) = 'd';
     *(char*)(g_libGTASA + (VER_x32 ? 0x1E87F0 : 0x713FB3 ) + 13) = 'x';
     *(char*)(g_libGTASA + (VER_x32 ? 0x1E87F0 : 0x713FB3 ) + 14) = 't';
+    CHook::ReFuck(g_libGTASA + (VER_x32 ? 0x1E87F0 : 0x713FB3 ));
 }
 
 
@@ -2039,8 +2074,10 @@ void InstallHooks()
     CHook::InlineHook("_ZN7CEntity6RenderEv", &CEntity_Render_hook, &CEntity_Render);
 
 #if VER_x32
+    // Fluxo W^X: UnFuck → Write → ReFuck
     CHook::UnFuck(g_libGTASA + 0x4DD9E8);
     *(float*)(g_libGTASA + 0x4DD9E8) = 0.015f;
+    CHook::ReFuck(g_libGTASA + 0x4DD9E8);
 #else
     CHook::Write(g_libGTASA + 0x5DF790, 0x90000AA9);
     CHook::Write(g_libGTASA + 0x5DF794, 0xBD48D521);

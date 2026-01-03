@@ -1,4 +1,4 @@
-﻿#include <jni.h>
+#include <jni.h>
 #include <pthread.h>
 #include <syscall.h>
 
@@ -29,6 +29,12 @@ Peerapol Unarak
 JavaVM* javaVM;
 
 char* g_pszStorage = nullptr;
+
+// Buffer próprio para armazenar o storage path recebido via JNI
+static char s_szStoragePath[512] = {0};
+
+// Flag para indicar se o storage path foi definido via JNI
+bool g_bStoragePathSetViaJNI = false;
 
 UI* pUI = nullptr;
 CGame *pGame = nullptr;
@@ -334,6 +340,40 @@ void GameBackground()
 */
 
 extern "C" {
+	// Função JNI para definir o storage path a partir do Java
+	JNIEXPORT void JNICALL Java_com_samp_mobile_game_SAMP_setStoragePath(
+		JNIEnv *pEnv, jobject thiz, jstring path)
+	{
+		if (path == nullptr) {
+			LOGE("setStoragePath: path is null!");
+			return;
+		}
+
+		const char* pathStr = pEnv->GetStringUTFChars(path, nullptr);
+		if (pathStr) {
+			// Copia o path para o buffer estático
+			strncpy(s_szStoragePath, pathStr, sizeof(s_szStoragePath) - 1);
+			s_szStoragePath[sizeof(s_szStoragePath) - 1] = '\0';
+
+			// Atualiza o ponteiro global
+			g_pszStorage = s_szStoragePath;
+			g_bStoragePathSetViaJNI = true;
+
+			LOGI("Storage path set via JNI: %s", g_pszStorage);
+
+			// Verifica se o diretório existe
+			if (access(g_pszStorage, F_OK) != 0) {
+				LOGE("WARNING: Storage path does not exist: %s", g_pszStorage);
+			} else {
+				LOGI("Storage path verified: exists and accessible");
+			}
+
+			pEnv->ReleaseStringUTFChars(path, pathStr);
+		} else {
+			LOGE("setStoragePath: failed to get string from Java!");
+		}
+	}
+
 	JNIEXPORT void JNICALL Java_com_samp_mobile_game_SAMP_initializeSAMP(JNIEnv *pEnv, jobject thiz)
 	{
 		pJavaWrapper = new CJavaWrapper(pEnv, thiz);
@@ -397,6 +437,12 @@ void InitGui()
 	// new voice
 	Plugin::OnPluginLoad();
 	Plugin::OnSampLoad();
+
+	// Verifica se g_pszStorage é válido
+	if (g_pszStorage == nullptr || g_pszStorage[0] == '\0') {
+		LOGE("InitGui failed: storage path not set");
+		return;
+	}
 
 	std::string font_path = string_format("%sSAMP/fonts/%s", g_pszStorage, FONT_NAME);
 	pUI = new UI(ImVec2(RsGlobal->maximumWidth, RsGlobal->maximumHeight), font_path.c_str());
@@ -525,10 +571,10 @@ void FLog(const char* fmt, ...)
 	const char* pszStorage = g_pszStorage;
 
 
-	if (flLog == nullptr && pszStorage != nullptr)
+	// Tenta abrir arquivo apenas se o path for válido (não NULL e não vazio)
+	if (flLog == nullptr && pszStorage != nullptr && pszStorage[0] != '\0')
 	{
 		sprintf(buffer, "%s/samp_log.txt", pszStorage);
-		//LOGI("buffer: %s", buffer);
 		flLog = fopen(buffer, "a");
 	}
 
@@ -539,9 +585,11 @@ void FLog(const char* fmt, ...)
 	vsnprintf(buffer, sizeof(buffer), fmt, arg);
 	va_end(arg);
 
+	// Sempre envia para logcat e crashlytics (fallback garantido)
 	LOGI("%s", buffer);
 	firebase::crashlytics::Log(buffer);
 
+	// Se arquivo não está disponível, apenas retorna (log já foi para logcat)
 	if (flLog == nullptr) return;
 	fprintf(flLog, "%s\n", buffer);
 	fflush(flLog);
@@ -555,8 +603,8 @@ void ChatLog(const char* fmt, ...)
 	static FILE* flLog = nullptr;
 	const char* pszStorage = g_pszStorage;
 
-
-	if (flLog == nullptr && pszStorage != nullptr)
+	// Tenta abrir arquivo apenas se o path for válido
+	if (flLog == nullptr && pszStorage != nullptr && pszStorage[0] != '\0')
 	{
 		sprintf(buffer, "%s/chat_log.txt", pszStorage);
 		flLog = fopen(buffer, "a");
@@ -569,11 +617,10 @@ void ChatLog(const char* fmt, ...)
 	vsnprintf(buffer, sizeof(buffer), fmt, arg);
 	va_end(arg);
 
+	// Se arquivo não está disponível, apenas retorna
 	if (flLog == nullptr) return;
 	fprintf(flLog, "%s\n", buffer);
 	fflush(flLog);
-
-	return;
 }
 
 void MyLog(const char* fmt, ...)
@@ -582,11 +629,10 @@ void MyLog(const char* fmt, ...)
 	static FILE* flLog = nullptr;
 	const char* pszStorage = g_pszStorage;
 
-
-	if (flLog == nullptr && pszStorage != nullptr)
+	// Tenta abrir arquivo apenas se o path for válido
+	if (flLog == nullptr && pszStorage != nullptr && pszStorage[0] != '\0')
 	{
 		sprintf(buffer, "%s/samp_log.txt", pszStorage);
-		//LOGI("buffer: %s", buffer);
 		flLog = fopen(buffer, "a");
 	}
 
@@ -597,11 +643,10 @@ void MyLog(const char* fmt, ...)
 	vsnprintf(buffer, sizeof(buffer), fmt, arg);
 	va_end(arg);
 
+	// Se arquivo não está disponível, apenas retorna
 	if (flLog == nullptr) return;
 	fprintf(flLog, "%s\n", buffer);
 	fflush(flLog);
-
-	return;
 }
 
 void MyLog2(const char* fmt, ...)
@@ -610,11 +655,10 @@ void MyLog2(const char* fmt, ...)
 	static FILE* flLog = nullptr;
 	const char* pszStorage = g_pszStorage;
 
-
-	if (flLog == nullptr && pszStorage != nullptr)
+	// Tenta abrir arquivo apenas se o path for válido
+	if (flLog == nullptr && pszStorage != nullptr && pszStorage[0] != '\0')
 	{
 		sprintf(buffer, "%s/samp_log.txt", pszStorage);
-		//LOGI("buffer: %s", buffer);
 		flLog = fopen(buffer, "a");
 	}
 
@@ -627,10 +671,10 @@ void MyLog2(const char* fmt, ...)
 
 	if (pUI) pUI->chat()->addDebugMessage(buffer);
 
+	// Se arquivo não está disponível, apenas retorna
 	if (flLog == nullptr) return;
 	fprintf(flLog, "%s\n", buffer);
 	fflush(flLog);
-	return;
 }
 
 void LogVoice(const char* fmt, ...)
@@ -639,7 +683,8 @@ void LogVoice(const char* fmt, ...)
 	static FILE* flLog = nullptr;
 	const char* pszStorage = g_pszStorage;
 
-	if (flLog == nullptr && pszStorage != nullptr)
+	// Tenta abrir arquivo apenas se o path for válido
+	if (flLog == nullptr && pszStorage != nullptr && pszStorage[0] != '\0')
 	{
 		sprintf(buffer, "%sSAMP/%s", pszStorage, SV::kLogFileName);
 		flLog = fopen(buffer, "w");
@@ -652,11 +697,11 @@ void LogVoice(const char* fmt, ...)
 	vsnprintf(buffer, sizeof(buffer), fmt, arg);
 	va_end(arg);
 
+	// Sempre envia para logcat (fallback garantido)
 	__android_log_write(ANDROID_LOG_INFO, "AXL", buffer);
 
+	// Se arquivo não está disponível, apenas retorna
 	if (flLog == nullptr) return;
 	fprintf(flLog, "%s\n", buffer);
 	fflush(flLog);
-
-	return;
 }
