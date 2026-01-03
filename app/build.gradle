@@ -120,5 +120,6 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-process:2.2.0")
 
     implementation "com.joom.paranoid:paranoid-gradle-plugin:0.3.14"
-    implementation 'com.bytedance.android:shadowhook:1.0.9'
+    // ShadowHook v2.0.0 - Compatível com Android 16
+    implementation 'com.bytedance.android:shadowhook:2.0.0'
 }
