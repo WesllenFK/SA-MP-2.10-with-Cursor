@@ -740,7 +740,6 @@ public abstract class NvEventQueueActivity extends AppCompatActivity implements 
         mHudManager = new HudManager(this);
 
         SurfaceHolder holder = view.getHolder();
-        holder.setType(2);
         holder.setKeepScreenOn(true);
 
         view.setFocusable(true);
