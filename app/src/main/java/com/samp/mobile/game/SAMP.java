@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 
+import androidx.activity.OnBackPressedCallback;
+
 import com.joom.paranoid.Obfuscate;
 import com.samp.mobile.game.ui.AttachEdit;
 import com.samp.mobile.game.ui.CustomKeyboard;
@@ -189,6 +191,14 @@ public class SAMP extends GTASA implements CustomKeyboard.InputListener, HeightP
 
         instance = this;
 
+        // Registrar callback para o botão voltar (substitui onBackPressed deprecated)
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                onEventBackPressed();
+            }
+        });
+
         try {
             initializeSAMP();
         } catch (UnsatisfiedLinkError e5) {
@@ -221,12 +231,6 @@ public class SAMP extends GTASA implements CustomKeyboard.InputListener, HeightP
     }
 
     public native void onEventBackPressed();
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        onEventBackPressed();
-    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
