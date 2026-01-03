@@ -16,6 +16,9 @@
 
 extern char* g_pszStorage;
 
+// Flag para indicar se o storage path foi definido via JNI
+extern bool g_bStoragePathSetViaJNI;
+
 #ifndef SAFE_DELETE
 	#define SAFE_DELETE(p) { if (p) { delete (p); (p) = NULL; } }
 #endif

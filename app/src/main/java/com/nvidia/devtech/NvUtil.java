@@ -40,7 +40,10 @@ public class NvUtil
 	private NvUtil()
 	{
 		appLocalValues = new HashMap<String, String>();
-		appLocalValues.put("STORAGE_ROOT", Environment.getExternalStorageDirectory().getAbsolutePath());
+		// NÃO definir STORAGE_ROOT aqui com valor incorreto
+		// O valor correto será definido por WarMedia.onCreate() usando getExternalFilesDir()
+		// Deixar vazio evita que um path inacessível seja usado no Android 11+
+		appLocalValues.put("STORAGE_ROOT", "");
 	}
 
 	public void setActivity(Activity activity)

@@ -1,4 +1,4 @@
-﻿#include <jni.h>
+#include <jni.h>
 #include <pthread.h>
 #include <syscall.h>
 
@@ -29,6 +29,12 @@ Peerapol Unarak
 JavaVM* javaVM;
 
 char* g_pszStorage = nullptr;
+
+// Buffer próprio para armazenar o storage path recebido via JNI
+static char s_szStoragePath[512] = {0};
+
+// Flag para indicar se o storage path foi definido via JNI
+bool g_bStoragePathSetViaJNI = false;
 
 UI* pUI = nullptr;
 CGame *pGame = nullptr;
@@ -334,6 +340,40 @@ void GameBackground()
 */
 
 extern "C" {
+	// Função JNI para definir o storage path a partir do Java
+	JNIEXPORT void JNICALL Java_com_samp_mobile_game_SAMP_setStoragePath(
+		JNIEnv *pEnv, jobject thiz, jstring path)
+	{
+		if (path == nullptr) {
+			LOGE("setStoragePath: path is null!");
+			return;
+		}
+
+		const char* pathStr = pEnv->GetStringUTFChars(path, nullptr);
+		if (pathStr) {
+			// Copia o path para o buffer estático
+			strncpy(s_szStoragePath, pathStr, sizeof(s_szStoragePath) - 1);
+			s_szStoragePath[sizeof(s_szStoragePath) - 1] = '\0';
+
+			// Atualiza o ponteiro global
+			g_pszStorage = s_szStoragePath;
+			g_bStoragePathSetViaJNI = true;
+
+			LOGI("Storage path set via JNI: %s", g_pszStorage);
+
+			// Verifica se o diretório existe
+			if (access(g_pszStorage, F_OK) != 0) {
+				LOGE("WARNING: Storage path does not exist: %s", g_pszStorage);
+			} else {
+				LOGI("Storage path verified: exists and accessible");
+			}
+
+			pEnv->ReleaseStringUTFChars(path, pathStr);
+		} else {
+			LOGE("setStoragePath: failed to get string from Java!");
+		}
+	}
+
 	JNIEXPORT void JNICALL Java_com_samp_mobile_game_SAMP_initializeSAMP(JNIEnv *pEnv, jobject thiz)
 	{
 		pJavaWrapper = new CJavaWrapper(pEnv, thiz);
