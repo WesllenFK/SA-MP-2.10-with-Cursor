@@ -1151,11 +1151,6 @@ public abstract class NvEventQueueActivity extends AppCompatActivity implements 
 	    return true;
     }
 
-	public int getOrientation()
-	{
-        return display.getOrientation();
-	}
-
     /**
      * Implementation function: 
      * The application does not and should not overide or call this directly
