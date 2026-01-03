@@ -1386,9 +1386,30 @@ void NvUtilInit_hook()
 {
     FLog("NvUtilInit");
 
+    // Chama a função original da libGTASA.so
     NvUtilInit();
 
-    g_pszStorage = (char*)(g_libGTASA + (VER_x32 ? 0x6D687C : 0x8B46A8)); // StorageRootBuffer
+    // Verifica se o storage path já foi definido via JNI
+    if (g_bStoragePathSetViaJNI && g_pszStorage != nullptr && g_pszStorage[0] != '\0') {
+        // Path já foi definido via JNI, não sobrescrever
+        FLog("Storage path already set via JNI: %s", g_pszStorage);
+    } else {
+        // Fallback: usa o buffer da libGTASA.so (comportamento antigo)
+        g_pszStorage = (char*)(g_libGTASA + (VER_x32 ? 0x6D687C : 0x8B46A8)); // StorageRootBuffer
+        FLog("Storage path from libGTASA buffer: %s", g_pszStorage);
+
+        // Aviso: este path pode estar incorreto no Android 11+
+        FLog("WARNING: Using libGTASA buffer - may not work on Android 11+");
+    }
+
+    // Verifica se o path é válido
+    if (g_pszStorage == nullptr || g_pszStorage[0] == '\0') {
+        FLog("ERROR: Storage path is empty or null!");
+    } else if (access(g_pszStorage, F_OK) != 0) {
+        FLog("ERROR: Storage path does not exist: %s", g_pszStorage);
+    } else {
+        FLog("Storage path OK: %s", g_pszStorage);
+    }
 
     ReadSettingFile();
 
