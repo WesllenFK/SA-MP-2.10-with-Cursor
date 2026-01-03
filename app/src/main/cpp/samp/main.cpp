@@ -565,10 +565,10 @@ void FLog(const char* fmt, ...)
 	const char* pszStorage = g_pszStorage;
 
 
-	if (flLog == nullptr && pszStorage != nullptr)
+	// Tenta abrir arquivo apenas se o path for válido (não NULL e não vazio)
+	if (flLog == nullptr && pszStorage != nullptr && pszStorage[0] != '\0')
 	{
 		sprintf(buffer, "%s/samp_log.txt", pszStorage);
-		//LOGI("buffer: %s", buffer);
 		flLog = fopen(buffer, "a");
 	}
 
@@ -579,9 +579,11 @@ void FLog(const char* fmt, ...)
 	vsnprintf(buffer, sizeof(buffer), fmt, arg);
 	va_end(arg);
 
+	// Sempre envia para logcat e crashlytics (fallback garantido)
 	LOGI("%s", buffer);
 	firebase::crashlytics::Log(buffer);
 
+	// Se arquivo não está disponível, apenas retorna (log já foi para logcat)
 	if (flLog == nullptr) return;
 	fprintf(flLog, "%s\n", buffer);
 	fflush(flLog);
@@ -595,8 +597,8 @@ void ChatLog(const char* fmt, ...)
 	static FILE* flLog = nullptr;
 	const char* pszStorage = g_pszStorage;
 
-
-	if (flLog == nullptr && pszStorage != nullptr)
+	// Tenta abrir arquivo apenas se o path for válido
+	if (flLog == nullptr && pszStorage != nullptr && pszStorage[0] != '\0')
 	{
 		sprintf(buffer, "%s/chat_log.txt", pszStorage);
 		flLog = fopen(buffer, "a");
@@ -609,11 +611,10 @@ void ChatLog(const char* fmt, ...)
 	vsnprintf(buffer, sizeof(buffer), fmt, arg);
 	va_end(arg);
 
+	// Se arquivo não está disponível, apenas retorna
 	if (flLog == nullptr) return;
 	fprintf(flLog, "%s\n", buffer);
 	fflush(flLog);
-
-	return;
 }
 
 void MyLog(const char* fmt, ...)
@@ -622,11 +623,10 @@ void MyLog(const char* fmt, ...)
 	static FILE* flLog = nullptr;
 	const char* pszStorage = g_pszStorage;
 
-
-	if (flLog == nullptr && pszStorage != nullptr)
+	// Tenta abrir arquivo apenas se o path for válido
+	if (flLog == nullptr && pszStorage != nullptr && pszStorage[0] != '\0')
 	{
 		sprintf(buffer, "%s/samp_log.txt", pszStorage);
-		//LOGI("buffer: %s", buffer);
 		flLog = fopen(buffer, "a");
 	}
 
@@ -637,11 +637,10 @@ void MyLog(const char* fmt, ...)
 	vsnprintf(buffer, sizeof(buffer), fmt, arg);
 	va_end(arg);
 
+	// Se arquivo não está disponível, apenas retorna
 	if (flLog == nullptr) return;
 	fprintf(flLog, "%s\n", buffer);
 	fflush(flLog);
-
-	return;
 }
 
 void MyLog2(const char* fmt, ...)
@@ -650,11 +649,10 @@ void MyLog2(const char* fmt, ...)
 	static FILE* flLog = nullptr;
 	const char* pszStorage = g_pszStorage;
 
-
-	if (flLog == nullptr && pszStorage != nullptr)
+	// Tenta abrir arquivo apenas se o path for válido
+	if (flLog == nullptr && pszStorage != nullptr && pszStorage[0] != '\0')
 	{
 		sprintf(buffer, "%s/samp_log.txt", pszStorage);
-		//LOGI("buffer: %s", buffer);
 		flLog = fopen(buffer, "a");
 	}
 
@@ -667,10 +665,10 @@ void MyLog2(const char* fmt, ...)
 
 	if (pUI) pUI->chat()->addDebugMessage(buffer);
 
+	// Se arquivo não está disponível, apenas retorna
 	if (flLog == nullptr) return;
 	fprintf(flLog, "%s\n", buffer);
 	fflush(flLog);
-	return;
 }
 
 void LogVoice(const char* fmt, ...)
@@ -679,7 +677,8 @@ void LogVoice(const char* fmt, ...)
 	static FILE* flLog = nullptr;
 	const char* pszStorage = g_pszStorage;
 
-	if (flLog == nullptr && pszStorage != nullptr)
+	// Tenta abrir arquivo apenas se o path for válido
+	if (flLog == nullptr && pszStorage != nullptr && pszStorage[0] != '\0')
 	{
 		sprintf(buffer, "%sSAMP/%s", pszStorage, SV::kLogFileName);
 		flLog = fopen(buffer, "w");
@@ -692,11 +691,11 @@ void LogVoice(const char* fmt, ...)
 	vsnprintf(buffer, sizeof(buffer), fmt, arg);
 	va_end(arg);
 
+	// Sempre envia para logcat (fallback garantido)
 	__android_log_write(ANDROID_LOG_INFO, "AXL", buffer);
 
+	// Se arquivo não está disponível, apenas retorna
 	if (flLog == nullptr) return;
 	fprintf(flLog, "%s\n", buffer);
 	fflush(flLog);
-
-	return;
 }
