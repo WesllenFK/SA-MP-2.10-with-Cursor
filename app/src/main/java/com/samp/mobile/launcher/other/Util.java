@@ -4,6 +4,8 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.graphics.Point;
+import android.graphics.Rect;
+import android.os.Build;
 import android.text.Html;
 import android.text.Layout;
 import android.text.StaticLayout;
@@ -11,6 +13,7 @@ import android.text.TextPaint;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowMetrics;
 import android.widget.TextView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -96,10 +99,22 @@ public class Util {
     private static final float MULT_X = 5.2083336E-4f;
     private static final float MULT_Y = 9.259259E-4f;
 
+    // Helper para obter dimensões da tela de forma compatível com Android 11+
+    private static Point getScreenSize(Activity activity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            WindowMetrics windowMetrics = activity.getWindowManager().getCurrentWindowMetrics();
+            Rect bounds = windowMetrics.getBounds();
+            return new Point(bounds.width(), bounds.height());
+        } else {
+            Display defaultDisplay = activity.getWindowManager().getDefaultDisplay();
+            Point point = new Point();
+            defaultDisplay.getSize(point);
+            return point;
+        }
+    }
+
     public static void scaleViewAndChildren(Activity activity, View view) {
-        Display defaultDisplay = activity.getWindowManager().getDefaultDisplay();
-        Point point = new Point();
-        defaultDisplay.getSize(point);
+        Point point = getScreenSize(activity);
         float min = Math.min(((float) point.x) * MULT_X, ((float) point.y) * MULT_Y);
         ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
         if (!(layoutParams.width == -1 || layoutParams.width == -2 || ((int) (((float) layoutParams.width) * min)) == 0)) {
@@ -145,9 +160,7 @@ public class Util {
     }
 
     public static float scale(Activity activity, float f) {
-        Display defaultDisplay = activity.getWindowManager().getDefaultDisplay();
-        Point point = new Point();
-        defaultDisplay.getSize(point);
+        Point point = getScreenSize(activity);
         return f * Math.min(((float) point.x) * MULT_X, ((float) point.y) * MULT_Y);
     }
 

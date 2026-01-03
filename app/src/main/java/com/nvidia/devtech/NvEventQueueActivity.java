@@ -449,7 +449,12 @@ public abstract class NvEventQueueActivity extends AppCompatActivity implements 
 
         mHudManager = new HudManager(this);
 
-        display = ((WindowManager)this.getSystemService(WINDOW_SERVICE)).getDefaultDisplay();
+        // Obter Display de forma compatível com Android 11+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            display = getDisplay();
+        } else {
+            display = ((WindowManager) this.getSystemService(WINDOW_SERVICE)).getDefaultDisplay();
+        }
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
