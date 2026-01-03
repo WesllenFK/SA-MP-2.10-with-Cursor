@@ -1426,6 +1426,12 @@ char lastFile[123];
 
 stFile* NvFOpen(const char* r0, const char* r1, int r2, int r3)
 {
+    // Verifica se g_pszStorage é válido
+    if (g_pszStorage == nullptr || g_pszStorage[0] == '\0') {
+        FLog("NvFOpen failed: storage path not set");
+        return nullptr;
+    }
+
     strcpy(lastFile, r1);
 
     static char path[255]{};
