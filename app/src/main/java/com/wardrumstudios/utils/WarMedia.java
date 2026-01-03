@@ -112,8 +112,7 @@ public class WarMedia extends WarGamepad
         System.out.println("Build MANUFACTURER  " + Build.MANUFACTURER);
         System.out.println("Build BOARD  " + Build.BOARD);
         System.out.println("Build DISPLAY  " + Build.DISPLAY);
-        System.out.println("Build CPU_ABI  " + Build.CPU_ABI);
-        System.out.println("Build CPU_ABI2  " + Build.CPU_ABI2);
+        System.out.println("Build SUPPORTED_ABIS  " + String.join(", ", Build.SUPPORTED_ABIS));
         System.out.println("Build HARDWARE  " + Build.HARDWARE);
         System.out.println("Build MODEL  " + Build.MODEL);
         System.out.println("Build PRODUCT  " + Build.PRODUCT);
