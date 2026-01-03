@@ -438,6 +438,12 @@ void InitGui()
 	Plugin::OnPluginLoad();
 	Plugin::OnSampLoad();
 
+	// Verifica se g_pszStorage é válido
+	if (g_pszStorage == nullptr || g_pszStorage[0] == '\0') {
+		LOGE("InitGui failed: storage path not set");
+		return;
+	}
+
 	std::string font_path = string_format("%sSAMP/fonts/%s", g_pszStorage, FONT_NAME);
 	pUI = new UI(ImVec2(RsGlobal->maximumWidth, RsGlobal->maximumHeight), font_path.c_str());
 	pUI->initialize();
