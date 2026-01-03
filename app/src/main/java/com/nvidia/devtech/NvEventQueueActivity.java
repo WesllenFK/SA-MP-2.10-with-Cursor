@@ -54,7 +54,6 @@ import android.view.WindowInsets;
 import android.view.WindowInsetsController;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
-import android.media.SoundPool;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -161,8 +160,6 @@ public abstract class NvEventQueueActivity extends AppCompatActivity implements 
     public static NvEventQueueActivity getInstance() {
         return instance;
     }
-
-    public static SoundPool soundPool;
 
     @SuppressLint("WrongConstant")
     public void hideSystemUI() {
