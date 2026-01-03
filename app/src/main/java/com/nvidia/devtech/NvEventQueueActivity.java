@@ -39,6 +39,7 @@ import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
@@ -437,7 +438,7 @@ public abstract class NvEventQueueActivity extends AppCompatActivity implements 
 		    System.out.println("Calling init(false)");
             init(false);
         }
-        handler = new Handler();
+        handler = new Handler(Looper.getMainLooper());
 
         mClipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 
