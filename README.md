@@ -50,38 +50,35 @@
 
 ---
 
-### 2. W^X Compatible Memory Patching (UnFuck/ReFuck)
-> **Status:** `In Planning`  
+### ~~2. W^X Compatible Memory Patching (UnFuck/ReFuck)~~ ✅
+> **Status:** `Completed`  
 > **Complexity:** `Medium`  
 > **Target:** `Android 15+ / Android 16`
 
-**Problem:**
-- Android 15+ enforces W^X (Write XOR Execute) policy
-- `mprotect(RWX)` may fail on newer Android versions
-- Current `UnFuck()` does not restore execute permission after writing
-- ~170+ patches depend on this function
-
-**Proposed Solution:**
+**Implementation:**
 - New flow: `RW → Write → cacheflush → RX`
-- Add `ReFuck()` function to restore execute permission
-- Update `WriteMemory()`, `NOP()`, `RET()`, `Redirect()` to use new flow
-- Fallback to RWX for older Android versions
+- Added `ReFuck()` function to restore execute permission
+- Updated `WriteMemory()`, `NOP()`, `RET()`, `Redirect()`, `InstallPLT()` to use new flow
+- Fallback to RWX for older Android versions (automatic detection)
+- Uses `s_bWXStrictMode` flag to detect W^X enforcement
 
 **Architecture:**
 ```
 ┌─────────────────────────────────────────────────┐
 │              W^X COMPATIBLE FLOW                │
 ├─────────────────────────────────────────────────┤
-│ 1. UnFuck(addr)   → mprotect(RW)               │
+│ 1. UnFuck(addr)   → mprotect(RWX or RW)        │
 │ 2. memcpy()       → Write patch bytes          │
 │ 3. cacheflush()   → Sync instruction cache     │
-│ 4. ReFuck(addr)   → mprotect(RX)               │
+│ 4. ReFuck(addr)   → mprotect(RX) if W^X mode   │
 └─────────────────────────────────────────────────┘
 ```
 
-**Files to modify:**
+**Files modified:**
 - `app/src/main/cpp/samp/vendor/armhook/patch.h`
 - `app/src/main/cpp/samp/vendor/armhook/patch.cpp`
+- `app/src/main/cpp/samp/game/hooks.cpp`
+- `app/src/main/cpp/samp/game/game.cpp`
 
 ---
 
