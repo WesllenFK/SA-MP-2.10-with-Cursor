@@ -3,10 +3,9 @@ package com.samp.mobile.launcher.other;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Point;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import android.graphics.Rect;
+import android.os.Build;
 import android.text.Html;
 import android.text.Layout;
 import android.text.StaticLayout;
@@ -14,52 +13,12 @@ import android.text.TextPaint;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowMetrics;
 import android.widget.TextView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-
 public class Util {
-
-    public static String responseFiles = "";
-    public static int responseFilesInt = 0;
-
-    public static String InputStreamToString(InputStream inputStream) {
-        StringBuilder sb = new StringBuilder();
-        try {
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8), 8192);
-            while (true) {
-                String readLine = bufferedReader.readLine();
-                if (readLine == null) {
-                    break;
-                }
-                sb.append(readLine);
-                sb.append('\n');
-            }
-            bufferedReader.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return sb.toString();
-    }
-
-
-    public static void delete(File file) {
-        if (file.exists()) {
-            if (file.isDirectory()) {
-                for (File f : file.listFiles()) {
-                    delete(f);
-                }
-            }
-            file.delete();
-        }
-    }
 
     public static void ShowLayout(View view, boolean isAnim) {
         if (view != null) {
@@ -140,10 +99,22 @@ public class Util {
     private static final float MULT_X = 5.2083336E-4f;
     private static final float MULT_Y = 9.259259E-4f;
 
+    // Helper para obter dimensões da tela de forma compatível com Android 11+
+    private static Point getScreenSize(Activity activity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            WindowMetrics windowMetrics = activity.getWindowManager().getCurrentWindowMetrics();
+            Rect bounds = windowMetrics.getBounds();
+            return new Point(bounds.width(), bounds.height());
+        } else {
+            Display defaultDisplay = activity.getWindowManager().getDefaultDisplay();
+            Point point = new Point();
+            defaultDisplay.getSize(point);
+            return point;
+        }
+    }
+
     public static void scaleViewAndChildren(Activity activity, View view) {
-        Display defaultDisplay = activity.getWindowManager().getDefaultDisplay();
-        Point point = new Point();
-        defaultDisplay.getSize(point);
+        Point point = getScreenSize(activity);
         float min = Math.min(((float) point.x) * MULT_X, ((float) point.y) * MULT_Y);
         ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
         if (!(layoutParams.width == -1 || layoutParams.width == -2 || ((int) (((float) layoutParams.width) * min)) == 0)) {
@@ -189,9 +160,7 @@ public class Util {
     }
 
     public static float scale(Activity activity, float f) {
-        Display defaultDisplay = activity.getWindowManager().getDefaultDisplay();
-        Point point = new Point();
-        defaultDisplay.getSize(point);
+        Point point = getScreenSize(activity);
         return f * Math.min(((float) point.x) * MULT_X, ((float) point.y) * MULT_Y);
     }
 
@@ -212,25 +181,5 @@ public class Util {
             i2++;
         }
         return sb.toString();
-    }
-
-    public static String convertToReadableValue(int i) {
-        StringBuilder sb = new StringBuilder(String.valueOf(i));
-        int i2 = 0;
-        for (int length = sb.length() - 1; length >= 0; length--) {
-            i2++;
-            if (!(i2 != 3 || length == 0 || sb.charAt(length - 1) == '-')) {
-                sb.insert(length, ' ');
-                i2 = 0;
-            }
-        }
-        return sb.toString();
-    }
-
-    public static boolean isNetworkConnected(Context context)
-    {
-        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
 }

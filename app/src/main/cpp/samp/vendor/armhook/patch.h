@@ -43,6 +43,7 @@ public:
     static uintptr_t mmap_start, mmap_end, memlib_start, memlib_end;
 
     static void UnFuck(uintptr_t ptr, size_t len = PAGE_SIZE);
+    static void ReFuck(uintptr_t ptr, size_t len = PAGE_SIZE);
 
     static uintptr_t GetAddrBaseXDL(uintptr_t addr)
     {
@@ -58,29 +59,44 @@ public:
 
 
 
+    /**
+     * NOP - Escreve instruções NOP na memória
+     * Fluxo W^X: UnFuck → Write → cacheflush → ReFuck
+     */
     template<typename Addr>
     static void NOP(Addr adr, size_t count)
     {
-        // fully check
         auto addr = (uintptr)(adr);
 #if VER_x32
         int bytesCount = 2 * count;
         uintptr_t endAddr = addr + bytesCount;
+        
+        // 1. Desprotege para escrita
         UnFuck(addr, bytesCount);
+        
+        // 2. Escreve NOPs (Thumb: 0xBF00)
         for (uintptr_t p = addr; p != endAddr; p += 2)
         {
             (*(char*)(p + 0)) = 0x00;
             (*(char*)(p + 1)) = 0xBF;
         }
+        
+        // 3. Sincroniza cache de instruções
         cacheflush(addr, endAddr, 0);
-
+        
+        // 4. Restaura para executável (W^X)
+        ReFuck(addr, bytesCount);
 #else
         if(count > 1)
             count /= 2;
 
         int bytesCount = 4 * count;
         uintptr_t endAddr = addr + bytesCount;
+        
+        // 1. Desprotege para escrita
         UnFuck(addr, bytesCount);
+        
+        // 2. Escreve NOPs (ARM64: 0xD503201F)
         for (uintptr_t p = addr; p != endAddr; p += 4)
         {
             (*(char*)(p + 0)) = 0x1F;
@@ -88,7 +104,12 @@ public:
             (*(char*)(p + 2)) = 0x03;
             (*(char*)(p + 3)) = 0xD5;
         }
+        
+        // 3. Sincroniza cache de instruções
         cacheflush(addr, endAddr, 0);
+        
+        // 4. Restaura para executável (W^X)
+        ReFuck(addr, bytesCount);
 #endif
     }
 
@@ -117,13 +138,24 @@ public:
         #endif
     }
 
+    /**
+     * WriteMemory - Escreve bytes na memória
+     * Fluxo W^X: UnFuck → memcpy → cacheflush → ReFuck
+     */
     template <typename Src>
     static void WriteMemory(uintptr_t dest, Src src, size_t size)
     {
+        // 1. Desprotege para escrita
         UnFuck(dest, size);
+        
+        // 2. Escreve os bytes
         memcpy((void*)dest, (void*)src, size);
 
+        // 3. Sincroniza cache de instruções
         cacheflush(dest, dest + size, 0);
+        
+        // 4. Restaura para executável (W^X)
+        ReFuck(dest, size);
     }
 
     template <typename Src>
@@ -180,21 +212,31 @@ public:
         return func(args...);
     }
 
+    /**
+     * InstallPLT - Hook de PLT (Procedure Linkage Table)
+     * Fluxo W^X: UnFuck → Write → ReFuck
+     */
     template <typename Addr, typename Func, typename Orig>
     static void InstallPLT(Addr addr, Func hook_func, Orig* orig_func)
     {
         UnFuck(addr);
 
         *orig_func = reinterpret_cast<Orig>(*(uintptr_t*)addr);
-
         *(uintptr_t*)addr = reinterpret_cast<uintptr_t>(hook_func);
+
+        ReFuck(addr);
     }
 
+    /**
+     * InstallPLT - Hook de PLT sem salvar original
+     * Fluxo W^X: UnFuck → Write → ReFuck
+     */
     template <typename Addr, typename Func>
     static void InstallPLT(Addr addr, Func hook_func)
     {
         UnFuck(addr);
         *(uintptr_t*)addr = reinterpret_cast<uintptr_t>(hook_func);
+        ReFuck(addr);
     }
 
     template <typename Addr, typename Func, typename Orig>
@@ -231,6 +273,10 @@ public:
                 (void **)orig);
     }
 
+    /**
+     * Redirect - Redireciona função para outra
+     * Usa WriteMemory que já implementa o fluxo W^X completo
+     */
     template <typename Func>
     static void Redirect(const char* sym, Func func)
     {
@@ -248,7 +294,6 @@ public:
         }
         WriteMemory(DETHUMB(addr), reinterpret_cast<uintptr_t>(hook), sizeof(hook));
 #elif defined __64BIT
-        UnFuck(addr, 16);
         uint64_t hook[2] = {0xD61F022058000051, reinterpret_cast<uintptr_t>(func)};
         WriteMemory(addr, reinterpret_cast<uintptr_t>(hook), sizeof(hook));
 #endif

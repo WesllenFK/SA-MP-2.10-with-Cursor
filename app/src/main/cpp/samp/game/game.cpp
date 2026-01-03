@@ -294,8 +294,10 @@ void CGame::UpdateGlobalTimer(uint32_t dwTimer)
 void CGame::SetGravity(float fGravity)
 {
 #if VER_x32
+    // Fluxo W^X: UnFuck → Write → ReFuck
     CHook::UnFuck(g_libGTASA + (VER_2_1 ? 0x003FE810 : 0x3A0B64));
     *(float*)(g_libGTASA + (VER_2_1 ? 0x003FE810 : 0x3A0B64)) = fGravity;
+    CHook::ReFuck(g_libGTASA + (VER_2_1 ? 0x003FE810 : 0x3A0B64));
 #endif
 }
 

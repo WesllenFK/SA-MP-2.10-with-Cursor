@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 
+import androidx.activity.OnBackPressedCallback;
+
 import com.joom.paranoid.Obfuscate;
 import com.samp.mobile.game.ui.AttachEdit;
 import com.samp.mobile.game.ui.CustomKeyboard;
@@ -15,18 +17,20 @@ import java.nio.charset.StandardCharsets;
 
 
 @Obfuscate
-public class SAMP extends GTASA implements CustomKeyboard.InputListener, HeightProvider.HeightListener {
+public class SAMP extends GTASA implements CustomKeyboard.InputListener {
     private static final String TAG = "SAMP";
     private static SAMP instance;
 
     private CustomKeyboard mKeyboard;
     private DialogManager mDialog;
-    private HeightProvider mHeightProvider;
 
     private AttachEdit mAttachEdit;
     private LoadingScreen mLoadingScreen;
 
     public native void sendDialogResponse(int i, int i2, int i3, byte[] str);
+
+    // Define o caminho de armazenamento para o código nativo
+    public native void setStoragePath(String path);
 
     public static SAMP getInstance() {
         return instance;
@@ -167,7 +171,14 @@ public class SAMP extends GTASA implements CustomKeyboard.InputListener, HeightP
         Log.i(TAG, "**** onCreate");
         super.onCreate(savedInstanceState);
 
-        //mHeightProvider = new HeightProvider(this);
+        // IMPORTANTE: Definir storage path ANTES de qualquer outra inicialização nativa
+        try {
+            String storagePath = getExternalFilesDir(null).getAbsolutePath() + "/";
+            Log.i(TAG, "Setting storage path: " + storagePath);
+            setStoragePath(storagePath);
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to set storage path: " + e.getMessage());
+        }
 
         mKeyboard = new CustomKeyboard(this);
 
@@ -177,8 +188,15 @@ public class SAMP extends GTASA implements CustomKeyboard.InputListener, HeightP
 
         mLoadingScreen = new LoadingScreen(this);
 
-
         instance = this;
+
+        // Registrar callback para o botão voltar (substitui onBackPressed deprecated)
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                onEventBackPressed();
+            }
+        });
 
         try {
             initializeSAMP();
@@ -208,16 +226,9 @@ public class SAMP extends GTASA implements CustomKeyboard.InputListener, HeightP
     public void onResume() {
         Log.i(TAG, "**** onResume");
         super.onResume();
-        //mHeightProvider.init(view);
     }
 
     public native void onEventBackPressed();
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        onEventBackPressed();
-    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -246,9 +257,4 @@ public class SAMP extends GTASA implements CustomKeyboard.InputListener, HeightP
         super.onDestroy();
     }
 
-    @Override
-    public void onHeightChanged(int orientation, int height) {
-        //mKeyboard.onHeightChanged(height);
-        //mDialog.onHeightChanged(height);
-    }
 }
