@@ -129,8 +129,6 @@ public abstract class NvEventQueueActivity extends AppCompatActivity implements 
 
     private HudManager mHudManager = null;
 
-    //private HeightProvider mHeightProvider = null;
-
     /* *
      * Helper function to select fixed window size.
      * */ 

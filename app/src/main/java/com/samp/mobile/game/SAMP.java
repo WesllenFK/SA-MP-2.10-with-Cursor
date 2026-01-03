@@ -17,13 +17,12 @@ import java.nio.charset.StandardCharsets;
 
 
 @Obfuscate
-public class SAMP extends GTASA implements CustomKeyboard.InputListener, HeightProvider.HeightListener {
+public class SAMP extends GTASA implements CustomKeyboard.InputListener {
     private static final String TAG = "SAMP";
     private static SAMP instance;
 
     private CustomKeyboard mKeyboard;
     private DialogManager mDialog;
-    private HeightProvider mHeightProvider;
 
     private AttachEdit mAttachEdit;
     private LoadingScreen mLoadingScreen;
@@ -227,7 +226,6 @@ public class SAMP extends GTASA implements CustomKeyboard.InputListener, HeightP
     public void onResume() {
         Log.i(TAG, "**** onResume");
         super.onResume();
-        //mHeightProvider.init(view);
     }
 
     public native void onEventBackPressed();
@@ -259,9 +257,4 @@ public class SAMP extends GTASA implements CustomKeyboard.InputListener, HeightP
         super.onDestroy();
     }
 
-    @Override
-    public void onHeightChanged(int orientation, int height) {
-        //mKeyboard.onHeightChanged(height);
-        //mDialog.onHeightChanged(height);
-    }
 }
