@@ -25,7 +25,6 @@
 
     <application
         android:gwpAsanMode="always"
-        android:requestLegacyExternalStorage="true"
         android:banner="@mipmap/ic_launcher"
         android:hardwareAccelerated="false"
         android:icon="@mipmap/ic_launcher"
