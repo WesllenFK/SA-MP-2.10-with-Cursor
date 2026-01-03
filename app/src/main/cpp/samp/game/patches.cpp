@@ -28,6 +28,11 @@ void readVehiclesAudioSettings()
 
 	memset(&CurrentVehicleAudioProperties, 0x0, sizeof(VehicleAudioPropertiesStruct));
 
+	// Verifica se g_pszStorage é válido
+	if (g_pszStorage == nullptr || g_pszStorage[0] == '\0') {
+		return;
+	}
+
 	char buffer[0xFF];
 	sprintf(buffer, "%sSAMP/vehicleAudioSettings.cfg", g_pszStorage);
 	pFile = fopen(buffer, "r");

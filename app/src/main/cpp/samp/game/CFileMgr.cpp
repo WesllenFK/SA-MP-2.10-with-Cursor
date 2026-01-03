@@ -7,6 +7,12 @@ void CFileMgr::SetDir(const char *path) {
 }
 
 FILE* CFileMgr::OpenFile(const char *path, const char *mode) {
+    // Verifica se g_pszStorage é válido antes de usar
+    if (g_pszStorage == nullptr || g_pszStorage[0] == '\0') {
+        FLog("OpenFile failed: storage path not set");
+        return nullptr;
+    }
+
     sprintf(ms_path, "%s%s", g_pszStorage, path);
 
     auto file = fopen(ms_path, mode);
