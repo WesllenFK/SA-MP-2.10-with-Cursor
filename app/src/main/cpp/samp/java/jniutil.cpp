@@ -9,7 +9,7 @@ CJavaWrapper::CJavaWrapper(JNIEnv *env, jobject activity)
     jclass clas = env->GetObjectClass(activity);
     if(!clas)
     {
-        FLog("no clas");
+        LOGE("CJavaWrapper: GetObjectClass failed");
         return;
     }
 
@@ -43,198 +43,275 @@ CJavaWrapper::CJavaWrapper(JNIEnv *env, jobject activity)
 
 void CJavaWrapper::ShowKeyboard()
 {
-    JNIEnv* p;
-    javaVM->GetEnv((void**)&p, JNI_VERSION_1_6);
-    p->CallVoidMethod(activity, s_showInputLayout);
-    EXCEPTION_CHECK(p);
+    JNIEnv* env;
+    bool needsDetach;
+    
+    if (!GetJNIEnvSafe(&env, &needsDetach)) {
+        LOGE("ShowKeyboard: Failed to get JNIEnv");
+        return;
+    }
+    
+    env->CallVoidMethod(activity, s_showInputLayout);
+    EXCEPTION_CHECK(env);
+    DETACH_IF_NEEDED(needsDetach);
 }
 
 void CJavaWrapper::HideKeyboard()
 {
-    JNIEnv* p;
-    javaVM->GetEnv((void**)&p, JNI_VERSION_1_6);
-    p->CallVoidMethod(activity, s_hideInputLayout);
-    EXCEPTION_CHECK(p);
+    JNIEnv* env;
+    bool needsDetach;
+    
+    if (!GetJNIEnvSafe(&env, &needsDetach)) {
+        LOGE("HideKeyboard: Failed to get JNIEnv");
+        return;
+    }
+    
+    env->CallVoidMethod(activity, s_hideInputLayout);
+    EXCEPTION_CHECK(env);
+    DETACH_IF_NEEDED(needsDetach);
 }
 
 void CJavaWrapper::ShowLoadingScreen()
 {
-    JNIEnv* p;
-    javaVM->GetEnv((void**)&p, JNI_VERSION_1_6);
-    p->CallVoidMethod(activity, s_showLoadingScreen);
-    EXCEPTION_CHECK(p);
+    JNIEnv* env;
+    bool needsDetach;
+    
+    if (!GetJNIEnvSafe(&env, &needsDetach)) {
+        LOGE("ShowLoadingScreen: Failed to get JNIEnv");
+        return;
+    }
+    
+    env->CallVoidMethod(activity, s_showLoadingScreen);
+    EXCEPTION_CHECK(env);
+    DETACH_IF_NEEDED(needsDetach);
 }
 
 void CJavaWrapper::HideLoadingScreen()
 {
-    JNIEnv* p;
-    javaVM->GetEnv((void**)&p, JNI_VERSION_1_6);
-    p->CallVoidMethod(activity, s_hideLoadingScreen);
-    EXCEPTION_CHECK(p);
+    JNIEnv* env;
+    bool needsDetach;
+    
+    if (!GetJNIEnvSafe(&env, &needsDetach)) {
+        LOGE("HideLoadingScreen: Failed to get JNIEnv");
+        return;
+    }
+    
+    env->CallVoidMethod(activity, s_hideLoadingScreen);
+    EXCEPTION_CHECK(env);
+    DETACH_IF_NEEDED(needsDetach);
 }
 
 void CJavaWrapper::SetPauseState(bool pause)
 {
-    JNIEnv* p;
-    javaVM->GetEnv((void**)&p, JNI_VERSION_1_6);
-    p->CallVoidMethod(activity, s_setPauseState, pause);
-    EXCEPTION_CHECK(p);
+    JNIEnv* env;
+    bool needsDetach;
+    
+    if (!GetJNIEnvSafe(&env, &needsDetach)) {
+        LOGE("SetPauseState: Failed to get JNIEnv");
+        return;
+    }
+    
+    env->CallVoidMethod(activity, s_setPauseState, pause);
+    EXCEPTION_CHECK(env);
+    DETACH_IF_NEEDED(needsDetach);
 }
 
 void CJavaWrapper::SetTab(int id, char* names, int score, int pings)
 {
-    JNIEnv* global_env;
-    javaVM->GetEnv((void**)&global_env, JNI_VERSION_1_6);
+    JNIEnv* env;
+    bool needsDetach;
+    
+    if (!GetJNIEnvSafe(&env, &needsDetach)) {
+        LOGE("SetTab: Failed to get JNIEnv");
+        return;
+    }
 
-	if (!global_env)
-	{
-		LOGI("No env");
+	jclass strClass = env->FindClass("java/lang/String"); 
+	if (!strClass) {
+		LOGE("SetTab: FindClass failed");
+		DETACH_IF_NEEDED(needsDetach);
 		return;
 	}
+	
+	jmethodID ctorID = env->GetMethodID(strClass, "<init>", "([BLjava/lang/String;)V"); 
+	jstring encoding = env->NewStringUTF("UTF-8"); 
 
-	jclass strClass = global_env->FindClass("java/lang/String"); 
-	jmethodID ctorID = global_env->GetMethodID(strClass, "<init>", "([BLjava/lang/String;)V"); 
-	jstring encoding = global_env->NewStringUTF("UTF-8"); 
+	jbyteArray bytes = env->NewByteArray(strlen(names)); 
+	env->SetByteArrayRegion(bytes, 0, strlen(names), (jbyte*)names); 
+	jstring str1 = (jstring)env->NewObject(strClass, ctorID, bytes, encoding);
 
-	jbyteArray bytes = global_env->NewByteArray(strlen(names)); 
-	global_env->SetByteArrayRegion(bytes, 0, strlen(names), (jbyte*)names); 
-	jstring str1 = (jstring)global_env->NewObject(strClass, ctorID, bytes, encoding);
-
-    global_env->CallVoidMethod(activity, s_setTab, id, str1, score, pings);
-
-    EXCEPTION_CHECK(global_env);
+    env->CallVoidMethod(activity, s_setTab, id, str1, score, pings);
+    EXCEPTION_CHECK(env);
+    
+    // Cleanup local refs
+    env->DeleteLocalRef(bytes);
+    env->DeleteLocalRef(str1);
+    env->DeleteLocalRef(encoding);
+    env->DeleteLocalRef(strClass);
+    
+    DETACH_IF_NEEDED(needsDetach);
 }
 
 void CJavaWrapper::ShowTab()
 {
-    JNIEnv* p;
-    javaVM->GetEnv((void**)&p, JNI_VERSION_1_6);
-    p->CallVoidMethod(activity, s_showTab);
-    EXCEPTION_CHECK(p);
+    JNIEnv* env;
+    bool needsDetach;
+    
+    if (!GetJNIEnvSafe(&env, &needsDetach)) {
+        LOGE("ShowTab: Failed to get JNIEnv");
+        return;
+    }
+    
+    env->CallVoidMethod(activity, s_showTab);
+    EXCEPTION_CHECK(env);
+    DETACH_IF_NEEDED(needsDetach);
 }
 
 void CJavaWrapper::HideTab()
 {
-    JNIEnv* p;
-    javaVM->GetEnv((void**)&p, JNI_VERSION_1_6);
-    p->CallVoidMethod(activity, s_hideTab);
-    EXCEPTION_CHECK(p);
+    JNIEnv* env;
+    bool needsDetach;
+    
+    if (!GetJNIEnvSafe(&env, &needsDetach)) {
+        LOGE("HideTab: Failed to get JNIEnv");
+        return;
+    }
+    
+    env->CallVoidMethod(activity, s_hideTab);
+    EXCEPTION_CHECK(env);
+    DETACH_IF_NEEDED(needsDetach);
 }
 
 void CJavaWrapper::ClearTab()
 {
-    JNIEnv* p;
-    javaVM->GetEnv((void**)&p, JNI_VERSION_1_6);
-    p->CallVoidMethod(activity, s_clearTab);
-    EXCEPTION_CHECK(p);
+    JNIEnv* env;
+    bool needsDetach;
+    
+    if (!GetJNIEnvSafe(&env, &needsDetach)) {
+        LOGE("ClearTab: Failed to get JNIEnv");
+        return;
+    }
+    
+    env->CallVoidMethod(activity, s_clearTab);
+    EXCEPTION_CHECK(env);
+    DETACH_IF_NEEDED(needsDetach);
 }
 
 void CJavaWrapper::ShowDialog(int dialogStyle, int dialogID, char* title, char* text, char* button1, char* button2)
 {
-	JNIEnv* env;
-    javaVM->GetEnv((void**)&env, JNI_VERSION_1_6);
-
-	if (!env)
-	{
-		FLog("No env");
-		return;
-	}
+    JNIEnv* env;
+    bool needsDetach;
+    
+    if (!GetJNIEnvSafe(&env, &needsDetach)) {
+        LOGE("ShowDialog: Failed to get JNIEnv");
+        return;
+    }
 
 	std::string sTitle(title);
 	std::string sText(text);
 	std::string sButton1(button1);
 	std::string sButton2(button2);
 
-	jbyteArray jstrTitle = as_byte_array((unsigned char*)sTitle.c_str(), sTitle.length());
-	jbyteArray jstrText = as_byte_array((unsigned char*)sText.c_str(), sText.length());
-	jbyteArray jstrButton1 = as_byte_array((unsigned char*)sButton1.c_str(), sButton1.length());
-	jbyteArray jstrButton2 = as_byte_array((unsigned char*)sButton2.c_str(), sButton2.length());
+	jbyteArray jstrTitle = as_byte_array(env, (unsigned char*)sTitle.c_str(), sTitle.length());
+	jbyteArray jstrText = as_byte_array(env, (unsigned char*)sText.c_str(), sText.length());
+	jbyteArray jstrButton1 = as_byte_array(env, (unsigned char*)sButton1.c_str(), sButton1.length());
+	jbyteArray jstrButton2 = as_byte_array(env, (unsigned char*)sButton2.c_str(), sButton2.length());
 
 	env->CallVoidMethod(activity, s_ShowDialog, dialogID, dialogStyle, jstrTitle, jstrText, jstrButton1, jstrButton2);
-
 	EXCEPTION_CHECK(env);
+	
+	// Cleanup local refs
+	if (jstrTitle) env->DeleteLocalRef(jstrTitle);
+	if (jstrText) env->DeleteLocalRef(jstrText);
+	if (jstrButton1) env->DeleteLocalRef(jstrButton1);
+	if (jstrButton2) env->DeleteLocalRef(jstrButton2);
+	
+	DETACH_IF_NEEDED(needsDetach);
 }
 
 void CJavaWrapper::UpdateHudInfo(int health, int armour, int weaponid, int ammo, int ammoinclip, int money, int wanted)
 {
     JNIEnv* env;
-    javaVM->GetEnv((void**)&env, JNI_VERSION_1_6);
-
-    if (!env)
-    {
-        FLog("No env");
+    bool needsDetach;
+    
+    if (!GetJNIEnvSafe(&env, &needsDetach)) {
+        LOGE("UpdateHudInfo: Failed to get JNIEnv");
         return;
     }
 
     env->CallVoidMethod(this->activity, this->s_updateHudInfo, health, armour, weaponid, ammo, ammoinclip, money, wanted);
+    EXCEPTION_CHECK(env);
+    DETACH_IF_NEEDED(needsDetach);
 }
 
 void CJavaWrapper::ShowHud()
 {
     JNIEnv* env;
-    javaVM->GetEnv((void**)&env, JNI_VERSION_1_6);
-
-    if (!env)
-    {
-        FLog("No env");
+    bool needsDetach;
+    
+    if (!GetJNIEnvSafe(&env, &needsDetach)) {
+        LOGE("ShowHud: Failed to get JNIEnv");
         return;
     }
-    //g_pJavaWrapper->ShowNotification(4, "HUD показан.", 5, "", "Хорошо");
+    
     env->CallVoidMethod(this->activity, this->s_showHud);
+    EXCEPTION_CHECK(env);
+    DETACH_IF_NEEDED(needsDetach);
 }
 
 void CJavaWrapper::HideHud()
 {
     JNIEnv* env;
-    javaVM->GetEnv((void**)&env, JNI_VERSION_1_6);
-
-    if (!env)
-    {
-        FLog("No env");
+    bool needsDetach;
+    
+    if (!GetJNIEnvSafe(&env, &needsDetach)) {
+        LOGE("HideHud: Failed to get JNIEnv");
         return;
     }
-    //g_pJavaWrapper->ShowNotification(4, "HUD скрыт.", 5, "", "Хорошо");
+    
     env->CallVoidMethod(this->activity, this->s_hideHud);
+    EXCEPTION_CHECK(env);
+    DETACH_IF_NEEDED(needsDetach);
 }
 
 void CJavaWrapper::exitGame() {
-
     JNIEnv* env;
-    javaVM->GetEnv((void**)&env, JNI_VERSION_1_6);
-
-    if (!env)
-    {
-        FLog("No env");
+    bool needsDetach;
+    
+    if (!GetJNIEnvSafe(&env, &needsDetach)) {
+        LOGE("exitGame: Failed to get JNIEnv");
         return;
     }
 
     env->CallVoidMethod(this->activity, this->s_exitGame);
+    EXCEPTION_CHECK(env);
+    DETACH_IF_NEEDED(needsDetach);
 }
 
 void CJavaWrapper::ShowEditObject() {
-
     JNIEnv* env;
-    javaVM->GetEnv((void**)&env, JNI_VERSION_1_6);
-
-    if (!env)
-    {
-        FLog("No env");
+    bool needsDetach;
+    
+    if (!GetJNIEnvSafe(&env, &needsDetach)) {
+        LOGE("ShowEditObject: Failed to get JNIEnv");
         return;
     }
 
     env->CallVoidMethod(this->activity, this->s_showEditObject);
+    EXCEPTION_CHECK(env);
+    DETACH_IF_NEEDED(needsDetach);
 }
 
 void CJavaWrapper::HideEditObject() {
-
     JNIEnv* env;
-    javaVM->GetEnv((void**)&env, JNI_VERSION_1_6);
-
-    if (!env)
-    {
-        FLog("No env");
+    bool needsDetach;
+    
+    if (!GetJNIEnvSafe(&env, &needsDetach)) {
+        LOGE("HideEditObject: Failed to get JNIEnv");
         return;
     }
 
     env->CallVoidMethod(this->activity, this->s_hideEditObject);
+    EXCEPTION_CHECK(env);
+    DETACH_IF_NEEDED(needsDetach);
 }
