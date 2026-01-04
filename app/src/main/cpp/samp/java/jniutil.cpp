@@ -4,14 +4,18 @@ extern CGame *pGame;
 
 CJavaWrapper::CJavaWrapper(JNIEnv *env, jobject activity)
 {
+	FLog("[CJavaWrapper::CJavaWrapper] START - Iniciando construtor do CJavaWrapper");
     this->activity = env->NewGlobalRef(activity);
+	FLog("[CJavaWrapper::CJavaWrapper] GlobalRef criado");
 
     jclass clas = env->GetObjectClass(activity);
     if(!clas)
     {
         LOGE("CJavaWrapper: GetObjectClass failed");
+		FLog("[CJavaWrapper::CJavaWrapper] ERRO: GetObjectClass falhou!");
         return;
     }
+	FLog("[CJavaWrapper::CJavaWrapper] Classe obtida, obtendo MethodIDs...");
 
     s_showTab = env->GetMethodID(clas, "showTab", "()V");
     s_hideTab = env->GetMethodID(clas, "hideTab", "()V");
@@ -38,7 +42,9 @@ CJavaWrapper::CJavaWrapper(JNIEnv *env, jobject activity)
     s_showHud = env->GetMethodID(clas, "showHud", "()V");
     s_hideHud = env->GetMethodID(clas, "hideHud", "()V");
 
+	FLog("[CJavaWrapper::CJavaWrapper] Todos os MethodIDs obtidos");
     env->DeleteLocalRef(clas);
+	FLog("[CJavaWrapper::CJavaWrapper] END - Construtor do CJavaWrapper concluído");
 }
 
 void CJavaWrapper::ShowKeyboard()

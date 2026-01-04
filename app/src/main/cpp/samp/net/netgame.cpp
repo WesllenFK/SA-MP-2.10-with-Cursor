@@ -45,7 +45,9 @@ extern CJavaWrapper *pJavaWrapper;
 
 CNetGame::CNetGame(const char* szHostOrIp, int iPort, const char *szPlayerName, const char* szPass)
 {
+	FLog("[CNetGame::CNetGame] START - Iniciando construtor do CNetGame");
 	FLog("CNetGame initializing..");
+	FLog("[CNetGame::CNetGame] Conectando a %s:%d, jogador: %s", szHostOrIp, iPort, szPlayerName);
 
 	// voice
 	//Network::OnRaknetConnect(szHostOrIp, iPort);
@@ -54,7 +56,10 @@ CNetGame::CNetGame(const char* szHostOrIp, int iPort, const char *szPlayerName, 
 	//MyLog2("Voice connect %s:%d", szHostOrIp, iPort);
 	//MyLog2("Voice connect %s:%d", szHostOrIp, iPort);
 
+	FLog("[CNetGame::CNetGame] Criando NET_SETTINGS...");
 	m_pNetSet = new NET_SETTINGS;
+	FLog("[CNetGame::CNetGame] NET_SETTINGS criado");
+	
 	memset(m_szHostName, 0, 256);
 	memset(m_szHostOrIp, 0, 256);
 
@@ -62,17 +67,33 @@ CNetGame::CNetGame(const char* szHostOrIp, int iPort, const char *szPlayerName, 
 	strncpy(m_szHostOrIp, szHostOrIp, sizeof(m_szHostOrIp));
 	m_iPort = iPort;
 
+	FLog("[CNetGame::CNetGame] Obtendo interface RakClient...");
 	m_pRakClient = RakNetworkFactory::GetRakClientInterface();
+	FLog("[CNetGame::CNetGame] RakClient obtido");
+	
+	FLog("[CNetGame::CNetGame] Inicializando pools...");
 	InitializePools();
+	FLog("[CNetGame::CNetGame] Pools inicializados");
 
+	FLog("[CNetGame::CNetGame] Definindo nome do jogador local...");
 	GetPlayerPool()->SetLocalPlayerName(szPlayerName);
+	FLog("[CNetGame::CNetGame] Nome do jogador definido");
 
+	FLog("[CNetGame::CNetGame] Registrando RPCs...");
 	RegisterRPCs(m_pRakClient);
+	FLog("[CNetGame::CNetGame] RPCs registrados");
+	
+	FLog("[CNetGame::CNetGame] Registrando Script RPCs...");
 	RegisterScriptRPCs(m_pRakClient);
+	FLog("[CNetGame::CNetGame] Script RPCs registrados");
+	
+	FLog("[CNetGame::CNetGame] Definindo senha...");
 	m_pRakClient->SetPassword(szPass);
+	FLog("[CNetGame::CNetGame] Senha definida");
 
 	memset(m_dwMapIcon, 0, sizeof(m_dwMapIcon));
 
+	FLog("[CNetGame::CNetGame] Configurando jogo...");
 	pGame->EnableClock(false);
 	pGame->EnableZoneNames(false);
 
@@ -91,16 +112,21 @@ CNetGame::CNetGame(const char* szHostOrIp, int iPort, const char *szPlayerName, 
 	m_pNetSet->byteWeather = 1;
 	m_pNetSet->fGravity = 0.008f;
 	m_bNameTagStatus = true;
+	FLog("[CNetGame::CNetGame] Configurações do jogo definidas");
 
 	m_dwLastConnectAttempt = GetTickCount();
 	SetGameState(GAMESTATE_WAIT_CONNECT);
 	m_bLanMode = false;
+	FLog("[CNetGame::CNetGame] Estado do jogo configurado: GAMESTATE_WAIT_CONNECT");
 
+	FLog("[CNetGame::CNetGame] Escondendo tela de carregamento...");
     pJavaWrapper->HideLoadingScreen();
+	FLog("[CNetGame::CNetGame] Tela de carregamento escondida");
 
     const char* sampVer = SAMP_VERSION;
 
 	if (pUI) pUI->chat()->addDebugMessage("Client {00ff11}TGRP{ffffff} started...");
+	FLog("[CNetGame::CNetGame] END - Construtor do CNetGame concluído");
 }
 // 0.3.7
 CNetGame::~CNetGame()

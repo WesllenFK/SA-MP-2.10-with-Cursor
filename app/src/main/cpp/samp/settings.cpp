@@ -4,6 +4,10 @@
 
 #include "vendor/SimpleIni/SimpleIni.h"
 #include "game/game.h"
+#include <cerrno>
+#include <cstring>
+#include <unistd.h>
+#include <sys/stat.h>
 
 extern CGame *pGame;
 
@@ -11,14 +15,64 @@ CSettings::CSettings()
 {
 	FLog("Loading settings..");	
 
-	char buff[0x7F];
+	// 1. Verificar g_pszStorage ANTES de usar (igual patches.cpp)
+	if (g_pszStorage == nullptr || g_pszStorage[0] == '\0') {
+		FLog("CSettings ERROR: storage path not set!");
+		std::terminate();
+		return;
+	}
+
+	// 2. Usar buffer maior (igual patches.cpp e outros sistemas)
+	char buff[0xFF];  // 255 bytes em vez de 127
 	sprintf(buff, "%sSAMP/settings.ini", g_pszStorage);
+	
+	// 3. Log do caminho para debug
+	FLog("CSettings: Attempting to load: [%s]", buff);
+	FLog("CSettings: Storage path length: %zu", strlen(g_pszStorage));
+	FLog("CSettings: Full path length: %zu", strlen(buff));
+
+	// 4. Ajustar ownership e permissões do arquivo (para arquivos criados externamente)
+	// Isso resolve problemas de ownership no Android 11+ onde arquivos criados via adb
+	// podem ter ownership diferente do processo do app
+	uid_t current_uid = getuid();
+	gid_t current_gid = getgid();
+	FLog("CSettings: Current UID=%d, GID=%d", current_uid, current_gid);
+	
+	// Tentar ajustar ownership (pode falhar se não tiver permissão, mas não é crítico)
+	if (chown(buff, current_uid, current_gid) != 0) {
+		FLog("CSettings WARNING: chown failed for [%s], errno = %d (%s)", buff, errno, strerror(errno));
+		// Continuar mesmo se chown falhar - pode funcionar se permissões estiverem corretas
+	} else {
+		FLog("CSettings: chown successful for [%s]", buff);
+	}
+	
+	// Ajustar permissões para garantir (rw-rw-r--)
+	if (chmod(buff, 0664) != 0) {
+		FLog("CSettings WARNING: chmod failed for [%s], errno = %d (%s)", buff, errno, strerror(errno));
+		// Continuar mesmo se chmod falhar
+	} else {
+		FLog("CSettings: chmod successful for [%s]", buff);
+	}
+
+	// 5. Verificar se arquivo pode ser aberto antes (igual patches.cpp faz indiretamente)
+	FILE* test_file = fopen(buff, "r");
+	if (!test_file) {
+		FLog("CSettings ERROR: fopen failed for [%s]", buff);
+		FLog("CSettings ERROR: errno = %d", errno);
+		FLog("CSettings ERROR: %s", strerror(errno));
+		std::terminate();
+		return;
+	}
+	fclose(test_file);
+	FLog("CSettings: File exists and is readable, proceeding with INIReader");
 
 	INIReader reader(buff);
+	int parse_error = reader.ParseError();
+	FLog("CSettings: ParseError = %d", parse_error);
 
-	if(reader.ParseError() < 0)
+	if(parse_error < 0)
 	{
-		FLog("Error: can't load %s", buff);
+		FLog("CSettings ERROR: can't load %s (ParseError: %d)", buff, parse_error);
 		std::terminate();
 		return;
 	}

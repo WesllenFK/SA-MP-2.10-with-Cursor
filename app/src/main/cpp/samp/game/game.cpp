@@ -39,6 +39,7 @@ inline int FindFirstFreePlayerPedSlot()
 
 CGame::CGame()
 {
+	FLog("[CGame::CGame] START - Iniciando construtor do CGame");
 	m_pGamePlayer = nullptr;
 	m_bCheckpointsEnabled = false;
 	m_bRaceCheckpointsEnabled = false;
@@ -47,8 +48,10 @@ CGame::CGame()
 	m_bClockEnabled = false;
 	m_bInputEnable = true;
 
+	FLog("[CGame::CGame] Limpando arrays...");
 	memset(bUsedPlayerSlots, 0, sizeof(bUsedPlayerSlots));
 	memset(m_bPreloadedVehicleModels, 0, sizeof(m_bPreloadedVehicleModels));
+	FLog("[CGame::CGame] END - Construtor do CGame concluído");
 }
 
 CGame::~CGame()
@@ -83,12 +86,20 @@ void InstallWidgetHooks();
 
 void CGame::Initialize()
 {
+	FLog("[CGame::Initialize] START - Iniciando inicialização do CGame");
 	FLog("CGame initializing..");
 
+	FLog("[CGame::Initialize] Aplicando patches SAMP no jogo...");
     ApplySAMPPatchesInGame();
+	FLog("[CGame::Initialize] ApplySAMPPatchesInGame() concluído");
+	
+	FLog("[CGame::Initialize] Resetando cores do radar...");
 	GameResetRadarColors();
+	FLog("[CGame::Initialize] GameResetRadarColors() concluído");
 
+	FLog("[CGame::Initialize] Alocando memória para mensagens de texto...");
     szGameTextMessage = new uint16_t[1076];
+	FLog("[CGame::Initialize] Memória alocada");
 }
 // 0.3.7
 void CGame::SetMaxStats()

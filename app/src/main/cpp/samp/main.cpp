@@ -235,20 +235,46 @@ void handler3(int signum, siginfo_t *info, void* contextPtr)
 }
 
 void DoInitStuff() {
+    FLog("[DoInitStuff] START - Iniciando inicialização do jogo");
+    
     if (bGameInited == false) {
+        FLog("[DoInitStuff] Criando CPlayerTags...");
         pPlayerTags = new CPlayerTags();
+        FLog("[DoInitStuff] CPlayerTags criado");
+        
+        FLog("[DoInitStuff] Criando CSnapShotHelper...");
         pSnapShotHelper = new CSnapShotHelper();
+        FLog("[DoInitStuff] CSnapShotHelper criado");
+        
+        FLog("[DoInitStuff] Criando MaterialTextGenerator...");
         pMaterialTextGenerator = new MaterialTextGenerator();
+        FLog("[DoInitStuff] MaterialTextGenerator criado");
+        
+        FLog("[DoInitStuff] Criando CAudioStream...");
         pAudioStream = new CAudioStream();
+        FLog("[DoInitStuff] CAudioStream criado");
+        
+        FLog("[DoInitStuff] Inicializando CAudioStream...");
         pAudioStream->Initialize();
+        FLog("[DoInitStuff] CAudioStream inicializado");
 
+        FLog("[DoInitStuff] Configurando UI...");
         pUI->splashscreen()->setVisible(false);
         pUI->chat()->setVisible(true);
+        FLog("[DoInitStuff] UI configurada");
         //pUI->buttonpanel()->setVisible(true);
 
+        FLog("[DoInitStuff] Inicializando CGame...");
         pGame->Initialize();
+        FLog("[DoInitStuff] CGame inicializado");
+        
+        FLog("[DoInitStuff] Configurando stats máximos...");
         pGame->SetMaxStats();
+        FLog("[DoInitStuff] Stats configurados");
+        
+        FLog("[DoInitStuff] Desabilitando passagem de tempo...");
         pGame->ToggleThePassingOfTime(false);
+        FLog("[DoInitStuff] Passagem de tempo desabilitada");
 
         // voice
         /*LogVoice("[dbg:samp:load] : module loading...");
@@ -264,6 +290,7 @@ void DoInitStuff() {
         LogVoice("[dbg:samp:load] : module loaded");
 
         if (bDebug) {
+            FLog("[DoInitStuff] Modo debug ativado, configurando câmera...");
             CCamera &TheCamera = *reinterpret_cast<CCamera *>(g_libGTASA +
                                                               (VER_x32 ? 0x00951FA8 : 0xBBA8D0));
             //TheCamera.Restore();
@@ -272,15 +299,20 @@ void DoInitStuff() {
             pGame->EnableClock(false);
 
             DoDebugStuff();
+            FLog("[DoInitStuff] Debug configurado");
         }
 
         bGameInited = true;
+        FLog("[DoInitStuff] bGameInited = true");
     }
 
     if (!bNetworkInited && !bDebug  && !serverConnect) {
+        FLog("[DoInitStuff] Inicializando rede...");
 
         int serverid = pSettings->GetReadOnly().iServerID;
+        FLog("[DoInitStuff] Server ID: %d", serverid);
 
+        FLog("[DoInitStuff] Criando CNetGame...");
         if (serverid == 0)
         {
             pNetGame = new CNetGame(SERVER_HOST_TEST, SERVER_PORT_TEST, pSettings->Get().szNickName, pSettings->Get().szPassword);
@@ -301,12 +333,12 @@ void DoInitStuff() {
         {
             pNetGame = new CNetGame(SERVER_HOST_4, SERVER_PORT_4, pSettings->Get().szNickName, pSettings->Get().szPassword);
         }
+        FLog("[DoInitStuff] CNetGame criado com sucesso");
 
         bNetworkInited = true;
         pUI->chat()->addDebugMessage("Connected to server... {622cf5}ID: %d", serverid);
 
-
-        FLog("DoInitStuff end");
+        FLog("[DoInitStuff] END - Inicialização do jogo concluída");
     }
 }
 
@@ -376,8 +408,11 @@ extern "C" {
 
 	JNIEXPORT void JNICALL Java_com_samp_mobile_game_SAMP_initializeSAMP(JNIEnv *pEnv, jobject thiz)
 	{
+		FLog("[initializeSAMP] START - Iniciando inicialização do SAMP");
+		FLog("[initializeSAMP] Criando CJavaWrapper...");
 		pJavaWrapper = new CJavaWrapper(pEnv, thiz);
-
+		FLog("[initializeSAMP] CJavaWrapper criado com sucesso");
+		FLog("[initializeSAMP] END - SAMP inicializado");
 	}
 	JNIEXPORT void JNICALL Java_com_samp_mobile_game_SAMP_onInputEnd(JNIEnv *pEnv, jobject thiz, jbyteArray str)
 	{
@@ -434,20 +469,40 @@ void MainLoop()
 
 void InitGui()
 {
+	FLog("[InitGui] START - Iniciando inicialização da GUI");
+	
 	// new voice
+	FLog("[InitGui] Carregando plugins de voz...");
 	Plugin::OnPluginLoad();
+	FLog("[InitGui] Plugin::OnPluginLoad() concluído");
+	
 	Plugin::OnSampLoad();
+	FLog("[InitGui] Plugin::OnSampLoad() concluído");
 
 	// Verifica se g_pszStorage é válido
 	if (g_pszStorage == nullptr || g_pszStorage[0] == '\0') {
 		LOGE("InitGui failed: storage path not set");
+		FLog("[InitGui] ERRO: storage path não definido!");
 		return;
 	}
+	FLog("[InitGui] Storage path verificado: %s", g_pszStorage);
 
 	std::string font_path = string_format("%sSAMP/fonts/%s", g_pszStorage, FONT_NAME);
+	FLog("[InitGui] Caminho da fonte: %s", font_path.c_str());
+	
+	FLog("[InitGui] Criando UI...");
 	pUI = new UI(ImVec2(RsGlobal->maximumWidth, RsGlobal->maximumHeight), font_path.c_str());
+	FLog("[InitGui] UI criado com sucesso");
+	
+	FLog("[InitGui] Inicializando UI...");
 	pUI->initialize();
+	FLog("[InitGui] pUI->initialize() concluído");
+	
+	FLog("[InitGui] Executando layout da UI...");
 	pUI->performLayout();
+	FLog("[InitGui] pUI->performLayout() concluído");
+	
+	FLog("[InitGui] END - GUI inicializada com sucesso");
 }
 
 #include "game/multitouch.h"
@@ -459,17 +514,21 @@ void InitGui()
 
 void secret_function()
 {
+	FLog("[secret_function] START - Executando secret_function");
     WATERMARK("SECRET OF FUCKING MIMIC: I HAVE PENIS", // Message for crackers ;)
               "hpdev daun",
               "go touch some grass", 0);
+	FLog("[secret_function] END - secret_function concluída");
 
 }
 
 void SetUpGLHooks();
 jint JNI_OnLoad(JavaVM* vm, void* reserved)
 {
+	FLog("[JNI_OnLoad] START - Iniciando carregamento da biblioteca nativa");
 	javaVM = vm;
 	LOGI(OBF("SA-MP library loaded! Build time: " __DATE__ " " __TIME__));
+	FLog("[JNI_OnLoad] JavaVM definido, build time: " __DATE__ " " __TIME__);
 
     WATERMARK("                   by github.com/kuzia15                   ",
               "                   by github.com/kuzia15                   ",
@@ -481,19 +540,27 @@ jint JNI_OnLoad(JavaVM* vm, void* reserved)
               "                   by github.com/kuzia15                   ",
               "                                                           ", 0);
 
+	FLog("[JNI_OnLoad] Procurando libGTASA.so...");
 	g_libGTASA = CUtil::FindLib(MAKEOBF("libGTASA.so"));
 	if (g_libGTASA == 0x00) {
 		LOGE(OBF("libGTASA.so address was not found! "));
+		FLog("[JNI_OnLoad] ERRO: libGTASA.so não encontrada!");
 		return JNI_VERSION_1_6;
 	}
+	FLog("[JNI_OnLoad] libGTASA.so encontrada: 0x%x", g_libGTASA);
 
+	FLog("[JNI_OnLoad] Procurando libsamp.so...");
 	g_libSAMP = CUtil::FindLib(MAKEOBF("libsamp.so"));
 	if (g_libSAMP == 0x00) {
 		LOGE(OBF("libsamp.so address was not found! "));
+		FLog("[JNI_OnLoad] ERRO: libsamp.so não encontrada!");
 		return JNI_VERSION_1_6;
 	}
+	FLog("[JNI_OnLoad] libsamp.so encontrada: 0x%x", g_libSAMP);
 
+	FLog("[JNI_OnLoad] Inicializando Firebase Crashlytics...");
 	firebase::crashlytics::Initialize();
+	FLog("[JNI_OnLoad] Firebase Crashlytics inicializado");
 
 	uintptr_t libgtasa = CUtil::FindLib(MAKEOBF("libGTASA.so"));
 	uintptr_t libsamp = CUtil::FindLib(MAKEOBF("libsamp.so"));
@@ -514,15 +581,32 @@ jint JNI_OnLoad(JavaVM* vm, void* reserved)
 	sprintf(str, "0x%x", libc);
 	firebase::crashlytics::SetCustomKey("libc.so", str);
 
+	FLog("[JNI_OnLoad] Inicializando hooks...");
 	CHook::InitHookStuff();
+	FLog("[JNI_OnLoad] CHook::InitHookStuff() concluído");
+	
+	FLog("[JNI_OnLoad] Instalando hooks especiais...");
 	InstallSpecialHooks();
+	FLog("[JNI_OnLoad] InstallSpecialHooks() concluído");
+	
+	FLog("[JNI_OnLoad] Aplicando patches nível 0...");
 	ApplyPatches_level0();
+	FLog("[JNI_OnLoad] ApplyPatches_level0() concluído");
+	
     //CHook::InstallPLT(g_libGTASA + (VER_x32 ? 0x1D0350 : 0x265688), &RQ_Command_rqTextureMipMode_hook, &RQ_Command_rqTextureMipMode);
     //SetUpGLHooks();
+    
+    FLog("[JNI_OnLoad] Inicializando RenderWare...");
     InitRenderWareFunctions();
+    FLog("[JNI_OnLoad] InitRenderWareFunctions() concluído");
+    
+    FLog("[JNI_OnLoad] Inicializando MultiTouch...");
     MultiTouch::initialize();
+    FLog("[JNI_OnLoad] MultiTouch::initialize() concluído");
 
+	FLog("[JNI_OnLoad] Criando CGame...");
 	pGame = new CGame();
+	FLog("[JNI_OnLoad] CGame criado com sucesso");
 
 	//pVoice = new CVoice();
 	//pVoice->Initialize(VOICE_FREQUENCY, CODEC_FREQUENCY, VOICE_SENDRRATE);
@@ -530,32 +614,40 @@ jint JNI_OnLoad(JavaVM* vm, void* reserved)
 	//pthread_t thread;
 	//pthread_create(&thread, 0, Init, 0);
 
+	FLog("[JNI_OnLoad] Configurando signal handlers...");
 	struct sigaction act;
 	act.sa_sigaction = handler;
 	sigemptyset(&act.sa_mask);
 	act.sa_flags = SA_SIGINFO;
 	sigaction(SIGSEGV, &act, &act_old);
+	FLog("[JNI_OnLoad] SIGSEGV handler configurado");
 
 	struct sigaction act1;
 	act1.sa_sigaction = handler1;
 	sigemptyset(&act1.sa_mask);
 	act1.sa_flags = SA_SIGINFO;
 	sigaction(SIGABRT, &act1, &act1_old);
+	FLog("[JNI_OnLoad] SIGABRT handler configurado");
 
 	struct sigaction act2;
 	act2.sa_sigaction = handler2;
 	sigemptyset(&act2.sa_mask);
 	act2.sa_flags = SA_SIGINFO;
 	sigaction(SIGFPE, &act2, &act2_old);
+	FLog("[JNI_OnLoad] SIGFPE handler configurado");
 
 	struct sigaction act3;
 	act3.sa_sigaction = handler3;
 	sigemptyset(&act3.sa_mask);
 	act3.sa_flags = SA_SIGINFO;
 	sigaction(SIGBUS, &act3, &act3_old);
+	FLog("[JNI_OnLoad] SIGBUS handler configurado");
 
+	FLog("[JNI_OnLoad] Chamando secret_function()...");
     secret_function();
+	FLog("[JNI_OnLoad] secret_function() concluído");
 
+	FLog("[JNI_OnLoad] END - Carregamento da biblioteca concluído com sucesso");
 	return JNI_VERSION_1_6;
 }
 
