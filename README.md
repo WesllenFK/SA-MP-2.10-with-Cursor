@@ -1,117 +1,82 @@
-# SA:MP Mobile Client 2.10 (x64) for GTA: San Andreas
+# SA:MP Mobile Client 2.10 (Android)
 
-# ᐳ Description
-> * Arch: `arm64-v8a`, `armeabi-v7a`
-> * Type: `Modified SA:MP client` 
-> * Security: `https://github.com/ac3ss0r/obfusheader.h` 
-> * Status: `Supported`
+Modified Android SA:MP (GTA: San Andreas) client, built with **Android NDK (C++) + JNI + Java** and supporting **ARM32/ARM64**.
 
-# ᐳ Features
-> * Support `arm64` and `arm32`
-> * Built-in OpenGL reflections (cars)
-> * WaterShader
-> * custom SkyBox
-> * disabled `CCorona` (optimization) 
-> * Added mini-map icons 
-> * Improved multi-touch 
-> * Support for the kick button 
-> * Compatibility with SA:MP 0.3.7
+## Overview
 
-# ᐳ Credit's
-> - **x1y2z** — main author of client 
-> - [**kuzia15**](https://github.com/kuzia15) — OpenGL, WaterShader, small improvements
-> - [**psychobye**](https://github.com/psychobye) — CSkyBox, small improvements
+- **ABIs**: `armeabi-v7a`, `arm64-v8a`
+- **Application ID**: `com.samp.mobile`
+- **Native build**: CMake (NDK)
+- **Status**: supported
+- **Compatibility**: SA:MP `0.3.7`
 
-# ᐳ Pending Tasks
+## Key features
 
-## 🔴 High Priority
+- **ARM32 + ARM64 support**
+- **OpenGL reflections (vehicles)**
+- **WaterShader**
+- **Custom SkyBox**
+- **Optimizations**: disables `CCorona`
+- **UI/controls**: improved multi-touch, kick button support
+- **Map**: mini-map icons
 
-### 1. Hook Validation System with User Feedback
-> **Status:** `Pending`  
-> **Complexity:** `High`  
-> **Target:** `Android 11+`
+## Requirements
 
-**Problem:**
-- If a hook fails, the game may crash later with no clear error
-- Current `exit(0)` closes the app without user feedback
-- No way to know which hook failed
+- **Android Studio** (recommended)
+- **Android SDK**: `compileSdk 36` / `targetSdk 36` / `minSdk 26`
+- **NDK**: `26.2.11394342`
+- **Android Gradle Plugin**: `com.android.tools.build:gradle:8.4.0`
 
-**Proposed Solution:**
-- Create `CHookValidator` class to track all hooks
-- Wrapper `InlineHookValidated()` with success/failure logging
-- Show user-friendly error dialog via JNI when critical hooks fail
-- Option to send error report to server/crashlytics
+## Build (Debug)
 
-**Files to modify:**
-- `app/src/main/cpp/samp/vendor/armhook/patch.h`
-- `app/src/main/cpp/samp/vendor/armhook/patch.cpp`
-- `app/src/main/cpp/samp/game/hooks.cpp`
-- `app/src/main/java/com/samp/mobile/game/SAMP.java`
+> Note: this project uses a hybrid build (Java + C++ via CMake). The first build may take longer due to toolchain/NDK setup.
 
----
+### Android Studio
 
-### ~~2. W^X Compatible Memory Patching (UnFuck/ReFuck)~~ ✅
-> **Status:** `Completed`  
-> **Complexity:** `Medium`  
-> **Target:** `Android 15+ / Android 16`
+- Open the project in Android Studio
+- Select the **Debug** variant
+- Build/Run as usual
 
-**Implementation:**
-- New flow: `RW → Write → cacheflush → RX`
-- Added `ReFuck()` function to restore execute permission
-- Updated `WriteMemory()`, `NOP()`, `RET()`, `Redirect()`, `InstallPLT()` to use new flow
-- Fallback to RWX for older Android versions (automatic detection)
-- Uses `s_bWXStrictMode` flag to detect W^X enforcement
+### Command line
 
-**Architecture:**
-```
-┌─────────────────────────────────────────────────┐
-│              W^X COMPATIBLE FLOW                │
-├─────────────────────────────────────────────────┤
-│ 1. UnFuck(addr)   → mprotect(RWX or RW)        │
-│ 2. memcpy()       → Write patch bytes          │
-│ 3. cacheflush()   → Sync instruction cache     │
-│ 4. ReFuck(addr)   → mprotect(RX) if W^X mode   │
-└─────────────────────────────────────────────────┘
+From the repository root:
+
+```bash
+./gradlew assembleDebug
 ```
 
-**Files modified:**
-- `app/src/main/cpp/samp/vendor/armhook/patch.h`
-- `app/src/main/cpp/samp/vendor/armhook/patch.cpp`
-- `app/src/main/cpp/samp/game/hooks.cpp`
-- `app/src/main/cpp/samp/game/game.cpp`
+On Windows (PowerShell):
 
----
+```powershell
+.\gradlew assembleDebug
+```
 
-## 🟡 Medium Priority
+## Project structure (high level)
 
-### 3. Remove exit(0) from getSym()
-> **Status:** `Pending`  
-> **Complexity:** `Medium`  
-> **Depends on:** Task #1
+- `app/`: Android module (Java/Kotlin, resources, and app Gradle config)
+- `app/src/main/cpp/`: native code (C/C++), JNI, and CMake
+- `gradle/` and `gradlew*`: Gradle wrapper
 
-**Problem:**
-- `getSym()` calls `exit(0)` if symbol not found
-- App closes without any user feedback
-- Makes debugging difficult
+## Roadmap (short)
 
-**Files affected:**
-- `app/src/main/cpp/samp/vendor/armhook/patch.h` (getSym, CallFunction, InlineHook)
-- `app/src/main/cpp/samp/game/RW/RenderWare.cpp` (48 calls to getSym)
+- **Hook validation with user feedback** (avoid “silent” crashes when a hook fails; show a user-friendly error via JNI)
+- **Remove `exit(0)` from `getSym()`** (return errors/telemetry instead of closing the app)
 
----
+## Credits
 
-## 🟢 Completed
+- **x1y2z** — main author of the client
+- [**kuzia15**](https://github.com/kuzia15) — OpenGL, WaterShader, and improvements
+- [**psychobye**](https://github.com/psychobye) — CSkyBox and improvements
 
-### ✅ Android 15+ Storage Compatibility
-> **Completed:** `2026-01`
+## License
 
-- Implemented JNI-based storage path setting
-- Removed `MANAGE_EXTERNAL_STORAGE` permission
-- Removed `requestLegacyExternalStorage` attribute  
-- Added null checks for `g_pszStorage` in all file operations
-- Updated ShadowHook to v2.0.0
+See `LICENSE`.
 
----
+## Disclaimer
+
+This repository is intended for educational and engineering purposes. **GTA: San Andreas** and related trademarks belong to their respective owners.
+
+## Screenshots
 
 <img width="1650" height="720" alt="image" src="https://github.com/user-attachments/assets/20197d82-3046-44e2-a2ad-eea36ea756a5" />
 <img width="1650" height="720" alt="image" src="https://github.com/user-attachments/assets/dc99126c-32a7-46c8-8233-474d737ade4c" />
