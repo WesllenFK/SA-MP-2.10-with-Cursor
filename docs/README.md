@@ -11,10 +11,12 @@ Esta pasta contém documentação técnica do projeto SA-MP.
 ```
 docs/
 ├── pt-br/           # Português (Brasil)
-│   └── weapons/     # Sistema de armas
+│   ├── weapons/     # Sistema de armas
+│   └── player/      # Sistema de personagem
 │
 ├── english/         # English
-│   └── weapons/     # Weapon system
+│   ├── weapons/     # Weapon system
+│   └── player/      # Player/character system
 │
 └── README.md
 ```
@@ -24,14 +26,28 @@ docs/
 ## Languages / Idiomas
 
 ### Português (pt-br)
-- [Sistema de Carregamento de Armas](pt-br/weapons/WEAPON_MODEL_LOADING_ANALYSIS.md)
+
+#### Sistema de Armas
+- [Análise do Sistema de Carregamento](pt-br/weapons/WEAPON_MODEL_LOADING_ANALYSIS.md)
 - [Árvore Detalhada de Funções](pt-br/weapons/WEAPON_SYSTEM_DETAILED_TREE.md)
 - [Tabela de Offsets](pt-br/weapons/WEAPON_SYSTEM_OFFSETS.md)
 
+#### Sistema de Personagem/Player
+- [Análise do Sistema de Player](pt-br/player/PLAYER_SYSTEM_ANALYSIS.md)
+- [Árvore Detalhada de Funções](pt-br/player/PLAYER_SYSTEM_FUNCTIONS.md)
+- [Tabela de Offsets](pt-br/player/PLAYER_SYSTEM_OFFSETS.md)
+
 ### English
+
+#### Weapon System
 - [Weapon Model Loading Analysis](english/weapons/WEAPON_MODEL_LOADING_ANALYSIS.md)
 - [Detailed Function Tree](english/weapons/WEAPON_SYSTEM_DETAILED_TREE.md)
 - [Offset Table](english/weapons/WEAPON_SYSTEM_OFFSETS.md)
+
+#### Player/Character System
+- [Player System Analysis](english/player/PLAYER_SYSTEM_ANALYSIS.md)
+- [Detailed Function Tree](english/player/PLAYER_SYSTEM_FUNCTIONS.md)
+- [Offset Table](english/player/PLAYER_SYSTEM_OFFSETS.md)
 
 ---
 
