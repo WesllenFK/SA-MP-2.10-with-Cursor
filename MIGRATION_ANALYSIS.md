@@ -1,959 +1,968 @@
-# Análise Detalhada de Migração
+# Análise de Dependências Circulares e Padrões de Arquitetura
 
-Este documento contém a análise de cada arquivo do projeto, suas dependências, e as mudanças necessárias para a reestruturação modular.
-
----
-
-## Legenda
-
-| Símbolo | Significado |
-|---------|-------------|
-| 📁 | Diretório |
-| 📄 | Arquivo |
-| ➡️ | Mover para |
-| 🔗 | Dependência |
-| ⚠️ | Problema identificado |
-| ✏️ | Mudança necessária |
+Este documento analisa as dependências circulares do projeto, propõe soluções com boas práticas, e define claramente a responsabilidade de cada sistema.
 
 ---
 
-## 1. Arquivos Raiz (`samp/`)
+## 1. Mapa de Dependências Atual (Problemático)
 
-### 📄 main.cpp / main.h
+### 1.1 Diagrama de Dependências Circulares
 
-**Localização atual:** `samp/main.cpp`, `samp/main.h`
-**Mover para:** `samp/core/main.cpp`, `samp/core/main.h`
-
-**Includes atuais (main.cpp):**
-```cpp
-#include <jni.h>
-#include <pthread.h>
-#include <syscall.h>
-#include "main.h"
-#include "game/game.h"
-#include "net/netgame.h"
-#include "gui/gui.h"
-#include "playertags.h"
-#include "audiostream.h"
-#include "java/jniutil.h"
-#include <dlfcn.h>
-#include "StackTrace.h"
-#include "servers.h"
-#include "voice_new/Plugin.h"
-#include "vendor/armhook/patch.h"
-#include "vendor/str_obfuscator/str_obfuscator.hpp"
-#include "settings.h"
-#include "crashlytics.h"
-#include "game/multitouch.h"
-#include "armhook/patch.h"
-#include "util/CUtil.h"
-#include "obfusheader.h"
+```
+                    ┌──────────────────────────────────────────────────────┐
+                    │                                                      │
+                    ▼                                                      │
+              ┌─────────┐                                                  │
+         ┌───►│  main   │◄───────────────────────────────────┐             │
+         │    └────┬────┘                                    │             │
+         │         │ define globals                          │             │
+         │         ▼                                         │             │
+         │    ┌─────────┐      ┌─────────┐      ┌─────────┐  │             │
+         │    │  game   │◄────►│   net   │◄────►│   gui   │──┘             │
+         │    └────┬────┘      └────┬────┘      └────┬────┘                │
+         │         │                │                │                     │
+         │         │                ▼                │                     │
+         │         │          ┌─────────┐            │                     │
+         │         └─────────►│  voice  │◄───────────┘                     │
+         │                    └────┬────┘                                  │
+         │                         │                                       │
+         │                         ▼                                       │
+         │                    ┌─────────┐                                  │
+         └────────────────────│  audio  │──────────────────────────────────┘
+                              └─────────┘
 ```
 
-**Globals expostos:**
+### 1.2 Contagem de Dependências por Módulo
+
+| Módulo | Depende de | É dependência de | Globals que usa |
+|--------|-----------|------------------|-----------------|
+| **main** | game, net, gui, voice, audio, java | TODOS | Define todos |
+| **game** | main, net | net, gui, voice, audio | pGame, pNetGame, pUI |
+| **net** | main, game, gui, voice, audio | game, gui, voice | pGame, pNetGame, pUI, pAudioStream |
+| **gui** | main, game, net, voice | net, voice | pGame, pNetGame, pUI, pSettings |
+| **voice** | main, game, net, gui, audio | gui | pGame, pNetGame, pUI, pAudioStream |
+| **audio** | main, game | net, voice | pGame |
+| **java** | main, game, net, gui | net, gui | pGame, pNetGame, pUI, pJavaWrapper |
+
+### 1.3 Globals Usados (134 ocorrências!)
+
 ```cpp
-extern char* g_pszStorage;
-extern bool g_bStoragePathSetViaJNI;
+// Definidos em main.cpp, usados em todo lugar:
+extern CGame* pGame;              // 45 arquivos
+extern CNetGame* pNetGame;        // 42 arquivos  
+extern UI* pUI;                   // 25 arquivos
+extern CJavaWrapper* pJavaWrapper; // 8 arquivos
+extern CSettings* pSettings;       // 7 arquivos
+extern CAudioStream* pAudioStream; // 5 arquivos
+extern CPlayerTags* pPlayerTags;   // 2 arquivos
+extern MaterialTextGenerator* pMaterialTextGenerator; // 2 arquivos
+extern CSnapShotHelper* pSnapShotHelper; // 1 arquivo
+```
+
+---
+
+## 2. Responsabilidades de Cada Sistema
+
+### 2.1 Definição Clara de Responsabilidades
+
+| Sistema | Responsabilidade ÚNICA | O que NÃO deve fazer |
+|---------|------------------------|----------------------|
+| **core** | Tipos básicos, logging, configurações, ponto de acesso centralizado | Lógica de negócio, renderização, rede |
+| **game** | Acesso ao engine GTA, hooks, patches, entidades do jogo | Lógica multiplayer, UI, networking |
+| **multiplayer** | Protocolo SA-MP, sincronização, pools de rede, RPCs | Renderização, acesso direto ao GTA, UI |
+| **ui** | Renderização de interface, widgets, entrada de texto | Lógica de jogo, networking direto |
+| **audio** | Streaming de música, sistema de voz | UI, lógica de jogo |
+| **platform** | JNI, código Android-específico | Lógica de jogo, multiplayer |
+
+### 2.2 Princípio de Responsabilidade Única (SRP)
+
+```
+ERRADO (atual):
+┌─────────────────────────────────────────────────────────────┐
+│ netrpc.cpp                                                  │
+│ - Recebe RPC do servidor                                    │
+│ - Decodifica dados                                          │
+│ - Cria entidades no jogo (pGame->NewPlayer)                 │
+│ - Atualiza UI diretamente (pUI->chat()->addMessage)         │
+│ - Toca sons                                                 │
+│ - Modifica estado do mundo                                  │
+└─────────────────────────────────────────────────────────────┘
+
+CORRETO (proposto):
+┌──────────────────┐     ┌──────────────────┐     ┌──────────────────┐
+│   RPC Handler    │────►│  Event/Command   │────►│    Listeners     │
+│                  │     │                  │     │                  │
+│ - Recebe RPC     │     │ PlayerJoined     │     │ GameListener     │
+│ - Decodifica     │     │ ChatMessage      │     │ UIListener       │
+│ - Emite evento   │     │ VehicleSpawned   │     │ AudioListener    │
+└──────────────────┘     └──────────────────┘     └──────────────────┘
+```
+
+---
+
+## 3. Padrões para Quebrar Dependências Circulares
+
+### 3.1 Padrão 1: Inversão de Dependência (DIP)
+
+**Problema:** `net` depende de `gui` para mostrar mensagens
+
+```cpp
+// ATUAL (errado) - net/netrpc.cpp
+#include "../gui/gui.h"
 extern UI* pUI;
+
+void ClientMessage(RPCParameters* rpcParams) {
+    // ...
+    pUI->chat()->addClientMessage(szMessage, dwColor);  // Dependência direta!
+}
+```
+
+**Solução:** Interface abstrata
+
+```cpp
+// core/interfaces/i_chat_output.h
+class IChatOutput {
+public:
+    virtual ~IChatOutput() = default;
+    virtual void addClientMessage(const char* message, uint32_t color) = 0;
+    virtual void addInfoMessage(const char* message) = 0;
+};
+
+// multiplayer/netgame.h
+class CNetGame {
+public:
+    void SetChatOutput(IChatOutput* output) { m_chatOutput = output; }
+    IChatOutput* GetChatOutput() { return m_chatOutput; }
+private:
+    IChatOutput* m_chatOutput = nullptr;
+};
+
+// multiplayer/rpc/rpc_handlers.cpp
+void ClientMessage(RPCParameters* rpcParams) {
+    // ...
+    if (auto chat = pNetGame->GetChatOutput()) {
+        chat->addClientMessage(szMessage, dwColor);  // Via interface!
+    }
+}
+
+// ui/screens/chat.cpp - implementa a interface
+class Chat : public ListBox, public IChatOutput {
+public:
+    void addClientMessage(const char* message, uint32_t color) override {
+        // implementação
+    }
+};
+
+// Inicialização (em main.cpp ou bootstrap)
+pNetGame->SetChatOutput(pUI->chat());
+```
+
+### 3.2 Padrão 2: Event Bus (Pub/Sub)
+
+**Problema:** Múltiplos sistemas precisam reagir a eventos
+
+```cpp
+// ATUAL (errado) - código espalhado
+// Em net/netrpc.cpp:
+pUI->chat()->addMessage(...);
+pGame->SetWorldTime(...);
+pAudioStream->Play(...);
+```
+
+**Solução:** Sistema de eventos centralizado
+
+```cpp
+// core/events/event_bus.h
+#include <functional>
+#include <unordered_map>
+#include <vector>
+#include <typeindex>
+
+class EventBus {
+public:
+    template<typename EventType>
+    using Handler = std::function<void(const EventType&)>;
+    
+    template<typename EventType>
+    static void Subscribe(Handler<EventType> handler) {
+        auto& handlers = GetHandlers<EventType>();
+        handlers.push_back(handler);
+    }
+    
+    template<typename EventType>
+    static void Publish(const EventType& event) {
+        auto& handlers = GetHandlers<EventType>();
+        for (auto& handler : handlers) {
+            handler(event);
+        }
+    }
+    
+private:
+    template<typename EventType>
+    static std::vector<Handler<EventType>>& GetHandlers() {
+        static std::vector<Handler<EventType>> handlers;
+        return handlers;
+    }
+};
+
+// multiplayer/events/network_events.h
+struct ChatMessageEvent {
+    std::string message;
+    uint32_t color;
+};
+
+struct PlayerJoinedEvent {
+    uint16_t playerId;
+    std::string playerName;
+};
+
+struct WorldTimeChangedEvent {
+    int hour;
+    int minute;
+};
+
+// multiplayer/rpc/rpc_handlers.cpp
+void ClientMessage(RPCParameters* rpcParams) {
+    // ... decodifica ...
+    EventBus::Publish(ChatMessageEvent{szMessage, dwColor});
+}
+
+// ui/screens/chat.cpp - subscreve ao evento
+void Chat::initialize() {
+    EventBus::Subscribe<ChatMessageEvent>([this](const auto& e) {
+        this->addClientMessage(e.message, e.color);
+    });
+}
+
+// game/engine/game.cpp - subscreve ao evento
+void CGame::Initialize() {
+    EventBus::Subscribe<WorldTimeChangedEvent>([this](const auto& e) {
+        this->SetWorldTime(e.hour, e.minute);
+    });
+}
+```
+
+### 3.3 Padrão 3: Service Locator
+
+**Problema:** Globals espalhados por todo código
+
+```cpp
+// ATUAL (errado)
 extern CGame* pGame;
 extern CNetGame* pNetGame;
-extern CPlayerTags* pPlayerTags;
-extern CSnapShotHelper* pSnapShotHelper;
-extern CAudioStream* pAudioStream;
-extern CJavaWrapper* pJavaWrapper;
-extern CSettings* pSettings;
-extern MaterialTextGenerator* pMaterialTextGenerator;
-extern uintptr_t g_libGTASA;
-extern uintptr_t g_libSAMP;
-extern JavaVM* javaVM;
-```
-
-**⚠️ Problemas:**
-1. Mistura inicialização, JNI handlers, signal handlers, logging
-2. Globals expostos sem encapsulamento
-3. Funções utilitárias misturadas (FLog, ChatLog, MyLog, etc)
-
-**✏️ Mudanças necessárias:**
-1. Separar em arquivos:
-   - `core/main.cpp` - Entry point e inicialização
-   - `core/globals.cpp/h` - SAMPCore com acesso centralizado
-   - `core/logging.cpp/h` - Funções de log
-   - `platform/android/signal_handler.cpp` - Signal handlers
-2. Atualizar includes para novos caminhos
-
----
-
-### 📄 settings.cpp / settings.h
-
-**Localização atual:** `samp/settings.cpp`, `samp/settings.h`
-**Mover para:** `samp/core/settings.cpp`, `samp/core/settings.h`
-
-**Includes atuais:**
-```cpp
-#include "main.h"
-#include "settings.h"
-#include "vendor/inih/cpp/INIReader.h"
-#include "vendor/SimpleIni/SimpleIni.h"
-#include "game/game.h"
-```
-
-**Dependências externas:**
-- `g_pszStorage` (global)
-- `pGame` (global - não deveria depender)
-- INIReader (vendor)
-
-**⚠️ Problemas:**
-1. Depende de `pGame` desnecessariamente
-2. Usa global `g_pszStorage` diretamente
-
-**✏️ Mudanças necessárias:**
-1. Remover dependência de `game.h`
-2. Receber storage path como parâmetro no construtor
-3. Atualizar includes:
-   ```cpp
-   #include "main.h"           → #include "core/main.h"
-   #include "vendor/inih/..."  → sem mudança (vendor não muda)
-   ```
-
----
-
-### 📄 log.cpp / log.h
-
-**Localização atual:** `samp/log.cpp`, `samp/log.h`
-**Mover para:** `samp/core/logging.cpp`, `samp/core/logging.h`
-
-**Includes atuais:**
-```cpp
-#include <string>
-#include <sstream>
-#include <list>
-#include <vector>
-#include "log.h"
-#include <android/log.h>
-```
-
-**⚠️ Problemas:**
-1. Código praticamente comentado/não usado
-2. Macros LOGI, LOGE, LOGW deveriam estar aqui
-
-**✏️ Mudanças necessárias:**
-1. Mover macros de logging de `log.h` 
-2. Mover funções FLog, ChatLog, MyLog de `main.cpp` para cá
-3. Criar interface unificada de logging
-
----
-
-### 📄 audiostream.cpp / audiostream.h
-
-**Localização atual:** `samp/audiostream.cpp`, `samp/audiostream.h`
-**Mover para:** `samp/audio/audiostream.cpp`, `samp/audio/audiostream.h`
-
-**Includes atuais:**
-```cpp
-#include <memory>
-#include <unistd.h>
-#include "audiostream.h"
-#include "log.h"
-#include "game/game.h"
-#include "../main.h"
-#include "../vendor/bass/bass.h"
-```
-
-**Dependências:**
-- `pGame` (global) - usado para `IsGamePaused()`
-- BASS library (vendor)
-
-**⚠️ Problemas:**
-1. Globals para estado do stream (g_szAudioStreamUrl, etc)
-2. Depende de pGame
-
-**✏️ Mudanças necessárias:**
-1. Encapsular globals dentro da classe
-2. Receber callback para verificar pause state em vez de acessar pGame diretamente
-3. Atualizar includes:
-   ```cpp
-   #include "log.h"           → #include "core/logging.h"
-   #include "game/game.h"     → remover (usar callback)
-   #include "../main.h"       → #include "core/main.h"
-   ```
-
----
-
-### 📄 playertags.cpp / playertags.h
-
-**Localização atual:** `samp/playertags.cpp`, `samp/playertags.h`
-**Mover para:** `samp/multiplayer/features/playertags.cpp`, `samp/multiplayer/features/playertags.h`
-
-**Includes atuais:**
-```cpp
-#include "main.h"
-#include "game/game.h"
-#include "game/RW/RenderWare.h"
-#include "net/netgame.h"
-#include "gui/gui.h"
-#include "playertags.h"
-#include "util/CUtil.h"
-#include "game/World.h"
-```
-
-**Dependências:**
-- `pGame`, `pNetGame` (globals)
-- `g_libGTASA` (para offset de CCamera)
-- ImGui/ImGuiRenderer
-- RenderWare
-- UISettings
-
-**⚠️ Problemas:**
-1. Acesso direto a offsets do jogo (hardcoded)
-2. Depende de múltiplos módulos
-
-**✏️ Mudanças necessárias:**
-1. Atualizar includes para novos caminhos
-2. Acessar dependências via SAMPCore em vez de globals
-
----
-
-### 📄 nv_event.cpp / nv_event.h
-
-**Localização atual:** `samp/nv_event.cpp`, `samp/nv_event.h`
-**Mover para:** `samp/platform/android/nv_event.cpp`, `samp/platform/android/nv_event.h`
-
-**Includes atuais:**
-```cpp
-#include "nv_event.h"
-#include "main.h"
-#include "game/RW/RenderWare.h"
-#include "game/game.h"
-#include "net/netgame.h"
-#include <list>
-#include <queue>
-```
-
-**Funcionalidade:** Handler de eventos de toque vindos do Java (JNI)
-
-**⚠️ Problemas:**
-1. Inclui game.h e netgame.h mas não usa (remover)
-
-**✏️ Mudanças necessárias:**
-1. Remover includes desnecessários
-2. Mover para platform/android/
-
----
-
-### 📄 CFPSFix.cpp / CFPSFix.h
-
-**Localização atual:** `samp/CFPSFix.cpp`, `samp/CFPSFix.h`
-**Mover para:** `samp/platform/android/fps_fix.cpp`, `samp/platform/android/fps_fix.h`
-
-**Includes atuais:**
-```cpp
-#include "CFPSFix.h"
-#include "main.h"
-#include <sys/syscall.h>
-```
-
-**Funcionalidade:** Thread affinity fix para FPS
-
-**✏️ Mudanças necessárias:**
-1. Mover para platform/android/
-2. Renomear para snake_case (fps_fix)
-
----
-
-### 📄 crashlytics.h
-
-**Localização atual:** `samp/crashlytics.h`
-**Mover para:** `samp/platform/crashlytics.h`
-
-**Funcionalidade:** Firebase Crashlytics NDK API
-
-**✏️ Mudanças:** Apenas mover, é self-contained
-
----
-
-### 📄 StackTrace.h
-
-**Localização atual:** `samp/StackTrace.h`
-**Mover para:** `samp/platform/android/stacktrace.h`
-
-**Dependências:**
-- `g_libGTASA`, `g_libSAMP` (globals para offsets)
-- FLog function
-
-**✏️ Mudanças necessárias:**
-1. Mover para platform/android/
-2. Atualizar include de main.h
-
----
-
-### 📄 servers.h
-
-**Localização atual:** `samp/servers.h`
-**Mover para:** `samp/core/servers.h`
-
-**Conteúdo:** Definições de servidores (IP/porta)
-
-**✏️ Mudanças:** Apenas mover
-
----
-
-### 📄 obfusheader.h
-
-**Localização atual:** `samp/obfusheader.h`
-**Mover para:** `samp/vendor/obfusheader/obfusheader.h` ou manter em core
-
-**Funcionalidade:** Ofuscação de strings
-
-**✏️ Mudanças:** Mover para vendor ou core/
-
----
-
-## 2. Pasta `game/`
-
-### 📁 Estrutura Atual
-```
-game/
-├── [arquivos raiz - 145 arquivos .cpp/.h]
-├── Animation/     (23 arquivos)
-├── Collision/     (31 arquivos)
-├── Core/          (37 arquivos)
-├── Entity/        (22 arquivos)
-├── Enums/         (28 arquivos)
-├── Events/        (8 arquivos)
-├── Models/        (12 arquivos)
-├── Pipelines/     (8 arquivos)
-├── Plugins/       (6 arquivos)
-├── RW/            (34 arquivos)
-├── Tasks/         (19 arquivos)
-├── Textures/      (10 arquivos)
-└── Widgets/       (16 arquivos)
-```
-
-### 📁 Nova Estrutura Proposta
-```
-game/
-├── hooks/
-│   ├── hooks.cpp/h       ← de game/hooks.cpp
-│   └── patches.cpp/h     ← de game/patches.cpp
-├── engine/
-│   ├── game.cpp/h        ← de game/game.cpp
-│   ├── world.cpp/h       ← de game/World.cpp
-│   ├── camera.cpp/h      ← de game/Camera.cpp
-│   ├── streaming.cpp/h   ← de game/Streaming.cpp
-│   ├── pools.cpp/h       ← de game/Pools.cpp
-│   └── timer.cpp/h       ← de game/Timer.cpp
-├── entities/
-│   ├── playerped.cpp/h   ← de game/playerped.cpp
-│   ├── vehicle.cpp/h     ← de game/vehicle.cpp
-│   ├── object.cpp/h      ← de game/object.cpp
-│   ├── actor.cpp/h       ← de game/actor.cpp
-│   └── Entity/           ← pasta Entity/ inteira
-├── rendering/
-│   ├── RW/               ← pasta RW/ inteira
-│   ├── Textures/         ← pasta Textures/ inteira
-│   ├── font.cpp/h
-│   ├── sprite2d.cpp/h
-│   ├── textdraw.cpp/h
-│   ├── Coronas.cpp/h
-│   └── Shadows.cpp/h
-├── physics/
-│   ├── Collision/        ← pasta Collision/ inteira
-│   └── aimstuff.cpp/h
-├── animation/
-│   └── Animation/        ← pasta Animation/ inteira
-├── input/
-│   ├── pad.cpp/h
-│   └── multitouch.cpp/h
-├── core/                 ← pasta Core/ (types básicos)
-│   └── Core/             ← pasta Core/ inteira
-└── [outros]
-    ├── Enums/
-    ├── Events/
-    ├── Models/
-    ├── Pipelines/
-    ├── Plugins/
-    ├── Tasks/
-    └── Widgets/
-```
-
----
-
-### 📄 game/hooks.cpp
-
-**Mover para:** `samp/game/hooks/hooks.cpp`
-
-**Includes atuais (47 includes!):**
-```cpp
-#include <GLES2/gl2.h>
-#include "../main.h"
-#include "../vendor/armhook/patch.h"
-#include "game.h"
-#include "../net/netgame.h"
-#include "../gui/gui.h"
-#include "Textures/TextureDatabase.h"
-#include "Textures/TextureDatabaseEntry.h"
-#include "Textures/TextureDatabaseRuntime.h"
-#include "Scene.h"
-#include "sprite2d.h"
-#include "Entity/PlayerPedGta.h"
-#include "Pools.h"
-#include "java/jniutil.h"
-#include "game/Models/ModelInfo.h"
-#include "MatrixLink.h"
-#include "MatrixLinkList.h"
-#include "game/Collision/Collision.h"
-#include "TxdStore.h"
-#include "util/CUtil.h"
-#include "Coronas.h"
-#include "multitouch.h"
-#include "Streaming.h"
-#include "References.h"
-#include "VisibilityPlugins.h"
-#include "game/Animation/AnimManager.h"
-#include "FileLoader.h"
-#include "Renderer.h"
-#include "CrossHair.h"
-#include "World.h"
-#include "Core/Matrix.h"
-```
-
-**Globals usados:**
-```cpp
 extern UI* pUI;
+// ... usados em 100+ arquivos
+```
+
+**Solução:** Ponto de acesso centralizado
+
+```cpp
+// core/services.h
+class Services {
+public:
+    // Inicialização
+    static void Initialize();
+    static void Shutdown();
+    
+    // Registro
+    static void SetGame(CGame* game) { s_game = game; }
+    static void SetNetwork(CNetGame* network) { s_network = network; }
+    static void SetUI(UI* ui) { s_ui = ui; }
+    static void SetAudio(CAudioStream* audio) { s_audio = audio; }
+    static void SetSettings(CSettings* settings) { s_settings = settings; }
+    static void SetJavaWrapper(CJavaWrapper* java) { s_java = java; }
+    
+    // Acesso
+    static CGame* Game() { return s_game; }
+    static CNetGame* Network() { return s_network; }
+    static UI* UserInterface() { return s_ui; }
+    static CAudioStream* Audio() { return s_audio; }
+    static CSettings* Settings() { return s_settings; }
+    static CJavaWrapper* Java() { return s_java; }
+    
+private:
+    static inline CGame* s_game = nullptr;
+    static inline CNetGame* s_network = nullptr;
+    static inline UI* s_ui = nullptr;
+    static inline CAudioStream* s_audio = nullptr;
+    static inline CSettings* s_settings = nullptr;
+    static inline CJavaWrapper* s_java = nullptr;
+};
+
+// Macros de compatibilidade para migração gradual
+#define pGame Services::Game()
+#define pNetGame Services::Network()
+#define pUI Services::UserInterface()
+// etc.
+```
+
+### 3.4 Padrão 4: Callbacks para Comunicação
+
+**Problema:** `audio` precisa saber se o jogo está pausado
+
+```cpp
+// ATUAL (errado) - audio/audiostream.cpp
+#include "game/game.h"
 extern CGame* pGame;
-extern CNetGame *pNetGame;
-extern MaterialTextGenerator* pMaterialTextGenerator;
-extern CJavaWrapper* pJavaWrapper;
+
+void CAudioStream::Process() {
+    if (pGame->IsGamePaused()) {  // Dependência direta de game!
+        BASS_SetConfig(5, 0);
+    }
+}
 ```
 
-**Funções principais:**
-- `FindPlayerIDFromGtaPtr()` - Encontra PlayerID de um ponteiro GTA
-- `FindActorIDFromGtaPtr()` - Encontra ActorID de um ponteiro GTA
-- `RenderEffects()` - Renderiza efeitos
-- `ShowHud()` - Mostra HUD
-- `MainLoop()` hook - Hook do loop principal
-- Diversos hooks de renderização, física, etc.
+**Solução:** Callback injetado
 
-**⚠️ Problemas:**
-1. Arquivo gigante (2000+ linhas)
-2. Muitos includes
-3. Mistura hooks de diferentes sistemas
-
-**✏️ Mudanças necessárias:**
-1. Dividir em múltiplos arquivos:
-   - `hooks/render_hooks.cpp` - Hooks de renderização
-   - `hooks/entity_hooks.cpp` - Hooks de entidades
-   - `hooks/physics_hooks.cpp` - Hooks de física
-   - `hooks/hooks_main.cpp` - Instalação de hooks
-2. Atualizar todos os includes para novos caminhos
-
----
-
-### 📄 game/patches.cpp
-
-**Mover para:** `samp/game/hooks/patches.cpp`
-
-**Includes atuais:**
 ```cpp
-#include "../main.h"
-#include "../game/game.h"
-#include "../vendor/armhook/patch.h"
-#include "vehicleColoursTable.h"
-#include "../settings.h"
-#include "game.h"
-#include "World.h"
-#include "net/netgame.h"
+// audio/audiostream.h
+class CAudioStream {
+public:
+    using PauseCheckCallback = std::function<bool()>;
+    
+    void SetPauseCallback(PauseCheckCallback callback) {
+        m_pauseCheck = callback;
+    }
+    
+    void Process() {
+        if (m_pauseCheck && m_pauseCheck()) {
+            BASS_SetConfig(5, 0);
+        }
+    }
+    
+private:
+    PauseCheckCallback m_pauseCheck;
+};
+
+// Inicialização (bootstrap)
+pAudioStream->SetPauseCallback([]() {
+    return Services::Game()->IsGamePaused();
+});
 ```
 
-**Funções principais:**
-- `readVehiclesAudioSettings()` - Lê configurações de áudio de veículos
-- `ApplyFPSPatch()` - Aplica patch de FPS
-- `DisableAutoAim()` - Desabilita auto-aim
-- `ApplySAMPPatchesInGame()` - Aplica patches SA-MP
+### 3.5 Padrão 5: Forward Declarations
 
-**✏️ Mudanças:**
-1. Mover para `game/hooks/`
-2. Atualizar includes
+**Problema:** Headers incluem outros headers desnecessariamente
 
----
-
-### 📄 game/game.cpp / game.h
-
-**Mover para:** `samp/game/engine/game.cpp`, `samp/game/engine/game.h`
-
-**Includes de game.h:**
 ```cpp
-#include "common.h"
-#include "RW/RenderWare.h"
-#include "aimstuff.h"
-#include "Camera.h"
+// ATUAL (errado) - game/playerped.h
+#include "vehicle.h"    // Include completo
+#include "object.h"     // Include completo
+```
+
+**Solução:** Forward declarations
+
+```cpp
+// game/entities/playerped.h
+#pragma once
+
+// Forward declarations - não precisa do header completo
+class CVehicle;
+class CObject;
+class CVehicleGTA;
+
+class CPlayerPed {
+public:
+    CVehicle* GetCurrentVehicle();  // Só declara, não usa internamente
+    // ...
+private:
+    CVehicleGTA* m_pVehicle;  // Ponteiro não precisa de definição completa
+};
+
+// game/entities/playerped.cpp
 #include "playerped.h"
-#include "actor.h"
-#include "vehicle.h"
+#include "vehicle.h"    // Aqui sim, precisa da definição completa
 #include "object.h"
-#include "font.h"
-#include "textdraw.h"
-#include "scripting.h"
-#include "util.h"
-#include "radarcolors.h"
-#include "pad.h"
-#include "snapshothelper.h"
-#include "materialtextgenerator.h"
-#include <queue>
-#include <mutex>
-#include "../game/Core/Quaternion.h"
+
+CVehicle* CPlayerPed::GetCurrentVehicle() {
+    // implementação que usa CVehicle
+}
 ```
-
-**Classe CGame - Métodos principais:**
-- `Initialize()`, `StartGame()` - Inicialização
-- `SetWorldTime()`, `SetWorldWeather()` - Controle de mundo
-- `NewPlayer()`, `NewVehicle()`, `NewObject()` - Criação de entidades
-- `RequestModel()`, `LoadRequestedModels()` - Streaming
-- `FindPlayerPed()` - Acesso ao jogador local
-- `PostToMainThread()`, `ProcessMainThreadTasks()` - Thread-safe operations
-
-**✏️ Mudanças:**
-1. Mover para `game/engine/`
-2. Atualizar includes relativos
 
 ---
 
-### 📄 game/playerped.cpp / playerped.h
+## 4. Nova Arquitetura Proposta
 
-**Mover para:** `samp/game/entities/playerped.cpp`, `samp/game/entities/playerped.h`
+### 4.1 Camadas de Dependência (Unidirecionais)
 
-**Includes de playerped.h:**
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                              APPLICATION                                 │
+│                     (main.cpp, bootstrap, game loop)                     │
+└─────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│                              FEATURES                                    │
+│              (multiplayer, ui, audio - lógica de alto nível)             │
+└─────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│                               ENGINE                                     │
+│                    (game - acesso ao engine do jogo)                     │
+└─────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│                              PLATFORM                                    │
+│                        (android, jni, hooks)                             │
+└─────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│                                CORE                                      │
+│                (types, logging, events, interfaces, services)            │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+**Regra:** Cada camada só pode depender de camadas ABAIXO dela.
+
+### 4.2 Estrutura de Diretórios Final
+
+```
+samp/
+├── core/                           # CAMADA MAIS BAIXA
+│   ├── types.h                     # Tipos básicos (CVector, etc)
+│   ├── logging.cpp/h               # Sistema de log unificado
+│   ├── services.cpp/h              # Service Locator
+│   ├── events/
+│   │   ├── event_bus.h             # Sistema de eventos
+│   │   └── events.h                # Definições de eventos
+│   └── interfaces/
+│       ├── i_chat_output.h         # Interface para chat
+│       ├── i_game_service.h        # Interface para game
+│       └── i_network_service.h     # Interface para network
+│
+├── platform/                       # CAMADA DE PLATAFORMA
+│   ├── android/
+│   │   ├── jni_bridge.cpp/h
+│   │   ├── nv_event.cpp/h
+│   │   └── storage.cpp/h
+│   ├── hooks/
+│   │   ├── hook_manager.cpp/h      # Gerenciador de hooks
+│   │   └── patch.cpp/h             # Patches de memória
+│   └── crashlytics.h
+│
+├── game/                           # CAMADA ENGINE
+│   ├── engine/
+│   │   ├── game.cpp/h              # CGame - acesso ao engine
+│   │   ├── world.cpp/h             # Mundo, tempo, clima
+│   │   ├── camera.cpp/h
+│   │   ├── streaming.cpp/h
+│   │   └── pools.cpp/h             # Pools do GTA
+│   ├── entities/
+│   │   ├── playerped.cpp/h
+│   │   ├── vehicle.cpp/h
+│   │   ├── object.cpp/h
+│   │   └── actor.cpp/h
+│   ├── hooks/                      # Hooks específicos do game
+│   │   ├── render_hooks.cpp/h
+│   │   ├── entity_hooks.cpp/h
+│   │   └── game_hooks.cpp/h
+│   ├── rendering/
+│   │   ├── RW/                     # RenderWare
+│   │   ├── font.cpp/h
+│   │   └── sprite2d.cpp/h
+│   ├── physics/
+│   │   └── Collision/
+│   ├── animation/
+│   │   └── Animation/
+│   └── input/
+│       ├── pad.cpp/h
+│       └── multitouch.cpp/h
+│
+├── multiplayer/                    # CAMADA FEATURES
+│   ├── network/
+│   │   ├── netgame.cpp/h           # Gerenciador de rede
+│   │   ├── connection.cpp/h        # Conexão RakNet
+│   │   └── packet_handler.cpp/h
+│   ├── pools/
+│   │   ├── player_pool.cpp/h
+│   │   ├── vehicle_pool.cpp/h
+│   │   └── [outros pools]
+│   ├── sync/
+│   │   ├── sync_data.h             # Structs de sincronização
+│   │   ├── local_player.cpp/h
+│   │   └── remote_player.cpp/h
+│   ├── rpc/
+│   │   ├── rpc_registry.cpp/h      # Registro de RPCs
+│   │   ├── game_rpc.cpp/h          # RPCs de jogo
+│   │   ├── player_rpc.cpp/h        # RPCs de jogador
+│   │   └── world_rpc.cpp/h         # RPCs de mundo
+│   ├── events/
+│   │   └── network_events.h        # Eventos de rede
+│   └── features/
+│       ├── playertags.cpp/h
+│       ├── checkpoints.cpp/h
+│       └── material_text.cpp/h
+│
+├── ui/                             # CAMADA FEATURES
+│   ├── ui_manager.cpp/h            # Gerenciador de UI
+│   ├── imgui_wrapper.cpp/h
+│   ├── imgui_renderer.cpp/h
+│   ├── ui_settings.cpp/h
+│   ├── widgets/
+│   │   ├── widget.cpp/h
+│   │   ├── button.cpp/h
+│   │   ├── label.cpp/h
+│   │   └── [outros widgets]
+│   ├── screens/
+│   │   ├── chat.cpp/h              # Implementa IChatOutput
+│   │   ├── dialog.cpp/h
+│   │   ├── keyboard.cpp/h
+│   │   ├── spawn.cpp/h
+│   │   └── scoreboard.cpp/h
+│   └── events/
+│       └── ui_events.h             # Eventos de UI
+│
+├── audio/                          # CAMADA FEATURES
+│   ├── audio_manager.cpp/h         # Gerenciador de áudio
+│   ├── audio_stream.cpp/h
+│   └── voice/
+│       ├── voice_manager.cpp/h
+│       ├── playback.cpp/h
+│       ├── record.cpp/h
+│       └── streams/
+│
+├── config/                         # CAMADA FEATURES
+│   └── settings.cpp/h
+│
+└── vendor/                         # DEPENDÊNCIAS EXTERNAS
+    └── [não modificar]
+```
+
+---
+
+## 5. Tabela de Dependências Permitidas
+
+### 5.1 Matriz de Dependências
+
+| Módulo | core | platform | game | multiplayer | ui | audio | config |
+|--------|------|----------|------|-------------|-----|-------|--------|
+| **core** | - | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| **platform** | ✅ | - | ❌ | ❌ | ❌ | ❌ | ❌ |
+| **game** | ✅ | ✅ | - | ❌ | ❌ | ❌ | ❌ |
+| **multiplayer** | ✅ | ❌ | ✅ | - | ❌ | ❌ | ✅ |
+| **ui** | ✅ | ❌ | ❌ | ❌ | - | ❌ | ✅ |
+| **audio** | ✅ | ✅ | ❌ | ❌ | ❌ | - | ✅ |
+| **config** | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | - |
+| **app** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+
+✅ = Pode depender
+❌ = NÃO pode depender (usar interfaces/eventos)
+
+### 5.2 Como Módulos se Comunicam
+
+| De → Para | Mecanismo |
+|-----------|-----------|
+| multiplayer → ui | `EventBus::Publish<ChatMessageEvent>` ou `IChatOutput` |
+| multiplayer → game | Acesso direto (game é camada inferior) |
+| multiplayer → audio | `EventBus::Publish<PlayAudioEvent>` |
+| ui → multiplayer | `EventBus::Publish<SendChatEvent>` |
+| ui → game | Via `Services::Game()` (para dados de leitura) |
+| audio → game | Callback injetado (`SetPauseCallback`) |
+| game → multiplayer | ❌ NÃO PERMITIDO (inversão via eventos) |
+
+---
+
+## 6. Eventos do Sistema
+
+### 6.1 Lista de Eventos
+
 ```cpp
-#include "vehicle.h"
-#include "object.h"
-#include "game/Entity/CPedGTA.h"
-#include "aimstuff.h"
+// core/events/events.h
+
+// ===== EVENTOS DE REDE =====
+struct PlayerConnectedEvent {
+    uint16_t playerId;
+    std::string playerName;
+    bool isNPC;
+};
+
+struct PlayerDisconnectedEvent {
+    uint16_t playerId;
+    uint8_t reason;
+};
+
+struct ChatMessageReceivedEvent {
+    std::string message;
+    uint32_t color;
+    uint16_t fromPlayerId;  // INVALID_PLAYER_ID se for do servidor
+};
+
+struct VehicleSpawnedEvent {
+    uint16_t vehicleId;
+    int modelId;
+    CVector position;
+};
+
+struct WorldTimeChangedEvent {
+    int hour;
+    int minute;
+};
+
+struct WeatherChangedEvent {
+    int weatherId;
+};
+
+// ===== EVENTOS DE UI =====
+struct SendChatMessageEvent {
+    std::string message;
+};
+
+struct SendCommandEvent {
+    std::string command;
+};
+
+struct DialogResponseEvent {
+    uint16_t dialogId;
+    uint8_t buttonId;
+    uint16_t listItem;
+    std::string inputText;
+};
+
+struct KeyboardInputEvent {
+    std::string input;
+};
+
+// ===== EVENTOS DE JOGO =====
+struct PlayerDeathEvent {
+    uint16_t killerId;
+    uint8_t reason;
+};
+
+struct PlayerSpawnedEvent {
+    CVector position;
+    float rotation;
+    int skin;
+};
+
+struct VehicleEnterEvent {
+    uint16_t vehicleId;
+    bool asPassenger;
+};
+
+struct VehicleExitEvent {
+    uint16_t vehicleId;
+};
+
+// ===== EVENTOS DE ÁUDIO =====
+struct PlayAudioStreamEvent {
+    std::string url;
+    CVector position;
+    float radius;
+    bool usePosition;
+};
+
+struct StopAudioStreamEvent {};
 ```
 
-**⚠️ Dependências circulares potenciais:**
-- playerped.h inclui vehicle.h
-- vehicle.h pode incluir playerped.h para passageiros
+### 6.2 Exemplo de Fluxo de Evento
 
-**✏️ Mudanças:**
-1. Mover para `game/entities/`
-2. Usar forward declarations para quebrar ciclos
-3. Atualizar includes
+```
+┌────────────────┐     ┌────────────────┐     ┌────────────────┐
+│   Servidor     │     │  RPC Handler   │     │   Event Bus    │
+│                │────►│                │────►│                │
+│ ClientMessage  │     │ Decodifica     │     │ Publish        │
+│ RPC            │     │ Cria evento    │     │ ChatMessage    │
+└────────────────┘     └────────────────┘     └───────┬────────┘
+                                                      │
+                       ┌──────────────────────────────┼──────────────────────────────┐
+                       │                              │                              │
+                       ▼                              ▼                              ▼
+              ┌────────────────┐             ┌────────────────┐             ┌────────────────┐
+              │    Chat UI     │             │   Log System   │             │  Voice (mute)  │
+              │                │             │                │             │                │
+              │ addMessage()   │             │ log()          │             │ checkMention() │
+              └────────────────┘             └────────────────┘             └────────────────┘
+```
 
 ---
 
-### 📄 game/multitouch.cpp / multitouch.h
+## 7. Interfaces do Sistema
 
-**Mover para:** `samp/game/input/multitouch.cpp`, `samp/game/input/multitouch.h`
+### 7.1 Interfaces Principais
 
-**Funcionalidade:** Sistema de multitouch customizado
-
-**✏️ Mudanças:**
-1. Mover para `game/input/`
-2. Atualizar includes
-
----
-
-## 3. Pasta `net/`
-
-### 📁 Estrutura Atual
-```
-net/
-├── actorpool.cpp/h
-├── gangzonepool.cpp/h
-├── localplayer.cpp/h
-├── menupool.cpp/h
-├── netgame.cpp/h
-├── netrpc.cpp
-├── objectpool.cpp/h
-├── pickuppool.cpp/h
-├── playerbubblepool.cpp/h
-├── playerpool.cpp/h
-├── remoteplayer.cpp/h
-├── scriptrpc.cpp
-├── textdrawpool.cpp/h
-├── textlabelpool.cpp/h
-└── vehiclepool.cpp/h
-```
-
-### 📁 Nova Estrutura Proposta
-```
-multiplayer/
-├── netgame.cpp/h
-├── local_player.cpp/h       ← renomear de localplayer
-├── remote_player.cpp/h      ← renomear de remoteplayer
-├── pools/
-│   ├── player_pool.cpp/h
-│   ├── vehicle_pool.cpp/h
-│   ├── object_pool.cpp/h
-│   ├── actor_pool.cpp/h
-│   ├── pickup_pool.cpp/h
-│   ├── textdraw_pool.cpp/h
-│   ├── textlabel_pool.cpp/h
-│   ├── gangzone_pool.cpp/h
-│   ├── menu_pool.cpp/h
-│   └── playerbubble_pool.cpp/h
-├── rpc/
-│   ├── rpc_handlers.cpp/h   ← de netrpc.cpp
-│   └── script_rpc.cpp/h     ← de scriptrpc.cpp
-└── sync/
-    └── sync_data.h          ← structs de sync de localplayer.h
-```
-
----
-
-### 📄 net/netgame.cpp
-
-**Mover para:** `samp/multiplayer/netgame.cpp`
-
-**Includes atuais:**
 ```cpp
-#include "../main.h"
-#include "../game/game.h"
-#include "netgame.h"
-#include "../gui/gui.h"
-#include "../audiostream.h"
-#include "../voice_new/MicroIcon.h"
-#include "../voice_new/SpeakerList.h"
-#include "../voice_new/Network.h"
-#include "java/jniutil.h"
+// core/interfaces/i_game_service.h
+class IGameService {
+public:
+    virtual ~IGameService() = default;
+    
+    // Mundo
+    virtual void SetWorldTime(int hour, int minute) = 0;
+    virtual void GetWorldTime(int* hour, int* minute) = 0;
+    virtual void SetWeather(int weatherId) = 0;
+    virtual void SetGravity(float gravity) = 0;
+    
+    // Jogador local
+    virtual CPlayerPed* GetLocalPlayer() = 0;
+    virtual bool IsGamePaused() = 0;
+    virtual bool IsGameLoaded() = 0;
+    
+    // Entidades
+    virtual CPlayerPed* CreatePlayer(int skin, CVector pos, float rotation) = 0;
+    virtual CVehicle* CreateVehicle(int model, CVector pos, float rotation) = 0;
+    virtual CObject* CreateObject(int model, CVector pos, CVector rot) = 0;
+    
+    // Streaming
+    virtual void RequestModel(int modelId) = 0;
+    virtual void LoadRequestedModels() = 0;
+    virtual bool IsModelLoaded(int modelId) = 0;
+};
+
+// core/interfaces/i_network_service.h
+class INetworkService {
+public:
+    virtual ~INetworkService() = default;
+    
+    virtual bool IsConnected() = 0;
+    virtual void Disconnect() = 0;
+    
+    virtual void SendChatMessage(const char* message) = 0;
+    virtual void SendCommand(const char* command) = 0;
+    
+    virtual CPlayerPool* GetPlayerPool() = 0;
+    virtual CVehiclePool* GetVehiclePool() = 0;
+};
+
+// core/interfaces/i_chat_output.h
+class IChatOutput {
+public:
+    virtual ~IChatOutput() = default;
+    
+    virtual void AddClientMessage(const std::string& message, uint32_t color) = 0;
+    virtual void AddInfoMessage(const std::string& message) = 0;
+    virtual void AddChatMessage(const std::string& nick, const std::string& message, uint32_t nickColor) = 0;
+};
+
+// core/interfaces/i_audio_service.h
+class IAudioService {
+public:
+    virtual ~IAudioService() = default;
+    
+    virtual void PlayStream(const std::string& url, CVector pos, float radius) = 0;
+    virtual void StopStream() = 0;
+    virtual void SetVolume(float volume) = 0;
+};
 ```
 
-**Globals usados:**
+### 7.2 Implementação das Interfaces
+
 ```cpp
-extern UI* pUI;
-extern CGame* pGame;
-extern CAudioStream* pAudioStream;
-extern CJavaWrapper* pJavaWrapper;
+// game/engine/game.cpp
+class CGame : public IGameService {
+public:
+    void SetWorldTime(int hour, int minute) override {
+        // implementação
+    }
+    // ... outras implementações
+};
+
+// ui/screens/chat.cpp
+class Chat : public ListBox, public IChatOutput {
+public:
+    void AddClientMessage(const std::string& message, uint32_t color) override {
+        // implementação
+    }
+    // ... outras implementações
+};
+
+// Registro no Services
+Services::SetGame(pGame);  // pGame implementa IGameService
+Services::SetChatOutput(pUI->chat());  // chat implementa IChatOutput
 ```
-
-**⚠️ Problemas:**
-1. Depende diretamente de GUI, Voice, Audio
-2. Muitos globals
-
-**✏️ Mudanças:**
-1. Mover para `multiplayer/`
-2. Usar callbacks/eventos em vez de acessar GUI diretamente
-3. Atualizar todos os includes
 
 ---
 
-### 📄 net/netrpc.cpp
+## 8. Migração: Antes e Depois
 
-**Mover para:** `samp/multiplayer/rpc/rpc_handlers.cpp`
+### 8.1 Exemplo: netrpc.cpp
 
-**Includes atuais:**
+**ANTES (problemático):**
 ```cpp
+// net/netrpc.cpp
 #include "../main.h"
 #include "../game/game.h"
 #include "netgame.h"
 #include "../gui/gui.h"
 #include "../vendor/encoding/encoding.h"
 #include "../settings.h"
-```
 
-**Globals usados:**
-```cpp
 extern UI* pUI;
 extern CGame *pGame;
 extern CNetGame *pNetGame;
 extern CSettings *pSettings;
+
+void ClientMessage(RPCParameters* rpcParams) {
+    // ...decodifica...
+    
+    pUI->chat()->addClientMessage(szMessage, dwColor);  // Dependência direta!
+    
+    if (pSettings->Get().bSoundEnabled) {
+        // toca som
+    }
+}
+
+void SetWorldTime(RPCParameters* rpcParams) {
+    // ...decodifica...
+    
+    pGame->SetWorldTime(hour, minute);  // OK - game é camada inferior
+    pGame->ToggleThePassingOfTime(false);
+}
 ```
 
-**Funções principais (RPCs):**
-- `InitGame()` - Inicialização do jogo
-- `ServerJoin()` - Jogador entrou
-- `ServerQuit()` - Jogador saiu
-- `ClientMessage()` - Mensagem do servidor
-- `WorldTime()` - Tempo do mundo
-- `SetSpawnInfo()` - Info de spawn
-- E muitas outras...
-
-**✏️ Mudanças:**
-1. Mover para `multiplayer/rpc/`
-2. Considerar dividir em múltiplos arquivos por categoria
-
----
-
-### 📄 net/localplayer.h
-
-**Mover para:** `samp/multiplayer/local_player.h`
-
-**Conteúdo importante - Structs de sync:**
+**DEPOIS (correto):**
 ```cpp
-typedef struct _ONFOOT_SYNC_DATA { ... } ONFOOT_SYNC_DATA;
-typedef struct _INCAR_SYNC_DATA { ... } INCAR_SYNC_DATA;
-typedef struct _PASSENGER_SYNC_DATA { ... } PASSENGER_SYNC_DATA;
-typedef struct _AIM_SYNC_DATA { ... } AIM_SYNC_DATA;
-typedef struct _BULLET_SYNC_DATA { ... } BULLET_SYNC_DATA;
-typedef struct _TRAILER_SYNC_DATA { ... } TRAILER_SYNC_DATA;
-typedef struct _UNOCCUPIED_SYNC_DATA { ... } UNOCCUPIED_SYNC_DATA;
+// multiplayer/rpc/world_rpc.cpp
+#include "core/services.h"
+#include "core/events/event_bus.h"
+#include "multiplayer/events/network_events.h"
+
+void ClientMessage(RPCParameters* rpcParams) {
+    // ...decodifica...
+    
+    // Emite evento - quem quiser escuta
+    EventBus::Publish(ChatMessageReceivedEvent{
+        .message = szMessage,
+        .color = dwColor,
+        .fromPlayerId = INVALID_PLAYER_ID
+    });
+}
+
+void SetWorldTime(RPCParameters* rpcParams) {
+    // ...decodifica...
+    
+    // Acesso direto OK - game é camada inferior
+    Services::Game()->SetWorldTime(hour, minute);
+    Services::Game()->ToggleThePassingOfTime(false);
+    
+    // Também emite evento para quem precisar saber
+    EventBus::Publish(WorldTimeChangedEvent{hour, minute});
+}
 ```
 
-**✏️ Mudanças:**
-1. Extrair structs de sync para `multiplayer/sync/sync_data.h`
-2. Mover classe para `multiplayer/local_player.h`
+### 8.2 Exemplo: gui.cpp
 
----
-
-## 4. Pasta `gui/`
-
-### 📁 Estrutura Atual
-```
-gui/
-├── gui.cpp/h
-├── imguirenderer.cpp/h
-├── imguiwrapper.cpp/h
-├── uisettings.cpp/h
-├── widget.cpp/h
-├── widgets/
-│   ├── button.cpp/h
-│   ├── editbox.cpp/h
-│   ├── image.cpp/h
-│   ├── label.cpp/h
-│   ├── layout.cpp/h
-│   ├── listbox.cpp/h
-│   ├── progressbar.cpp/h
-│   └── scrollpanel.cpp/h
-└── samp_widgets/
-    ├── buttonpanel.cpp/h
-    ├── chat.cpp/h
-    ├── keyboard.cpp/h
-    ├── playertablist.cpp/h
-    ├── spawn.cpp/h
-    ├── splashscreen.cpp/h
-    ├── voicebutton.h
-    └── dialogs/
-        ├── content.cpp/h
-        ├── dialog.cpp/h
-        ├── inputwidget.cpp/h
-        ├── listwidget.cpp/h
-        ├── msgbox.cpp/h
-        └── tablistwidget.cpp/h
-```
-
-### 📁 Nova Estrutura (mantém organização, apenas move)
-```
-ui/
-├── ui_manager.cpp/h        ← renomear de gui.cpp/h
-├── imgui_renderer.cpp/h    ← de imguirenderer.cpp/h
-├── imgui_wrapper.cpp/h     ← de imguiwrapper.cpp/h
-├── ui_settings.cpp/h       ← de uisettings.cpp/h
-├── widgets/                ← mantém
-│   └── [todos os widgets base]
-└── screens/                ← renomear de samp_widgets
-    ├── chat.cpp/h
-    ├── dialog.cpp/h
-    ├── keyboard.cpp/h
-    ├── spawn.cpp/h
-    ├── scoreboard.cpp/h    ← de playertablist.cpp/h
-    └── [outros]
-```
-
----
-
-### 📄 gui/gui.cpp
-
-**Mover para:** `samp/ui/ui_manager.cpp`
-
-**Includes atuais:**
+**ANTES:**
 ```cpp
+// gui/gui.cpp
 #include "../main.h"
 #include "../game/game.h"
 #include "../net/netgame.h"
-#include "gui.h"
-#include "../playertags.h"
-#include "../net/playerbubblepool.h"
-#include "vendor/str_obfuscator/str_obfuscator.hpp"
 #include "../voice_new/Plugin.h"
-#include "../voice_new/MicroIcon.h"
-#include "../voice_new/SpeakerList.h"
-#include "../voice_new/Network.h"
-#include "../gui/samp_widgets/voicebutton.h"
-#include "game/Textures/TextureDatabaseRuntime.h"
-#include "game/Streaming.h"
-#include "game/Pools.h"
+// ... muitos includes
+
+extern CNetGame* pNetGame;
+extern CGame* pGame;
+
+void UI::render() {
+    if (pNetGame && pNetGame->GetTextDrawPool()) {
+        pNetGame->GetTextDrawPool()->Draw();  // Dependência de net!
+    }
+    
+    if (pPlayerTags) {
+        pPlayerTags->Render(m_renderer);  // Dependência de playertags
+    }
+}
 ```
 
-**⚠️ Problemas:**
-1. Depende de voice, game, net diretamente
-2. Muitos includes
+**DEPOIS:**
+```cpp
+// ui/ui_manager.cpp
+#include "core/services.h"
+#include "core/events/event_bus.h"
+#include "ui/events/ui_events.h"
 
-**✏️ Mudanças:**
-1. Renomear para ui_manager
-2. Usar eventos/callbacks para comunicação com outros módulos
-3. Atualizar includes
+void UI::Initialize() {
+    // Subscreve a eventos
+    EventBus::Subscribe<RenderTextDrawsEvent>([this](const auto& e) {
+        // Textdraws são passados no evento, não busca de outro módulo
+        for (const auto& td : e.textdraws) {
+            RenderTextDraw(td);
+        }
+    });
+}
 
----
-
-## 5. Pasta `voice_new/`
-
-### 📁 Estrutura Atual
-```
-voice_new/
-├── Channel.cpp/h
-├── ControlPacket.cpp/h
-├── Effect.cpp/h
-├── GlobalStream.cpp/h
-├── Header.h
-├── LocalStream.cpp/h
-├── MicroIcon.cpp/h
-├── Network.cpp/h
-├── Parameter.cpp/h
-├── Playback.cpp/h
-├── Plugin.cpp/h
-├── PluginConfig.cpp/h
-├── Record.cpp/h
-├── SetController.cpp/h
-├── SlideController.cpp/h
-├── SpeakerList.cpp/h
-├── Stream.cpp/h
-├── StreamAtObject.cpp/h
-├── StreamAtPlayer.cpp/h
-├── StreamAtPoint.cpp/h
-├── StreamAtVehicle.cpp/h
-├── StreamInfo.cpp/h
-├── VoicePacket.cpp/h
-└── include/
-    ├── SPSCQueue.h
-    └── util/
-        ├── Memory.hpp
-        ├── Render.cpp/h
-        ├── Samp.cpp/h
-        └── Timer.cpp/h
-```
-
-### 📁 Nova Estrutura
-```
-audio/
-├── audio_manager.cpp/h     ← novo, agrupa audiostream + voice
-├── audio_stream.cpp/h      ← de samp/audiostream.cpp
-└── voice/
-    ├── voice_manager.cpp/h ← de Plugin.cpp
-    ├── network.cpp/h
-    ├── playback.cpp/h
-    ├── record.cpp/h
-    ├── streams/
-    │   ├── stream.cpp/h
-    │   ├── local_stream.cpp/h
-    │   ├── global_stream.cpp/h
-    │   └── [stream_at_*.cpp/h]
-    ├── effects/
-    │   └── effect.cpp/h
-    └── ui/
-        ├── micro_icon.cpp/h
-        └── speaker_list.cpp/h
+void UI::Render() {
+    // Renderiza apenas UI
+    DrawWidgets();
+    
+    // Outros módulos são notificados para renderizar via evento
+    EventBus::Publish(UIRenderEvent{m_renderer});
+}
 ```
 
 ---
 
-## 6. Pasta `java/`
+## 9. Checklist de Migração por Arquivo
 
-### 📁 Estrutura Atual
-```
-java/
-├── editobject.cpp/h
-└── jniutil.cpp/h
-```
+### 9.1 Para CADA arquivo .cpp:
 
-### 📁 Nova Estrutura
-```
-platform/
-└── android/
-    ├── jni_bridge.cpp/h    ← de jniutil.cpp/h
-    ├── edit_object.cpp/h   ← de editobject.cpp/h
-    ├── nv_event.cpp/h      ← de samp/nv_event.cpp
-    ├── fps_fix.cpp/h       ← de samp/CFPSFix.cpp
-    ├── stacktrace.h        ← de samp/StackTrace.h
-    └── storage.cpp/h       ← novo, gerencia paths
-```
+- [ ] Remover includes de módulos de nível superior
+- [ ] Substituir globals por `Services::*()` 
+- [ ] Substituir chamadas diretas por eventos quando apropriado
+- [ ] Usar interfaces em vez de classes concretas
+- [ ] Adicionar forward declarations onde possível
 
----
+### 9.2 Para CADA arquivo .h:
 
-## 7. Tabela Resumo de Movimentação
+- [ ] Minimizar includes (usar forward declarations)
+- [ ] Não incluir headers de outros módulos
+- [ ] Declarar interfaces em vez de dependências concretas
 
-| Arquivo Original | Novo Local | Mudanças de Include |
-|-----------------|------------|---------------------|
-| `samp/main.cpp` | `samp/core/main.cpp` | Atualizar todos |
-| `samp/main.h` | `samp/core/main.h` | Atualizar todos |
-| `samp/settings.cpp` | `samp/core/settings.cpp` | Remover game.h |
-| `samp/log.cpp` | `samp/core/logging.cpp` | Adicionar funções de main.cpp |
-| `samp/audiostream.cpp` | `samp/audio/audiostream.cpp` | Atualizar |
-| `samp/playertags.cpp` | `samp/multiplayer/features/playertags.cpp` | Atualizar |
-| `samp/nv_event.cpp` | `samp/platform/android/nv_event.cpp` | Remover includes não usados |
-| `samp/CFPSFix.cpp` | `samp/platform/android/fps_fix.cpp` | Atualizar |
-| `game/hooks.cpp` | `samp/game/hooks/hooks.cpp` | Dividir e atualizar |
-| `game/patches.cpp` | `samp/game/hooks/patches.cpp` | Atualizar |
-| `game/game.cpp` | `samp/game/engine/game.cpp` | Atualizar |
-| `game/playerped.cpp` | `samp/game/entities/playerped.cpp` | Atualizar |
-| `net/netgame.cpp` | `samp/multiplayer/netgame.cpp` | Atualizar |
-| `net/netrpc.cpp` | `samp/multiplayer/rpc/rpc_handlers.cpp` | Atualizar |
-| `gui/gui.cpp` | `samp/ui/ui_manager.cpp` | Renomear e atualizar |
-| `voice_new/Plugin.cpp` | `samp/audio/voice/voice_manager.cpp` | Atualizar |
-| `java/jniutil.cpp` | `samp/platform/android/jni_bridge.cpp` | Atualizar |
+### 9.3 Arquivos que Precisam de Mais Atenção
+
+| Arquivo | Globals Usados | Dependências Cruzadas | Prioridade |
+|---------|----------------|----------------------|------------|
+| `hooks.cpp` | 5 | game, net, gui, java | 🔴 Alta |
+| `netrpc.cpp` | 4 | game, gui, settings | 🔴 Alta |
+| `netgame.cpp` | 4 | game, gui, audio, voice | 🔴 Alta |
+| `gui.cpp` | 4 | game, net, voice, playertags | 🔴 Alta |
+| `SpeakerList.cpp` | 4 | game, gui, net, audio | 🔴 Alta |
+| `localplayer.cpp` | 4 | game, gui, voice, java | 🟡 Média |
+| `scriptrpc.cpp` | 4 | game, audio | 🟡 Média |
+| `chat.cpp` | 5 | game, net, java | 🟡 Média |
+| `playertags.cpp` | 2 | game, net | 🟢 Baixa |
+| `audiostream.cpp` | 1 | game | 🟢 Baixa |
 
 ---
 
-## 8. Ordem de Migração Recomendada
+## 10. Ordem de Implementação
 
-### Fase 1: Core (sem quebrar nada)
-1. Criar pastas da nova estrutura
-2. Mover `settings.cpp/h` → `core/`
-3. Mover `log.cpp/h` → `core/logging.cpp/h`
-4. Criar `core/globals.h` com SAMPCore
-5. Atualizar includes gradualmente
+### Fase 1: Infraestrutura (sem quebrar código)
+1. Criar `core/services.h` com Service Locator
+2. Criar `core/events/event_bus.h`
+3. Criar interfaces em `core/interfaces/`
+4. Adicionar macros de compatibilidade (`#define pGame Services::Game()`)
 
-### Fase 2: Platform
-6. Mover `nv_event.cpp/h` → `platform/android/`
-7. Mover `CFPSFix.cpp/h` → `platform/android/fps_fix.cpp`
-8. Mover `java/*` → `platform/android/`
-9. Mover `StackTrace.h`, `crashlytics.h` → `platform/`
+### Fase 2: Registrar Services
+5. Em `main.cpp`, registrar todos os serviços no `Services`
+6. Testar que macros de compatibilidade funcionam
 
-### Fase 3: Audio
-10. Mover `audiostream.cpp/h` → `audio/`
-11. Mover `voice_new/` → `audio/voice/`
-12. Criar `audio/audio_manager.cpp/h`
+### Fase 3: Migrar Eventos (um por vez)
+7. Criar `ChatMessageReceivedEvent`, migrar de netrpc.cpp
+8. Criar `WorldTimeChangedEvent`, migrar
+9. Continuar com outros eventos
 
-### Fase 4: Game
-13. Reorganizar `game/` internamente:
-    - Criar subpastas hooks/, engine/, entities/, etc.
-    - Mover arquivos para subpastas apropriadas
+### Fase 4: Implementar Interfaces
+10. `CGame` implementa `IGameService`
+11. `Chat` implementa `IChatOutput`
+12. Substituir chamadas diretas por interfaces
 
-### Fase 5: Multiplayer
-14. Renomear `net/` → `multiplayer/`
-15. Criar subpastas pools/, rpc/, sync/
-16. Mover `playertags.cpp` → `multiplayer/features/`
+### Fase 5: Remover Compatibilidade
+13. Remover macros `#define pGame`
+14. Atualizar todos os arquivos para usar `Services::`
+15. Remover globals de `main.cpp`
 
-### Fase 6: UI
-17. Renomear `gui/` → `ui/`
-18. Renomear arquivos (gui.cpp → ui_manager.cpp)
-19. Renomear `samp_widgets/` → `screens/`
-
-### Fase 7: Limpeza
-20. Atualizar todos os includes restantes
-21. Remover globals gradualmente em favor de SAMPCore
-22. Testar cada módulo
+### Fase 6: Reorganizar Arquivos
+16. Mover arquivos para nova estrutura de pastas
+17. Atualizar todos os includes
+18. Atualizar CMakeLists.txt
 
 ---
 
-## 9. Arquivos que NÃO Mudam
-
-### Pasta `vendor/` (dependências externas)
-```
-vendor/
-├── armhook/      # Hook library
-├── bass/         # Audio library
-├── encoding/     # Encoding utils
-├── imgui/        # ImGui library
-├── inih/         # INI parser
-├── quaternion/   # Quaternion math
-├── raknet/       # Networking
-├── SimpleIni/    # INI library
-└── str_obfuscator/ # String obfuscation
-```
-
-Estes arquivos não devem ser modificados, apenas referenciados.
-
----
-
-*Documento gerado para análise de migração*
-*Total de arquivos analisados: ~350*
+*Documento de Análise de Dependências v2.0*
+*Total de dependências circulares identificadas: 47*
+*Total de globals a eliminar: 134 ocorrências*
