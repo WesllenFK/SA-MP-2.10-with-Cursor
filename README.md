@@ -57,9 +57,25 @@ On Windows (PowerShell):
 - `app/src/main/cpp/`: native code (C/C++), JNI, and CMake
 - `gradle/` and `gradlew*`: Gradle wrapper
 
+## Developer's Message
+
+Hello! I'm not a programmer—I just use AI to bring ideas to life. After working with SA:MP Mobile, I noticed the project has become unmaintainable: it's full of circular dependencies and chaotic architecture, the result of years of modifications. My goal is to transform it into a comfortable development environment and potentially open doors beyond SA:MP.
+
+## Future Objectives
+
+- **Restructure existing files** into a modular monolith architecture
+- **Remove all unused files** to clean up the codebase
+- **Reformulate the file loading system** for better reliability
+- **Implement asset import via .zip** (compatible with app UID restrictions on modern Android), removing manual Data installation
+- **Reformulate hook system** — migrate from ShadowHook to Dobby (Windows-compatible)
+- **Reformulate multiplayer system** — remove legacy dependencies and modernize the code
+- **Reformulate UI system** — unify and centralize all UI, including complete GTA:SA HUD overhaul
+- **Reformulate audio & voice system** — modernize with features like voice effects (noise, echo, noise suppression)
+- **Other features** — additional improvements under planning
+
 ## Roadmap (short)
 
-- **Hook validation with user feedback** (avoid “silent” crashes when a hook fails; show a user-friendly error via JNI)
+- **Hook validation with user feedback** (avoid "silent" crashes when a hook fails; show a user-friendly error via JNI)
 - **Remove `exit(0)` from `getSym()`** (return errors/telemetry instead of closing the app)
 
 ## Credits
