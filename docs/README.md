@@ -48,6 +48,7 @@ docs/
 - [Análise do Sistema de Sinuca](pt-br/pool/POOL_SYSTEM_ANALYSIS.md)
 - [Árvore Detalhada de Funções](pt-br/pool/POOL_SYSTEM_FUNCTIONS.md)
 - [Tabela de Offsets](pt-br/pool/POOL_SYSTEM_OFFSETS.md)
+- [**Especificação Técnica Completa**](pt-br/pool/POOL_SYSTEM_SPECIFICATION.md) ⭐
 
 ### English
 
@@ -68,6 +69,7 @@ docs/
 - [Pool System Analysis](english/pool/POOL_SYSTEM_ANALYSIS.md)
 - [Detailed Function Tree](english/pool/POOL_SYSTEM_FUNCTIONS.md)
 - [Offset Table](english/pool/POOL_SYSTEM_OFFSETS.md)
+- [**Complete Technical Specification**](english/pool/POOL_SYSTEM_SPECIFICATION.md) ⭐
 
 ---
 
