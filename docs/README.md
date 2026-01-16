@@ -12,11 +12,13 @@ Esta pasta contém documentação técnica do projeto SA-MP.
 docs/
 ├── pt-br/           # Português (Brasil)
 │   ├── weapons/     # Sistema de armas
-│   └── player/      # Sistema de personagem
+│   ├── player/      # Sistema de personagem
+│   └── basketball/  # Sistema de basquete
 │
 ├── english/         # English
 │   ├── weapons/     # Weapon system
-│   └── player/      # Player/character system
+│   ├── player/      # Player/character system
+│   └── basketball/  # Basketball system
 │
 └── README.md
 ```
@@ -37,6 +39,9 @@ docs/
 - [Árvore Detalhada de Funções](pt-br/player/PLAYER_SYSTEM_FUNCTIONS.md)
 - [Tabela de Offsets](pt-br/player/PLAYER_SYSTEM_OFFSETS.md)
 
+#### Sistema de Basquete
+- [Análise do Sistema de Basquete](pt-br/basketball/BASKETBALL_SYSTEM_ANALYSIS.md)
+
 ### English
 
 #### Weapon System
@@ -48,6 +53,9 @@ docs/
 - [Player System Analysis](english/player/PLAYER_SYSTEM_ANALYSIS.md)
 - [Detailed Function Tree](english/player/PLAYER_SYSTEM_FUNCTIONS.md)
 - [Offset Table](english/player/PLAYER_SYSTEM_OFFSETS.md)
+
+#### Basketball System
+- [Basketball System Analysis](english/basketball/BASKETBALL_SYSTEM_ANALYSIS.md)
 
 ---
 
