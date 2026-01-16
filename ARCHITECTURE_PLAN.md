@@ -1,559 +1,566 @@
-# Plano de Arquitetura: Monólito Modular SA-MP Mobile
+# Plano de Arquitetura: Monólito Modular
 
-## 1. Diagnóstico da Situação Atual
+## Contexto
 
-### 1.1 Estrutura Atual
-```
-app/src/main/cpp/samp/
-├── main.cpp/h            # Entry point + globals misturados
-├── audiostream.cpp/h     # Audio streaming
-├── playertags.cpp/h      # Player tags rendering
-├── settings.cpp/h        # Configurações
-├── game/                 # ~408 arquivos - Lógica do GTA SA
-├── gui/                  # ~51 arquivos - Interface ImGui
-├── net/                  # ~28 arquivos - Networking SA-MP
-├── voice_new/            # ~53 arquivos - Sistema de voz
-├── java/                 # JNI wrappers
-├── util/                 # Utilitários
-└── vendor/               # Dependências externas (RakNet, ImGui, etc)
-```
-
-### 1.2 Problemas Identificados
-
-#### A) Variáveis Globais Excessivas
-```cpp
-// main.cpp - Estado global exposto diretamente
-extern char* g_pszStorage;
-extern UI* pUI;
-extern CGame* pGame;
-extern CNetGame* pNetGame;
-extern CPlayerTags* pPlayerTags;
-extern CSnapShotHelper* pSnapShotHelper;
-extern CAudioStream* pAudioStream;
-extern CJavaWrapper* pJavaWrapper;
-extern CSettings* pSettings;
-```
-
-**Problema**: Qualquer arquivo pode acessar e modificar qualquer estado, criando acoplamento total.
-
-#### B) Dependências Cruzadas
-```cpp
-// netgame.cpp depende de:
-#include "../main.h"
-#include "../game/game.h"
-#include "netgame.h"
-#include "../gui/gui.h"
-#include "../audiostream.h"
-#include "../voice_new/MicroIcon.h"
-#include "../voice_new/SpeakerList.h"
-#include "../voice_new/Network.h"
-#include "java/jniutil.h"
-```
-
-**Problema**: O módulo de rede conhece GUI, voz, audio e JNI diretamente.
-
-#### C) Potenciais Dependências Circulares
-```
-game/ ←→ net/           # Game precisa de net (sync), net precisa de game (entities)
-gui/  ←→ net/           # GUI mostra dados de net, net notifica GUI
-gui/  ←→ game/          # GUI controla game, game atualiza GUI
-voice/ ←→ net/          # Voice usa network, network controla voice
-```
-
-#### D) Mistura de Responsabilidades
-- `main.cpp`: Inicialização + logging + signal handlers + JNI handlers
-- `gui.cpp`: Renderização + lógica de negócio + estado
-- `netgame.cpp`: Conexão + pools + processamento de pacotes
-
-#### E) Camada game/ Desorganizada
-```
-game/
-├── Arquivos raiz (game.cpp, playerped.h, vehicle.h, etc)
-├── Core/               # Estruturas de dados básicas
-├── Entity/             # Entidades GTA
-├── Animation/          # Sistema de animações
-├── Collision/          # Sistema de colisão
-├── RW/                 # RenderWare bindings
-├── Tasks/              # AI Tasks
-├── Models/             # Model info
-├── Textures/           # Sistema de texturas
-├── Widgets/            # Widgets do jogo (toque)
-└── ... (muitas outras pastas)
-```
+Este plano é aplicável a projetos de **clients multiplayer para jogos** (SA-MP, MTA, FiveM-style, etc.) que modificam um jogo base através de hooks e patches.
 
 ---
 
-## 2. Proposta: Arquitetura Monólito Modular
+## 1. Diagnóstico Atual (SA-MP Mobile)
 
-### 2.1 Princípios
+### Estrutura Existente
+```
+samp/
+├── main.cpp              # Entry point + globals + JNI + logging misturados
+├── game/                 # ~408 arquivos - Engine GTA + hooks + patches + entidades
+├── gui/                  # ~51 arquivos - Interface usuário
+├── net/                  # ~28 arquivos - Rede + pools de entidades multiplayer
+├── voice_new/            # ~53 arquivos - Sistema de voz
+├── java/                 # JNI
+├── vendor/               # Libs externas
+└── [arquivos soltos]     # audiostream, playertags, settings, etc.
+```
 
-1. **Módulos Independentes**: Cada módulo compila separadamente
-2. **Dependências Unidirecionais**: Dependências fluem em uma direção
-3. **Interfaces Claras**: Comunicação via interfaces/abstrações
-4. **Inversão de Dependência**: Módulos de alto nível não dependem de baixo nível
+### Problemas Principais
 
-### 2.2 Estrutura Proposta
+1. **Globals expostos em todo lugar**
+```cpp
+extern UI* pUI;
+extern CGame* pGame;
+extern CNetGame* pNetGame;
+// ... qualquer arquivo acessa qualquer coisa
+```
+
+2. **Pastas muito grandes sem organização interna** - `game/` tem 408 arquivos
+
+3. **Responsabilidades misturadas** - `main.cpp` faz inicialização, logging, JNI, signal handlers
+
+4. **Arquivos soltos na raiz** - `audiostream`, `playertags`, `settings` deveriam estar organizados
+
+---
+
+## 2. Nova Estrutura Proposta
+
+### Princípio: 5-6 Módulos Coesos
 
 ```
-app/src/main/cpp/
-├── core/                      # MÓDULO CORE (sem dependências externas)
-│   ├── types/                 # Tipos básicos (Vector, Matrix, Quaternion)
-│   ├── memory/                # Memory management (Pool, Allocators)
-│   ├── containers/            # Containers (Lists, Maps, etc)
-│   ├── math/                  # Math utilities
-│   ├── logging/               # Sistema de logging
-│   └── interfaces/            # Interfaces base (IUpdatable, IRenderable)
+samp/
+├── core/                 # Fundação do projeto
+│   ├── main.cpp/h        # Entry point limpo
+│   ├── types.h           # Tipos básicos compartilhados
+│   ├── logging.cpp/h     # Sistema de log unificado
+│   ├── settings.cpp/h    # Configurações
+│   ├── memory.h          # Macros de memória (SAFE_DELETE, etc)
+│   └── timer.cpp/h       # Timers e GetTickCount
 │
-├── platform/                  # MÓDULO PLATFORM (Android/JNI)
-│   ├── android/               # Android-specific code
-│   │   ├── jni_bridge.cpp/h   # JNI wrapper limpo
-│   │   └── storage.cpp/h      # File system access
-│   ├── input/                 # Input handling (multitouch)
-│   └── hooks/                 # Hooking framework
+├── game/                 # TUDO relacionado ao jogo base
+│   ├── hooks/            # Todos os hooks em um lugar
+│   │   ├── hooks.cpp/h   # Instalação dos hooks
+│   │   └── patches.cpp/h # Patches de memória
+│   │
+│   ├── engine/           # Acesso ao engine do jogo
+│   │   ├── game.cpp/h    # Classe principal CGame
+│   │   ├── world.cpp/h   # Mundo, tempo, clima
+│   │   ├── camera.cpp/h  # Sistema de câmera
+│   │   ├── streaming.cpp/h
+│   │   └── pools.cpp/h   # Pools do GTA (peds, vehicles, etc)
+│   │
+│   ├── entities/         # Entidades do jogo
+│   │   ├── ped.cpp/h     # CPedGTA, CPlayerPed
+│   │   ├── vehicle.cpp/h # CVehicleGTA, CVehicle
+│   │   ├── object.cpp/h  # CObject
+│   │   └── actor.cpp/h   # CActor
+│   │
+│   ├── rendering/        # Renderização
+│   │   ├── renderware.cpp/h  # Bindings RenderWare
+│   │   ├── textures.cpp/h
+│   │   ├── sprites.cpp/h
+│   │   └── font.cpp/h
+│   │
+│   ├── physics/          # Física e colisão
+│   │   ├── collision.cpp/h
+│   │   └── collision_data.h
+│   │
+│   ├── animation/        # Sistema de animação
+│   │   ├── anim_manager.cpp/h
+│   │   └── anim_blend.cpp/h
+│   │
+│   └── input/            # Input do jogo
+│       ├── pad.cpp/h
+│       └── multitouch.cpp/h
 │
-├── engine/                    # MÓDULO ENGINE (Abstração do GTA SA)
-│   ├── entities/              # Entidades abstratas
-│   │   ├── entity.h           # Interface base
-│   │   ├── ped.cpp/h          # Ped abstração
-│   │   ├── vehicle.cpp/h      # Vehicle abstração
-│   │   └── object.cpp/h       # Object abstração
-│   ├── world/                 # World management
-│   ├── camera/                # Camera system
-│   ├── rendering/             # Rendering abstractions
-│   ├── animation/             # Animation system
-│   ├── collision/             # Collision system
-│   └── game_interface.h       # Interface principal do engine
-│
-├── gta_bindings/              # MÓDULO GTA BINDINGS (Acesso direto ao GTA)
-│   ├── gta_entities/          # GTA entity implementations
-│   ├── gta_pools/             # GTA pools access
-│   ├── gta_renderware/        # RenderWare bindings
-│   ├── gta_patches/           # Patches e hooks do GTA
-│   └── gta_bridge.cpp/h       # Bridge para o engine
-│
-├── network/                   # MÓDULO NETWORK
-│   ├── transport/             # RakNet wrapper
-│   │   ├── connection.cpp/h
-│   │   └── packet_handler.cpp/h
-│   ├── protocol/              # Protocolo SA-MP
-│   │   ├── packets/           # Definições de pacotes
-│   │   ├── rpc/               # RPC handlers
-│   │   └── sync/              # Sync handlers
-│   ├── pools/                 # Network entity pools
+├── multiplayer/          # Lógica multiplayer (SA-MP específico)
+│   ├── netgame.cpp/h     # Conexão e gerenciamento
+│   ├── local_player.cpp/h
+│   ├── remote_player.cpp/h
+│   │
+│   ├── pools/            # Pools de entidades de rede
 │   │   ├── player_pool.cpp/h
 │   │   ├── vehicle_pool.cpp/h
-│   │   └── ...
-│   ├── events/                # Eventos de rede (interfaces)
-│   │   └── network_events.h   # INetworkEventListener
-│   └── network_manager.cpp/h  # Fachada principal
-│
-├── multiplayer/               # MÓDULO MULTIPLAYER (Lógica SA-MP)
-│   ├── local_player.cpp/h     # Jogador local
-│   ├── remote_player.cpp/h    # Jogadores remotos
-│   ├── sync/                  # Sincronização
-│   │   ├── onfoot_sync.cpp/h
+│   │   ├── object_pool.cpp/h
+│   │   ├── pickup_pool.cpp/h
+│   │   ├── textdraw_pool.cpp/h
+│   │   ├── textlabel_pool.cpp/h
+│   │   ├── gangzone_pool.cpp/h
+│   │   ├── actor_pool.cpp/h
+│   │   └── menu_pool.cpp/h
+│   │
+│   ├── sync/             # Sincronização
+│   │   ├── sync_data.h   # Structs de sync
+│   │   ├── player_sync.cpp/h
 │   │   ├── vehicle_sync.cpp/h
 │   │   └── aim_sync.cpp/h
-│   ├── features/              # Features SA-MP
-│   │   ├── textdraws.cpp/h
-│   │   ├── gangzones.cpp/h
-│   │   ├── pickups.cpp/h
-│   │   └── ...
-│   └── multiplayer_manager.h  # Fachada
+│   │
+│   ├── rpc/              # Handlers de RPC
+│   │   ├── rpc_handlers.cpp/h
+│   │   └── script_rpc.cpp/h
+│   │
+│   └── features/         # Features específicas SA-MP
+│       ├── player_tags.cpp/h
+│       ├── material_text.cpp/h
+│       └── checkpoints.cpp/h
 │
-├── voice/                     # MÓDULO VOICE
-│   ├── audio/                 # Audio processing
-│   │   ├── playback.cpp/h
-│   │   ├── record.cpp/h
-│   │   └── effects.cpp/h
-│   ├── streams/               # Voice streams
-│   │   ├── stream.cpp/h
-│   │   ├── local_stream.cpp/h
-│   │   └── global_stream.cpp/h
-│   ├── network/               # Voice networking
-│   └── voice_manager.cpp/h    # Fachada
-│
-├── ui/                        # MÓDULO UI
-│   ├── imgui_backend/         # ImGui rendering
-│   ├── widgets/               # Widgets base
+├── ui/                   # Interface do usuário
+│   ├── ui_manager.cpp/h  # Gerenciador principal
+│   ├── imgui_renderer.cpp/h
+│   │
+│   ├── widgets/          # Widgets base
 │   │   ├── widget.cpp/h
 │   │   ├── button.cpp/h
 │   │   ├── label.cpp/h
-│   │   └── ...
-│   ├── screens/               # Telas/Componentes SA-MP
-│   │   ├── chat.cpp/h
-│   │   ├── dialog.cpp/h
-│   │   ├── spawn_screen.cpp/h
-│   │   ├── keyboard.cpp/h
-│   │   └── ...
-│   ├── settings/              # UI settings
-│   └── ui_manager.cpp/h       # Fachada
+│   │   ├── editbox.cpp/h
+│   │   ├── listbox.cpp/h
+│   │   └── layout.cpp/h
+│   │
+│   └── screens/          # Telas/componentes específicos
+│       ├── chat.cpp/h
+│       ├── dialog.cpp/h
+│       ├── keyboard.cpp/h
+│       ├── spawn_screen.cpp/h
+│       ├── scoreboard.cpp/h
+│       └── splash.cpp/h
 │
-├── audio/                     # MÓDULO AUDIO
-│   ├── bass_wrapper/          # BASS library wrapper
-│   ├── audio_stream.cpp/h     # Audio streaming
-│   └── audio_manager.cpp/h
+├── audio/                # Audio (streaming + voz)
+│   ├── audio_manager.cpp/h   # Gerenciador principal
+│   ├── audio_stream.cpp/h    # Streaming de música
+│   │
+│   └── voice/            # Sistema de voz
+│       ├── voice_manager.cpp/h
+│       ├── playback.cpp/h
+│       ├── record.cpp/h
+│       ├── streams.cpp/h
+│       └── effects.cpp/h
 │
-├── config/                    # MÓDULO CONFIG
-│   ├── settings.cpp/h
-│   └── config_manager.cpp/h
+├── platform/             # Código específico da plataforma
+│   ├── android/
+│   │   ├── jni_bridge.cpp/h  # Interface JNI limpa
+│   │   ├── java_wrapper.cpp/h
+│   │   └── storage.cpp/h
+│   │
+│   └── crashlytics.cpp/h
 │
-├── services/                  # MÓDULO SERVICES (Locator Pattern)
-│   ├── service_locator.cpp/h  # Registro de serviços
-│   └── interfaces/            # Interfaces de serviços
-│       ├── i_game_service.h
-│       ├── i_network_service.h
-│       ├── i_ui_service.h
-│       └── ...
-│
-├── app/                       # MÓDULO APPLICATION
-│   ├── application.cpp/h      # Entry point limpo
-│   ├── game_loop.cpp/h        # Main loop
-│   └── bootstrap.cpp/h        # Inicialização/DI
-│
-└── vendor/                    # DEPENDÊNCIAS EXTERNAS (não modificar)
+└── vendor/               # Dependências externas (não modificar)
     ├── raknet/
     ├── imgui/
     ├── bass/
     └── ...
 ```
 
-### 2.3 Diagrama de Dependências
-
-```
-                    ┌─────────────────┐
-                    │      app        │
-                    │  (Application)  │
-                    └────────┬────────┘
-                             │
-              ┌──────────────┼──────────────┐
-              │              │              │
-              ▼              ▼              ▼
-        ┌──────────┐  ┌───────────┐  ┌──────────┐
-        │ services │  │multiplayer│  │   ui     │
-        └────┬─────┘  └─────┬─────┘  └────┬─────┘
-             │              │              │
-             │       ┌──────┴──────┐       │
-             │       │             │       │
-             ▼       ▼             ▼       ▼
-        ┌──────────────┐     ┌───────────────┐
-        │   network    │     │    voice      │
-        └──────┬───────┘     └───────┬───────┘
-               │                     │
-               └──────────┬──────────┘
-                          │
-                          ▼
-                   ┌─────────────┐
-                   │   engine    │
-                   └──────┬──────┘
-                          │
-              ┌───────────┼───────────┐
-              │           │           │
-              ▼           ▼           ▼
-        ┌───────────┐ ┌────────┐ ┌─────────┐
-        │gta_bindings│ │platform│ │  audio  │
-        └─────┬─────┘ └────┬───┘ └────┬────┘
-              │            │          │
-              └────────────┴──────────┘
-                           │
-                           ▼
-                    ┌─────────────┐
-                    │    core     │
-                    └─────────────┘
-```
-
-**Regras de Dependência:**
-- Setas apontam para dependências
-- Módulos só podem depender de módulos abaixo na hierarquia
-- Comunicação lateral via interfaces/eventos
-
 ---
 
-## 3. Padrões de Design a Implementar
+## 3. Detalhamento dos Módulos
 
-### 3.1 Service Locator (Substituir Globals)
+### 3.1 `core/` - Fundação
+
+**Responsabilidade**: Código base que todo o projeto usa.
 
 ```cpp
-// services/service_locator.h
-class ServiceLocator {
+// core/main.h - Header principal limpo
+#pragma once
+
+#include "types.h"
+#include "logging.h"
+#include "memory.h"
+
+// Acesso centralizado (substituindo globals)
+class SAMPCore {
 public:
     static void Initialize();
     static void Shutdown();
     
-    // Registro de serviços
-    template<typename T>
-    static void Register(std::shared_ptr<T> service);
-    
-    // Obtenção de serviços
-    template<typename T>
-    static T* Get();
+    static class CGame* Game();
+    static class CNetGame* Network();
+    static class UI* UserInterface();
+    static class AudioManager* Audio();
+    static class CSettings* Settings();
     
 private:
-    static std::unordered_map<std::type_index, std::shared_ptr<void>> services;
-};
-
-// Uso:
-// Antes: pNetGame->GetPlayerPool()
-// Depois: ServiceLocator::Get<INetworkService>()->GetPlayerPool()
-```
-
-### 3.2 Event Bus (Comunicação Entre Módulos)
-
-```cpp
-// core/events/event_bus.h
-class EventBus {
-public:
-    template<typename EventType>
-    static void Subscribe(std::function<void(const EventType&)> handler);
-    
-    template<typename EventType>
-    static void Publish(const EventType& event);
-};
-
-// Eventos definidos por módulo:
-// network/events/network_events.h
-struct PlayerConnectedEvent {
-    uint16_t playerId;
-    std::string playerName;
-};
-
-struct PlayerDisconnectedEvent {
-    uint16_t playerId;
-    uint8_t reason;
-};
-
-// Uso no UI:
-EventBus::Subscribe<PlayerConnectedEvent>([](const auto& e) {
-    chat->addMessage("Player connected: " + e.playerName);
-});
-```
-
-### 3.3 Interfaces para Inversão de Dependência
-
-```cpp
-// services/interfaces/i_game_service.h
-class IGameService {
-public:
-    virtual ~IGameService() = default;
-    virtual IPlayerPed* GetLocalPlayer() = 0;
-    virtual void SetWorldTime(int hour, int minute) = 0;
-    virtual void SetWeather(int weatherId) = 0;
+    static inline CGame* s_game = nullptr;
+    static inline CNetGame* s_network = nullptr;
+    static inline UI* s_ui = nullptr;
     // ...
 };
 
-// engine/game_service.cpp
-class GameService : public IGameService {
-    // Implementação usando gta_bindings
-};
+// Atalhos opcionais para migração gradual
+#define pGame SAMPCore::Game()
+#define pNetGame SAMPCore::Network()
+#define pUI SAMPCore::UserInterface()
 ```
 
-### 3.4 Fachadas por Módulo
+**Por que centralizar aqui?**
+- Um único ponto de acesso a subsistemas
+- Ordem de inicialização/destruição controlada
+- Migração gradual (macros de compatibilidade)
+
+---
+
+### 3.2 `game/` - Engine e Modificações do Jogo
+
+**Responsabilidade**: Tudo relacionado ao jogo base - hooks, patches, acesso ao engine, entidades.
+
+**Estrutura interna:**
+
+```
+game/
+├── hooks/        # ONDE instalar hooks/patches
+├── engine/       # ACESSO ao engine (ler/escrever estado do jogo)
+├── entities/     # ENTIDADES (wrappers para entidades GTA)
+├── rendering/    # RENDERIZAÇÃO (texturas, sprites, fonts)
+├── physics/      # FÍSICA (colisão)
+├── animation/    # ANIMAÇÕES
+└── input/        # INPUT (controles)
+```
+
+**Exemplo de organização de hooks:**
 
 ```cpp
-// network/network_manager.h
-class NetworkManager {
+// game/hooks/hooks.h
+namespace GameHooks {
+    void InstallAll();
+    void InstallRenderHooks();
+    void InstallInputHooks();
+    void InstallEntityHooks();
+}
+
+// game/hooks/hooks.cpp
+#include "hooks.h"
+#include "../engine/game.h"
+
+void GameHooks::InstallAll() {
+    InstallRenderHooks();
+    InstallInputHooks();
+    InstallEntityHooks();
+}
+
+// Hooks de render
+void (*CSprite2d_Draw_orig)(...);
+void CSprite2d_Draw_hook(...) {
+    // Modificação
+    CSprite2d_Draw_orig(...);
+}
+
+void GameHooks::InstallRenderHooks() {
+    CHook::Install(g_libGTASA + OFFSET_SPRITE2D_DRAW, 
+                   CSprite2d_Draw_hook, 
+                   &CSprite2d_Draw_orig);
+}
+```
+
+---
+
+### 3.3 `multiplayer/` - Lógica Multiplayer
+
+**Responsabilidade**: Tudo específico do multiplayer - rede, sincronização, pools de rede.
+
+**Diferença de `game/`:**
+- `game/` = acesso ao jogo original
+- `multiplayer/` = lógica adicionada pelo mod
+
+```cpp
+// multiplayer/netgame.h
+class CNetGame {
 public:
-    // API pública limpa
-    bool Connect(const std::string& host, int port, const std::string& password);
-    void Disconnect();
+    CNetGame(const char* host, int port, const char* name, const char* pass);
+    ~CNetGame();
+    
     void Process();
+    void Disconnect();
     
     // Pools
-    IPlayerPool* GetPlayerPool();
-    IVehiclePool* GetVehiclePool();
-    
-    // Envio
-    void SendChatMessage(const std::string& message);
-    void SendCommand(const std::string& command);
+    CPlayerPool* GetPlayerPool() { return m_pools.players.get(); }
+    CVehiclePool* GetVehiclePool() { return m_pools.vehicles.get(); }
+    // ...
     
 private:
-    // Implementação escondida
-    std::unique_ptr<RakClientWrapper> m_client;
-    std::unique_ptr<PlayerPool> m_playerPool;
+    struct {
+        std::unique_ptr<CPlayerPool> players;
+        std::unique_ptr<CVehiclePool> vehicles;
+        std::unique_ptr<CObjectPool> objects;
+        // ...
+    } m_pools;
+    
+    std::unique_ptr<RakClientInterface> m_rakClient;
+};
+```
+
+---
+
+### 3.4 `ui/` - Interface do Usuário
+
+**Responsabilidade**: Toda a interface visual - ImGui, widgets, telas.
+
+```cpp
+// ui/ui_manager.h
+class UI {
+public:
+    UI(ImVec2 displaySize, const std::string& fontPath);
+    
+    void Render();
+    bool HandleTouch(int type, int x, int y);
+    
+    // Acesso aos componentes
+    Chat* GetChat() { return m_chat.get(); }
+    Dialog* GetDialog() { return m_dialog.get(); }
+    Keyboard* GetKeyboard() { return m_keyboard.get(); }
+    
+private:
+    std::unique_ptr<Chat> m_chat;
+    std::unique_ptr<Dialog> m_dialog;
+    std::unique_ptr<Keyboard> m_keyboard;
     // ...
 };
 ```
 
 ---
 
-## 4. Plano de Migração (Fases)
+### 3.5 `audio/` - Áudio e Voz
 
-### Fase 1: Preparação (Sem quebrar código existente)
+**Responsabilidade**: Streaming de áudio e sistema de voz.
 
-1. **Criar estrutura de pastas**
-   - Criar pastas vazias conforme nova estrutura
-   - Não mover nenhum arquivo ainda
-
-2. **Criar módulo `core`**
-   - Extrair tipos básicos (Vector, Matrix, Quaternion) para core/types
-   - Extrair sistema de logging para core/logging
-   - Criar interfaces base
-
-3. **Criar módulo `services`**
-   - Implementar ServiceLocator básico
-   - Registrar serviços existentes como wrappers dos globals
-
-### Fase 2: Extração de Módulos Independentes
-
-4. **Migrar `config`**
-   - Mover CSettings para config/
-   - Adaptar para usar ServiceLocator
-
-5. **Migrar `audio`**
-   - Mover CAudioStream para audio/
-   - Criar AudioManager como fachada
-
-6. **Migrar `platform`**
-   - Mover código JNI para platform/android
-   - Mover hooks para platform/hooks
-
-### Fase 3: Refatorar Módulos Complexos
-
-7. **Separar `gta_bindings` de `engine`**
-   - Criar interfaces em engine/
-   - Mover implementações GTA para gta_bindings/
-   - Bridge conecta as camadas
-
-8. **Refatorar `network`**
-   - Extrair transporte (RakNet) para transport/
-   - Criar interfaces de eventos
-   - Pools viram entidades network
-
-9. **Refatorar `ui`**
-   - Separar widgets genéricos de telas SA-MP
-   - Criar UIManager como fachada
-   - Comunicação via eventos
-
-10. **Refatorar `voice`**
-    - Separar audio processing de network
-    - Criar VoiceManager
-
-### Fase 4: Integração Final
-
-11. **Criar `multiplayer`**
-    - Mover lógica de LocalPlayer
-    - Mover lógica de sincronização
-    - Integrar com network e engine
-
-12. **Criar `app`**
-    - Mover inicialização de main.cpp para application.cpp
-    - Bootstrap configura todos os serviços
-    - Main loop limpo
-
-13. **Limpeza**
-    - Remover globals restantes
-    - Remover arquivos obsoletos
-    - Documentar APIs públicas
-
----
-
-## 5. Estrutura de CMake Modular
-
-```cmake
-# CMakeLists.txt principal
-cmake_minimum_required(VERSION 3.18)
-project(samp_mobile)
-
-# Módulos como bibliotecas estáticas
-add_subdirectory(core)
-add_subdirectory(platform)
-add_subdirectory(engine)
-add_subdirectory(gta_bindings)
-add_subdirectory(network)
-add_subdirectory(multiplayer)
-add_subdirectory(voice)
-add_subdirectory(ui)
-add_subdirectory(audio)
-add_subdirectory(config)
-add_subdirectory(services)
-add_subdirectory(app)
-
-# Biblioteca final
-add_library(samp SHARED
-    $<TARGET_OBJECTS:app>
-)
-
-target_link_libraries(samp
-    app
-    multiplayer
-    network
-    ui
-    voice
-    audio
-    engine
-    gta_bindings
-    platform
-    config
-    services
-    core
-)
-```
-
-```cmake
-# Exemplo: network/CMakeLists.txt
-add_library(network STATIC
-    transport/connection.cpp
-    transport/packet_handler.cpp
-    protocol/rpc/rpc_handlers.cpp
-    pools/player_pool.cpp
-    pools/vehicle_pool.cpp
-    network_manager.cpp
-)
-
-target_include_directories(network PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-
-# Dependências
-target_link_libraries(network
-    PUBLIC core
-    PUBLIC engine
-    PRIVATE vendor_raknet
-)
+```cpp
+// audio/audio_manager.h
+class AudioManager {
+public:
+    void Initialize();
+    void Process();
+    void Shutdown();
+    
+    // Streaming
+    void PlayStream(const std::string& url);
+    void StopStream();
+    
+    // Voz
+    VoiceManager* Voice() { return m_voice.get(); }
+    
+private:
+    std::unique_ptr<AudioStream> m_stream;
+    std::unique_ptr<VoiceManager> m_voice;
+};
 ```
 
 ---
 
-## 6. Benefícios Esperados
+### 3.6 `platform/` - Código de Plataforma
 
-### Manutenibilidade
-- Código organizado por responsabilidade
-- Fácil localizar onde fazer mudanças
-- Menos risco de quebrar funcionalidades não relacionadas
+**Responsabilidade**: Código específico Android/JNI, crashlytics.
 
-### Testabilidade
-- Módulos podem ser testados isoladamente
-- Interfaces permitem mocks
-- Menos estado global = menos side effects
-
-### Escalabilidade
-- Novos recursos adicionados em módulos específicos
-- Compilação incremental mais rápida
-- Múltiplos desenvolvedores podem trabalhar em paralelo
-
-### Reutilização
-- Módulos como `core`, `platform` podem ser reutilizados
-- Padrões consistentes em todo o projeto
-
----
-
-## 7. Riscos e Mitigações
-
-| Risco | Probabilidade | Impacto | Mitigação |
-|-------|---------------|---------|-----------|
-| Regressões durante migração | Alta | Alto | Migração incremental, testes manuais após cada fase |
-| Aumento inicial de complexidade | Média | Médio | Documentação clara, padrões consistentes |
-| Overhead de abstração | Baixa | Baixo | Usar inline para hot paths, profiling |
-| Dependências circulares acidentais | Média | Alto | CI com verificação de dependências |
+```cpp
+// platform/android/jni_bridge.h
+class JNIBridge {
+public:
+    static void Initialize(JNIEnv* env, jobject activity);
+    
+    // Métodos para chamar Java
+    static void ShowKeyboard();
+    static void HideKeyboard();
+    static void ShowLoadingScreen();
+    static void HideLoadingScreen();
+    static void ShowDialog(int type, const char* title, const char* text);
+    
+    static const char* GetStoragePath();
+    
+private:
+    static JavaVM* s_jvm;
+    static jobject s_activity;
+};
+```
 
 ---
 
-## 8. Próximos Passos
+## 4. Comunicação Entre Módulos
 
-1. **Revisar** este plano e ajustar conforme necessário
-2. **Aprovar** a abordagem geral
-3. **Iniciar Fase 1**: Criar estrutura básica + módulo core
-4. **Iterar** através das fases, validando a cada passo
+### 4.1 Acesso Direto (Simples)
+
+Para a maioria dos casos, acesso direto via `SAMPCore`:
+
+```cpp
+// Em qualquer lugar
+SAMPCore::Network()->SendChatMessage("Hello");
+SAMPCore::UserInterface()->GetChat()->AddMessage("Test");
+SAMPCore::Game()->SetWorldTime(12, 0);
+```
+
+### 4.2 Callbacks (Quando Necessário)
+
+Para notificações entre módulos sem acoplamento forte:
+
+```cpp
+// multiplayer/netgame.h
+class CNetGame {
+public:
+    // Callback para quando conectar
+    std::function<void(const char* hostname)> OnConnect;
+    
+    // Callback para mensagem recebida
+    std::function<void(const char* msg, uint32_t color)> OnChatMessage;
+};
+
+// Em algum lugar da inicialização
+pNetGame->OnChatMessage = [](const char* msg, uint32_t color) {
+    SAMPCore::UserInterface()->GetChat()->AddMessage(msg, color);
+};
+```
 
 ---
 
-*Documento gerado em: Janeiro 2026*
-*Versão: 1.0*
+## 5. Migração Gradual
+
+### Fase 1: Organizar sem Quebrar
+
+1. **Criar pastas** da nova estrutura
+2. **Mover arquivos** para suas novas casas
+3. **Ajustar includes** (`#include "../old/path.h"` → `#include "new/path.h"`)
+4. **Manter globals** funcionando com macros de compatibilidade
+
+### Fase 2: Consolidar Módulos
+
+5. **Criar `SAMPCore`** como ponto central
+6. **Migrar globals** gradualmente para `SAMPCore`
+7. **Agrupar hooks** dispersos em `game/hooks/`
+
+### Fase 3: Limpar
+
+8. **Remover macros** de compatibilidade
+9. **Remover código morto**
+10. **Documentar APIs** públicas
+
+---
+
+## 6. Padrão de Arquivos
+
+### Headers (.h)
+```cpp
+#pragma once
+
+// Includes externos primeiro
+#include <string>
+#include <memory>
+
+// Includes do projeto
+#include "core/types.h"
+
+class MinhaClasse {
+public:
+    // API pública
+    
+private:
+    // Implementação
+};
+```
+
+### Source (.cpp)
+```cpp
+#include "minha_classe.h"
+
+// Includes adicionais necessários para implementação
+#include "core/logging.h"
+
+// Implementação
+```
+
+---
+
+## 7. Aplicação a Outros Projetos
+
+Esta estrutura é adaptável para qualquer client multiplayer:
+
+| Módulo | SA-MP Mobile | MTA-like | FiveM-like |
+|--------|--------------|----------|------------|
+| `core/` | Fundação | Fundação | Fundação |
+| `game/` | GTA SA hooks | GTA SA hooks | GTA V hooks |
+| `multiplayer/` | Protocolo SA-MP | Protocolo MTA | Protocolo FiveM |
+| `ui/` | ImGui mobile | CEF/CEGUI | NUI/CEF |
+| `audio/` | BASS + voz | OpenAL | XAudio2 |
+| `platform/` | Android/JNI | Windows | Windows |
+
+**O que muda:**
+- `game/` - Hooks específicos do jogo
+- `multiplayer/` - Protocolo de rede específico
+- `platform/` - Sistema operacional
+
+**O que permanece igual:**
+- `core/` - Padrões de organização
+- Estrutura de pastas
+- Comunicação entre módulos
+
+---
+
+## 8. Resumo Visual
+
+```
+┌─────────────────────────────────────────────────────┐
+│                      core/                          │
+│         (tipos, logging, settings, SAMPCore)        │
+└─────────────────────────────────────────────────────┘
+                         │
+         ┌───────────────┼───────────────┐
+         ▼               ▼               ▼
+┌─────────────┐  ┌─────────────┐  ┌─────────────┐
+│   game/     │  │ multiplayer/│  │  platform/  │
+│             │  │             │  │             │
+│ hooks/      │  │ netgame     │  │ android/    │
+│ engine/     │  │ pools/      │  │ jni_bridge  │
+│ entities/   │  │ sync/       │  │             │
+│ rendering/  │  │ rpc/        │  └─────────────┘
+│ physics/    │  │             │
+│ animation/  │  └──────┬──────┘
+│ input/      │         │
+└──────┬──────┘         │
+       │                │
+       └────────┬───────┘
+                ▼
+        ┌─────────────┐
+        │    ui/      │
+        │ widgets/    │
+        │ screens/    │
+        └─────────────┘
+                │
+                ▼
+        ┌─────────────┐
+        │   audio/    │
+        │ streaming   │
+        │ voice/      │
+        └─────────────┘
+```
+
+---
+
+## 9. Checklist de Migração
+
+- [ ] Criar estrutura de pastas
+- [ ] Mover `main.cpp` conteúdo para `core/`
+- [ ] Criar `SAMPCore` como singleton central
+- [ ] Agrupar todos hooks em `game/hooks/`
+- [ ] Mover entidades para `game/entities/`
+- [ ] Organizar `game/` internamente
+- [ ] Mover pools de rede para `multiplayer/pools/`
+- [ ] Organizar `ui/` com widgets e screens
+- [ ] Consolidar audio e voice em `audio/`
+- [ ] Mover JNI para `platform/android/`
+- [ ] Remover globals gradualmente
+- [ ] Atualizar includes em todos os arquivos
+- [ ] Testar cada fase
+
+---
+
+*Versão: 2.0 - Simplificada*
