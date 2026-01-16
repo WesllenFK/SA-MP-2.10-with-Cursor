@@ -13,12 +13,14 @@ docs/
 ├── pt-br/           # Português (Brasil)
 │   ├── weapons/     # Sistema de armas
 │   ├── player/      # Sistema de personagem
-│   └── basketball/  # Sistema de basquete
+│   ├── basketball/  # Sistema de basquete
+│   └── pool/        # Sistema de sinuca
 │
 ├── english/         # English
 │   ├── weapons/     # Weapon system
 │   ├── player/      # Player/character system
-│   └── basketball/  # Basketball system
+│   ├── basketball/  # Basketball system
+│   └── pool/        # Pool system
 │
 └── README.md
 ```
@@ -42,6 +44,11 @@ docs/
 #### Sistema de Basquete
 - [Análise do Sistema de Basquete](pt-br/basketball/BASKETBALL_SYSTEM_ANALYSIS.md)
 
+#### Sistema de Sinuca (Pool)
+- [Análise do Sistema de Sinuca](pt-br/pool/POOL_SYSTEM_ANALYSIS.md)
+- [Árvore Detalhada de Funções](pt-br/pool/POOL_SYSTEM_FUNCTIONS.md)
+- [Tabela de Offsets](pt-br/pool/POOL_SYSTEM_OFFSETS.md)
+
 ### English
 
 #### Weapon System
@@ -56,6 +63,11 @@ docs/
 
 #### Basketball System
 - [Basketball System Analysis](english/basketball/BASKETBALL_SYSTEM_ANALYSIS.md)
+
+#### Pool System
+- [Pool System Analysis](english/pool/POOL_SYSTEM_ANALYSIS.md)
+- [Detailed Function Tree](english/pool/POOL_SYSTEM_FUNCTIONS.md)
+- [Offset Table](english/pool/POOL_SYSTEM_OFFSETS.md)
 
 ---
 
