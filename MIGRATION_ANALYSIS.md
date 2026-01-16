@@ -963,6 +963,446 @@ void UI::Render() {
 
 ---
 
-*Documento de Análise de Dependências v2.0*
+---
+
+## 11. Outros Aspectos Críticos para Migração
+
+### 11.1 Concorrência e Thread Safety
+
+**Threads identificadas no projeto:**
+
+| Local | Tipo | Uso |
+|-------|------|-----|
+| `audiostream.cpp` | `pthread_create` | Thread de streaming de áudio |
+| `CFPSFix.cpp` | `std::thread` | Thread de ajuste de afinidade |
+| `voice_new/Network.cpp` | `std::thread` | Thread de voz |
+| `nv_event.cpp` | Mutex | Proteção de fila de eventos |
+| `game/game.cpp` | Mutex | Fila de tarefas main thread |
+| `RakNet` | pthread | Threads de rede |
+
+**⚠️ Problemas potenciais:**
+```cpp
+// Mutex estático - cuidado na ordem de destruição
+static std::mutex g_EventMutex;
+
+// Globals acessados de múltiplas threads sem sincronização
+extern CNetGame* pNetGame;  // Pode ser NULL durante race condition
+```
+
+**✏️ Mudanças necessárias:**
+1. Auditar todos os acessos a globals de threads diferentes
+2. Usar `std::atomic` para flags simples
+3. Garantir ordem correta de inicialização/destruição de mutexes
+4. Considerar thread-local storage onde apropriado
+
+---
+
+### 11.2 Gerenciamento de Memória
+
+**Estatísticas:**
+- **169 ocorrências** de `new` (alocação)
+- **136 ocorrências** de `delete` (liberação)
+- **Diferença de 33** - potenciais memory leaks ou uso de containers
+
+**Arquivos com mais alocações:**
+
+| Arquivo | new | delete | Diferença |
+|---------|-----|--------|-----------|
+| `netgame.cpp` | 18 | 21 | -3 |
+| `gui.cpp` | 17 | 0 | +17 ⚠️ |
+| `buttonpanel.cpp` | 16 | 0 | +16 ⚠️ |
+| `keyboard.cpp` | 13 | 0 | +13 ⚠️ |
+| `main.cpp` | 15 | 4 | +11 ⚠️ |
+
+**⚠️ Problemas identificados:**
+```cpp
+// GUI cria widgets com new mas nunca deleta
+m_chat = new Chat();           // Quem deleta?
+m_keyboard = new Keyboard();   // Memory leak?
+```
+
+**✏️ Mudanças necessárias:**
+1. Usar `std::unique_ptr` para ownership claro
+2. Usar `std::shared_ptr` onde ownership é compartilhado
+3. Implementar destructors que limpam filhos
+4. Auditar cada `new` e garantir correspondente `delete`
+
+```cpp
+// ANTES
+Chat* m_chat;
+m_chat = new Chat();
+
+// DEPOIS
+std::unique_ptr<Chat> m_chat;
+m_chat = std::make_unique<Chat>();
+```
+
+---
+
+### 11.3 Compatibilidade 32/64 bits
+
+**Estatísticas:**
+- **895 ocorrências** de `VER_x32` em 202 arquivos
+- Definido no CMake baseado em `ANDROID_ABI`
+
+**Padrão comum:**
+```cpp
+g_libGTASA + (VER_x32 ? 0x00951FA8 : 0xBBA8D0)
+```
+
+**Arquivos mais afetados:**
+
+| Arquivo | Ocorrências de VER_x32 |
+|---------|------------------------|
+| `hooks.cpp` | 77 |
+| `game.cpp` | 70-91 |
+| `patches.cpp` | 58 |
+| `Streaming.cpp` | 35 |
+| `pad.cpp` | 33 |
+
+**✏️ Mudanças necessárias:**
+1. Centralizar offsets em um único arquivo de configuração
+2. Criar namespace ou classe `Offsets` com constantes nomeadas
+3. Facilitar atualização para novas versões do jogo
+
+```cpp
+// ANTES (espalhado por todo código)
+g_libGTASA + (VER_x32 ? 0x00951FA8 : 0xBBA8D0)
+
+// DEPOIS (centralizado)
+namespace Offsets {
+    namespace Camera {
+        constexpr uintptr_t TheCamera = VER_x32 ? 0x00951FA8 : 0xBBA8D0;
+    }
+}
+// Uso:
+g_libGTASA + Offsets::Camera::TheCamera
+```
+
+---
+
+### 11.4 Offsets Hardcoded (Acesso Direto ao GTA)
+
+**Estatísticas:**
+- **900 ocorrências** de `g_libGTASA +` (acessos diretos à memória do jogo)
+
+**Arquivos críticos:**
+
+| Arquivo | Acessos a g_libGTASA |
+|---------|---------------------|
+| `hooks.cpp` | 138 |
+| `game.cpp` | 91 |
+| `patches.cpp` | 58 |
+| `Streaming.cpp` | 35 |
+| `util.cpp` | 38 |
+| `font.cpp` | 20 |
+| `playerped.cpp` | 25 |
+
+**⚠️ Riscos:**
+1. Qualquer atualização do GTA SA quebra tudo
+2. Offsets espalhados dificultam manutenção
+3. Sem verificação de validade dos ponteiros
+
+**✏️ Mudanças necessárias:**
+1. Centralizar TODOS os offsets em `game/offsets.h`
+2. Agrupar por categoria (Camera, Pools, Render, etc.)
+3. Adicionar validação de ponteiros onde crítico
+4. Documentar cada offset
+
+```cpp
+// game/offsets.h
+namespace GameOffsets {
+    #if VER_x32
+    namespace Pools {
+        constexpr uintptr_t PedPool = 0x00B74490;
+        constexpr uintptr_t VehiclePool = 0x00B74494;
+    }
+    namespace Camera {
+        constexpr uintptr_t TheCamera = 0x00951FA8;
+    }
+    #else // 64-bit
+    namespace Pools {
+        constexpr uintptr_t PedPool = 0x...;
+    }
+    #endif
+}
+```
+
+---
+
+### 11.5 JNI Safety
+
+**Ocorrências encontradas:**
+```cpp
+// Referência global criada corretamente
+this->activity = env->NewGlobalRef(activity);  // ✅
+
+// String UTF liberada corretamente
+const char* pathStr = pEnv->GetStringUTFChars(path, nullptr);
+// ... uso ...
+pEnv->ReleaseStringUTFChars(path, pathStr);  // ✅
+```
+
+**⚠️ Problemas potenciais:**
+1. `javaVM` é global sem proteção de acesso
+2. Não há verificação se `activity` ainda é válido após longo tempo
+3. Falta tratamento de exceções JNI em alguns lugares
+
+**✏️ Mudanças necessárias:**
+1. Centralizar todo acesso JNI em `platform/android/`
+2. Sempre verificar exceções após chamadas JNI
+3. Usar helper já existente `GetJNIEnvSafe` consistentemente
+4. Considerar weak references para objetos de longa duração
+
+---
+
+### 11.6 Casts Inseguros
+
+**Estatísticas:**
+- **436 ocorrências** de `reinterpret_cast` / `static_cast`
+- **289 ocorrências** de C-style casts `(Type*)(expr)`
+
+**Exemplos problemáticos:**
+```cpp
+// C-style cast - esconde erros
+((void (*)(const char* thiz, int16_t* a2))(g_libGTASA + 0x385E38 + 1))(...)
+
+// reinterpret_cast para ponteiro de função
+CCamera& TheCamera = *reinterpret_cast<CCamera*>(g_libGTASA + offset)
+```
+
+**✏️ Mudanças necessárias:**
+1. Preferir `static_cast` onde possível
+2. Usar templates para function pointers
+3. Criar wrappers tipados para chamadas ao jogo
+
+```cpp
+// ANTES
+((void (*)(int))(g_libGTASA + 0x123456 + 1))(param);
+
+// DEPOIS
+template<typename Ret, typename... Args>
+auto GameCall(uintptr_t offset, Args... args) -> Ret {
+    using FuncType = Ret(*)(Args...);
+    auto func = reinterpret_cast<FuncType>(g_libGTASA + offset);
+    return func(args...);
+}
+
+GameCall<void, int>(GameOffsets::SomeFunc, param);
+```
+
+---
+
+### 11.7 Macros Complexas
+
+**Estatísticas:**
+- **376 ocorrências** de macros multi-linha em headers
+
+**Arquivos com mais macros:**
+- `game/RW/*.h` - Macros de RenderWare
+- `vendor/armhook/patch.h` - Macros de hooking
+- `obfusheader.h` - Macros de ofuscação
+
+**⚠️ Problemas:**
+1. Macros escondem dependências
+2. Difíceis de debugar
+3. Podem causar side effects inesperados
+
+**✏️ Mudanças necessárias:**
+1. Converter macros simples para `constexpr`
+2. Converter macros de função para `inline` functions
+3. Manter apenas macros necessárias (LOGI, etc.)
+
+---
+
+### 11.8 Estado Global Estático
+
+**Estatísticas:**
+- **47 variáveis estáticas** com inicialização em arquivos .cpp
+
+**Exemplos problemáticos:**
+```cpp
+// Estado que persiste entre chamadas
+static uint32_t dwLastUpdateTick = 0;
+static bool bWannaClick = false;
+static float fps = 120.f;
+
+// Cache de IDs JNI (problema se classe for recarregada)
+static jclass KeyCode_class = env->FindClass("...");
+static jfieldID ACTION_DOWN_id = ...;
+```
+
+**⚠️ Riscos:**
+1. Ordem de inicialização indefinida entre translation units
+2. Não é resetado quando o jogo reinicia
+3. Thread safety não garantido
+
+**✏️ Mudanças necessárias:**
+1. Mover estado para dentro de classes
+2. Resetar estado explicitamente em funções de inicialização
+3. Usar padrão de inicialização lazy quando necessário
+
+---
+
+### 11.9 Ordem de Inicialização
+
+**Sequência atual (inferida de main.cpp):**
+```
+1. JNI_OnLoad
+   ├── Encontra libGTASA, libsamp
+   ├── Inicializa Crashlytics
+   ├── Instala hooks especiais
+   ├── Aplica patches level 0
+   ├── Inicializa RenderWare functions
+   ├── Inicializa MultiTouch
+   ├── Cria CGame
+   └── Configura signal handlers
+
+2. setStoragePath (JNI)
+   └── Define g_pszStorage
+
+3. initializeSAMP (JNI)
+   └── Cria CJavaWrapper
+
+4. InitGui (chamado de hook)
+   ├── Plugin::OnPluginLoad (voice)
+   ├── Plugin::OnSampLoad (voice)
+   └── Cria UI
+
+5. DoInitStuff (no MainLoop)
+   ├── Cria PlayerTags
+   ├── Cria SnapShotHelper
+   ├── Cria MaterialTextGenerator
+   ├── Cria AudioStream
+   ├── Inicializa Game
+   └── Cria CNetGame
+```
+
+**⚠️ Problemas:**
+1. Dependências entre sistemas não são explícitas
+2. Falha em qualquer passo não é tratada graciosamente
+3. Ordem de destruição não é controlada
+
+**✏️ Mudanças necessárias:**
+1. Criar `Bootstrap` class que gerencia ordem de inicialização
+2. Cada sistema declara suas dependências
+3. Implementar destruição em ordem reversa
+
+```cpp
+class Bootstrap {
+public:
+    static bool Initialize() {
+        // Ordem explícita e controlada
+        if (!InitializeCore()) return false;
+        if (!InitializePlatform()) return false;
+        if (!InitializeGame()) return false;
+        if (!InitializeAudio()) return false;
+        if (!InitializeUI()) return false;
+        if (!InitializeMultiplayer()) return false;
+        return true;
+    }
+    
+    static void Shutdown() {
+        // Ordem reversa
+        ShutdownMultiplayer();
+        ShutdownUI();
+        ShutdownAudio();
+        ShutdownGame();
+        ShutdownPlatform();
+        ShutdownCore();
+    }
+};
+```
+
+---
+
+### 11.10 Build System (CMake)
+
+**Estrutura atual:**
+```cmake
+file(GLOB_RECURSE SOURCES *.c*)  # Pega TUDO
+add_library(samp SHARED ${SOURCES})
+```
+
+**⚠️ Problemas:**
+1. GLOB_RECURSE não detecta novos arquivos automaticamente (precisa re-run cmake)
+2. Todos os arquivos compilados juntos - sem modularidade
+3. Sem separação de bibliotecas estáticas por módulo
+
+**✏️ Mudanças necessárias para módulos:**
+```cmake
+# core/CMakeLists.txt
+add_library(core STATIC
+    services.cpp
+    logging.cpp
+    events/event_bus.cpp
+)
+
+# game/CMakeLists.txt
+add_library(game STATIC
+    engine/game.cpp
+    engine/world.cpp
+    hooks/hooks.cpp
+    # ...
+)
+target_link_libraries(game PUBLIC core platform)
+
+# CMakeLists.txt principal
+add_subdirectory(core)
+add_subdirectory(platform)
+add_subdirectory(game)
+add_subdirectory(multiplayer)
+add_subdirectory(ui)
+add_subdirectory(audio)
+
+add_library(samp SHARED)
+target_link_libraries(samp 
+    multiplayer 
+    ui 
+    audio 
+    game 
+    platform 
+    core
+)
+```
+
+---
+
+## 12. Resumo de Números
+
+| Métrica | Quantidade |
+|---------|------------|
+| Globals expostos | 134 ocorrências |
+| Dependências circulares | 47 identificadas |
+| Variáveis estáticas | 47 |
+| Threads/Mutexes | 30 ocorrências |
+| Alocações (new) | 169 |
+| Liberações (delete) | 136 |
+| Verificações VER_x32 | 895 |
+| Acessos g_libGTASA+ | 900 |
+| Casts (reinterpret/static) | 436 |
+| C-style casts | 289 |
+| Macros multi-linha | 376 |
+
+---
+
+## 13. Priorização de Riscos
+
+| Risco | Impacto | Probabilidade | Prioridade |
+|-------|---------|---------------|------------|
+| Dependências circulares | Alto | Certa | 🔴 P1 |
+| Globals não thread-safe | Alto | Alta | 🔴 P1 |
+| Memory leaks (GUI) | Médio | Alta | 🟡 P2 |
+| Offsets hardcoded | Alto | Baixa* | 🟡 P2 |
+| Ordem de inicialização | Alto | Média | 🟡 P2 |
+| Casts inseguros | Médio | Média | 🟢 P3 |
+| Macros complexas | Baixo | Baixa | 🟢 P3 |
+
+*Baixa probabilidade enquanto versão do GTA não mudar
+
+---
+
+*Documento de Análise de Dependências v3.0*
 *Total de dependências circulares identificadas: 47*
 *Total de globals a eliminar: 134 ocorrências*
+*Aspectos adicionais analisados: 10*
