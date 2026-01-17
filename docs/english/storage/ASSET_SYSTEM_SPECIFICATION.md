@@ -13,10 +13,10 @@
 3. [Data Structures](#3-data-structures)
 4. [Asset Providers](#4-asset-providers)
 5. [Loading System](#5-loading-system)
-6. [Asset Migration](#6-asset-migration)
+6. [Asset Initialization](#6-asset-initialization)
 7. [JNI Integration](#7-jni-integration)
 8. [Android 16 Compatibility](#8-android-16-compatibility)
-9. [Replacement of Legacy Systems](#9-replacement-of-legacy-systems)
+9. [Complete Replacement of Legacy Systems](#9-complete-replacement-of-legacy-systems)
 10. [Integration Guide](#10-integration-guide)
 11. [Future Extensibility](#11-future-extensibility)
 
@@ -28,9 +28,10 @@
 
 Unified modular asset loading system that:
 - Centralizes all file access in the project
-- Migrates assets from `assets/` (APK) and `data/android/` to `data/data/` (more secure)
+- Copies assets from `assets/` (APK) to `data/data/` on first run (initialization)
 - Provides unified API for Java and C++ via JNI
-- Extensible for download, import, modification, and deletion of assets
+- Completely replaces all legacy loading systems
+- Modular structure prepared for future extensions (download, import, etc.)
 - Strictly follows the modular monolith architecture
 
 ### 1.2 Design Principles
@@ -40,7 +41,8 @@ Unified modular asset loading system that:
 | **Modularity** | Follows modular monolith pattern, integrated via `SAMPCore` |
 | **Security** | Uses only `data/data/com.samp.mobile/` (protected by UID) |
 | **Unification** | Single entry point for all assets (Java and C++) |
-| **Extensibility** | Prepared for future systems (download, import, mod, delete, check) |
+| **Complete Replacement** | No legacy systems will be maintained - immediate and total replacement |
+| **Extensibility** | Structure prepared for future extensions (download, import, etc.) |
 | **Compatibility** | Compatible with Android 16+ and privacy policies |
 
 ### 1.3 Requirements
@@ -52,10 +54,10 @@ Unified modular asset loading system that:
 - Android 16 (API 36)
 - Modular Monolith Architecture
 
-**Migration:**
-- Assets from `app/src/main/assets/`
-- Data from `data/android/com.samp.mobile/files/`
+**Initialization:**
+- Assets from `app/src/main/assets/` (APK)
 - Destination: `data/data/com.samp.mobile/files/`
+- One-time copy on first run
 
 ---
 
@@ -71,8 +73,7 @@ Unified modular asset loading system that:
 │  ┌─────────────────────────────────────────────────────────┐     │
 │  │                   AssetManager (Core)                    │     │
 │  │  • LoadAsset()  • LoadTexture()  • LoadAudio()          │     │
-│  │  • Download()   • Import()       • Modify()             │     │
-│  │  • Delete()     • Check()        • ResolvePath()        │     │
+│  │  • LoadScript() • ResolvePath()  • ClearCache()         │     │
 │  └─────────────────────────────────────────────────────────┘     │
 │                              │                                     │
 │          ┌───────────────────┼───────────────────┐                │
@@ -89,10 +90,11 @@ Unified modular asset loading system that:
 │          ┌───────────────────┼───────────────────┐                │
 │          │                   │                   │                │
 │          ▼                   ▼                   ▼                │
-│  ┌──────────────┐   ┌──────────────┐   ┌──────────────┐         │
-│  │FilesDirProv. │   │APKProvider   │   │NetworkProv.  │         │
-│  │(data/data/)  │   │(assets/)     │   │(future)      │         │
-│  └──────────────┘   └──────────────┘   └──────────────┘         │
+│  ┌──────────────┐   ┌──────────────┐                            │
+│  │FilesDirProv. │   │APKProvider   │                            │
+│  │(data/data/)  │   │(assets/)     │                            │
+│  │✅ IMPLEMENT  │   │✅ IMPLEMENT  │                            │
+│  └──────────────┘   └──────────────┘                            │
 │                              │                                     │
 │                              ▼                                     │
 │  ┌─────────────────────────────────────────────────────────┐     │
@@ -103,7 +105,7 @@ Unified modular asset loading system that:
 │                              ▼                                     │
 │  ┌─────────────────────────────────────────────────────────┐     │
 │  │          AssetStorageManager (Java/Kotlin)               │     │
-│  │  • loadAsset()  • getBasePath()  • migrateAssets()      │     │
+│  │  • loadAsset()  • getBasePath()  • initializeAssets()   │     │
 │  └─────────────────────────────────────────────────────────┘     │
 │                                                                   │
 └─────────────────────────────────────────────────────────────────┘
@@ -118,7 +120,7 @@ platform/
     ├── AssetLoader.h/cpp            # Specialized loaders
     ├── AssetPathResolver.h/cpp      # Path resolution
     ├── AssetCache.h/cpp             # Cache and validation
-    ├── AssetMigration.h/cpp         # Migration of old assets
+    ├── AssetInitialization.h/cpp    # Initialization (APK copy)
     │
     ├── loaders/
     │   ├── FileLoader.h/cpp         # Generic files
@@ -129,10 +131,10 @@ platform/
     │
     ├── providers/
     │   ├── IAssetProvider.h         # Base interface
-    │   ├── APKAssetProvider.h/cpp   # APK assets (fallback)
-    │   ├── FilesDirProvider.h/cpp   # data/data/
-    │   ├── ExternalProvider.h/cpp   # Future: external assets
-    │   └── NetworkProvider.h/cpp    # Future: download
+    │   ├── APKAssetProvider.h/cpp   # APK assets (fallback) ✅
+    │   ├── FilesDirProvider.h/cpp   # data/data/ ✅
+    │   ├── NetworkProvider.h        # Future: interface only ⏳
+    │   └── ExternalProvider.h       # Future: interface only ⏳
     │
     └── jni/
         └── AssetJNIBridge.h/cpp     # JNI bridge
@@ -244,11 +246,7 @@ Provider search order follows priority:
    - Usage: Fallback for default game assets
    - Access: Via Android `AssetManager`
 
-3. **NetworkProvider** (priority 25) - Future
-   - Usage: Download assets from server
-
-4. **ExternalProvider** (priority 10) - Future
-   - Usage: Externally imported assets
+**Note:** NetworkProvider and ExternalProvider will be added in the future through the `IAssetProvider` interface. The current system supports only FilesDir and APK.
 
 ---
 
@@ -276,13 +274,6 @@ public:
     std::unique_ptr<TextureAsset> LoadTexture(const std::string& path);
     std::unique_ptr<AudioAsset> LoadAudio(const std::string& path);
     std::unique_ptr<ScriptAsset> LoadScript(const std::string& path);
-    
-    // Future operations
-    bool DownloadAsset(const std::string& url, const std::string& path);
-    bool ImportAsset(const std::string& sourcePath, const std::string& destPath);
-    bool ModifyAsset(const std::string& path, const void* data, size_t size);
-    bool DeleteAsset(const std::string& path);
-    bool CheckAsset(const std::string& path, AssetChecksum& checksum);
     
     // Path resolution
     std::string ResolvePath(const std::string& logicalPath);
@@ -329,34 +320,56 @@ private:
 
 ---
 
-## 6. Asset Migration
+## 6. Asset Initialization
 
-### 6.1 Migration Process
+### 6.1 Initialization Process
 
-The `AssetMigration` service performs migration in stages:
+The `AssetInitialization` service performs the initial copy of assets from APK:
 
-1. **Detection**
+1. **Verification**
+   - Checks if assets have already been initialized
+   - If yes, skips the copy
+
+2. **Scanning**
    - Scans `assets/` in APK
-   - Scans `data/android/com.samp.mobile/files/` (if exists)
-   - Lists all files to migrate
+   - Lists all files to copy
 
-2. **Validation**
+3. **Validation**
    - Checks available disk space
-   - Validates file integrity
-   - Creates migration list
+   - Validates APK file integrity
 
-3. **Copy**
-   - Copies files to `data/data/com.samp.mobile/files/`
+4. **Copy**
+   - Copies files from `assets/` (APK) to `data/data/com.samp.mobile/files/`
    - Maintains directory structure
    - Preserves permissions
 
-4. **Verification**
-   - Validates checksums
+5. **Verification**
    - Confirms copied files
-   - Updates metadata
+   - Marks initialization as complete
 
-5. **Cleanup** (optional)
-   - Removes old files from `data/android/` (if desired)
+**Important Note:** There is no migration from `data/android/` because the legacy system will be completely removed. Only APK assets are copied on first run.
+
+### 6.2 AssetInitialization
+
+```cpp
+class AssetInitialization {
+public:
+    struct InitResult {
+        bool success;
+        size_t filesCopied;
+        size_t bytesCopied;
+        std::vector<std::string> errors;
+    };
+    
+    // Copy only APK assets (does not copy from legacy system)
+    InitResult InitializeFromAPK(JavaVM* jvm, jobject context);
+    
+private:
+    bool ShouldInitialize(); // Check if already initialized
+    bool CopyAssetFromAPK(const std::string& assetPath, const std::string& destPath);
+    bool ValidateFile(const std::string& path);
+};
+```
 
 ---
 
@@ -380,9 +393,7 @@ public:
     static std::vector<std::string> ListFiles(const std::string& directory);
     static std::string GetBasePath();
     
-    // Calls from Java to C++
-    static void OnAssetDownloaded(const std::string& path);
-    static void OnAssetImported(const std::string& path);
+    // Note: Callbacks for download/import will be added in the future
     
 private:
     static JavaVM* s_jvm;
@@ -416,19 +427,63 @@ private:
 
 ---
 
-## 9. Replacement of Legacy Systems
+## 9. Complete Replacement of Legacy Systems
 
-### 9.1 Mapping Table
+### 9.1 Principle: No Legacy Systems Will Be Maintained
 
-| Legacy System | New System | Notes |
-|---------------|------------|-------|
-| `g_pszStorage` | `AssetManager::Get()->GetBasePath()` | Remove global variable |
-| `NvFOpen` hook | `AssetManager::LoadAsset()` | Replace hook with direct call |
-| `NvAPKFileHelper` | `APKAssetProvider` | Refactor to provider |
-| `TextureDatabaseRuntime::Load()` | `AssetManager::LoadTexture()` | Wrapper in `TextureLoader` |
-| `CFileMgr::OpenFile()` | `AssetManager::LoadAsset()` | Use AssetManager internally |
-| `loadFile()` Java | `AssetStorageManager.loadAsset()` | Unify Java API |
-| `loadTexture()` Java | `AssetStorageManager.loadTexture()` | Specialize |
+**Important:** There will be no transition period or compatibility. The legacy system will be completely removed and all usage points will be immediately updated to the new system.
+
+### 9.2 Complete Replacement Table
+
+| Legacy System | Status | New System | Action |
+|---------------|--------|------------|--------|
+| `g_pszStorage` | ❌ **REMOVE** | `AssetManager::Get()->GetBasePath()` | Completely eliminate global variable |
+| `NvFOpen` hook | ❌ **REMOVE** | `AssetManager::LoadAsset()` | Remove hook, use AssetManager directly |
+| `NvAPKFileHelper` | ❌ **REMOVE** | `APKAssetProvider` | Remove Java class, refactor to provider |
+| `NvEventQueueActivity.loadFile()` | ❌ **REMOVE** | `AssetStorageManager.loadAsset()` | Remove method, use AssetStorageManager |
+| `NvEventQueueActivity.loadTexture()` | ❌ **REMOVE** | `AssetStorageManager.loadTexture()` | Remove method, use AssetStorageManager |
+| `TextureDatabaseRuntime::Load()` | ❌ **REMOVE** | `AssetManager::LoadTexture()` | Remove legacy system, use TextureLoader |
+| `CFileMgr::OpenFile()` | ❌ **REMOVE** | `AssetManager::LoadAsset()` | Refactor to use AssetManager |
+| All uses of `g_pszStorage` | ❌ **UPDATE** | `AssetManager::GetBasePath()` | Replace all references |
+
+### 9.3 Direct Replacement Example
+
+**Before (legacy system):**
+```cpp
+// hooks.cpp - NvFOpen hook (COMPLETELY REMOVE)
+stFile* NvFOpen(const char* r0, const char* r1, int r2, int r3) {
+    static char path[255];
+    sprintf(path, "%s%s", g_pszStorage, r1); // ❌ g_pszStorage no longer exists
+    FILE* f = fopen(path, "rb");
+    // ...
+}
+
+// main.cpp - g_pszStorage (COMPLETELY REMOVE)
+char* g_pszStorage = nullptr; // ❌ REMOVE
+```
+
+**After (new system):**
+```cpp
+// Where NvFOpen was used, now use AssetManager directly
+auto asset = AssetManager::Get()->LoadAsset(logicalPath);
+if (asset) {
+    const void* data = asset->GetData();
+    size_t size = asset->GetSize();
+    // Use data directly - no need for FILE*
+}
+```
+
+### 9.4 Files That Will Be Completely Removed
+
+- ❌ `app/src/main/cpp/samp/game/hooks.cpp` - `NvFOpen` function (completely remove)
+- ❌ `app/src/main/java/com/nvidia/devtech/NvAPKFileHelper.java` (completely remove)
+- ❌ `app/src/main/java/com/nvidia/devtech/NvEventQueueActivity.java` - `loadFile()` and `loadTexture()` methods (remove)
+- ❌ `app/src/main/cpp/samp/main.cpp` - `g_pszStorage` variable and `setStoragePath` (remove)
+- ❌ `TextureDatabaseRuntime` system (will be replaced by `TextureLoader`)
+
+### 9.5 All Systems Will Be Updated Immediately
+
+There will be no legacy system support. All systems that depend on file loading will be updated in the same implementation to use `AssetManager`.
 
 ---
 
@@ -452,11 +507,11 @@ bool Bootstrap::Initialize() {
         return false;
     }
     
-    // Migrate assets on first run
-    auto migration = AssetMigration();
-    auto result = migration.MigrateAll(jvm, context);
+    // Initialize assets (APK copy) on first run
+    auto initialization = AssetInitialization();
+    auto result = initialization.InitializeFromAPK(jvm, context);
     if (!result.success) {
-        FLog("Asset migration failed: %zu files migrated", result.filesMigrated);
+        FLog("Asset initialization failed: %zu files copied", result.filesCopied);
     }
     
     return true;
@@ -490,59 +545,51 @@ if (script) {
 
 ## 11. Future Extensibility
 
-### 11.1 Asset Download
+The system has been designed to be modular and extensible. Although we are not implementing download, import, modification, and verification features now, the structure allows these functionalities to be added in the future without changing the main public API.
 
+### 11.1 How to Extend the System
+
+**Adding a New Provider:**
+
+1. Create class implementing `IAssetProvider`
+2. Register in `AssetManager::RegisterProviders()`
+3. System will automatically use when needed (based on priority)
+
+**Future Example (NetworkProvider):**
 ```cpp
-// Future: NetworkProvider
+// providers/NetworkProvider.h - Interface only for now
 class NetworkProvider : public IAssetProvider {
 public:
-    bool DownloadAsset(const std::string& url, const std::string& localPath) {
-        // Implement HTTP/HTTPS download
-        // Save to FilesDirProvider
-        // Notify via JNI callback
+    NetworkProvider() = default;
+    AssetProviderType GetType() const override { return AssetProviderType::Network; }
+    int GetPriority() const override { return 25; }
+    
+    // Methods return nullptr/empty for now
+    std::unique_ptr<Asset> Load(const std::string& path) override {
+        // TODO: Implement when needed
+        return nullptr;
+    }
+    
+    bool Exists(const std::string& path) const override {
+        // TODO: Implement when needed
+        return false;
+    }
+    
+    std::vector<std::string> List(const std::string& directory) const override {
+        // TODO: Implement when needed
+        return {};
     }
 };
 ```
 
-### 11.2 Asset Import
+**Future Extensions (not implemented now):**
+- Asset download (via NetworkProvider)
+- Asset import (via SAF - Storage Access Framework)
+- Asset modification (write to FilesDirProvider)
+- Integrity verification (checksums)
+- Asset deletion
 
-```cpp
-// Future: Import via SAF (Storage Access Framework)
-bool AssetManager::ImportAsset(const std::string& sourceUri) {
-    // Open file selector via JNI
-    // Copy to FilesDirProvider
-    // Validate integrity
-}
-```
-
-### 11.3 Asset Modification
-
-```cpp
-// Future: Asset editing
-bool AssetManager::ModifyAsset(const std::string& path, const void* data, size_t size) {
-    // Validate write permission
-    // Invalidate cache
-    // Save to FilesDirProvider
-}
-```
-
-### 11.4 Integrity Verification
-
-```cpp
-// Future: Checksums and validation
-struct AssetChecksum {
-    std::string md5;
-    std::string sha256;
-    size_t size;
-    time_t modified;
-};
-
-bool AssetManager::CheckAsset(const std::string& path, AssetChecksum& checksum) {
-    // Calculate checksums
-    // Compare with database
-    // Return integrity status
-}
-```
+The modular structure allows adding these functionalities without modifying the `AssetManager` core.
 
 ---
 
