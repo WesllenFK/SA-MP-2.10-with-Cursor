@@ -5,13 +5,13 @@
 #include "Pools.h"
 #include "IplDef.h"
 #include "../vendor/armhook/patch.h"
-#include "game/Entity/CVehicleGTA.h"
-#include "game/Entity/Building.h"
-#include "game/Entity/CopPed.h"
-#include "game/Entity/Heli.h"
-#include "game/Entity/Dummy.h"
-#include "game/Entity/Object.h"
-#include "game/Entity/CutsceneObject.h"
+#include "Entity/CVehicleGTA.h"
+#include "Entity/Building.h"
+#include "Entity/CopPed.h"
+#include "Entity/Heli.h"
+#include "Entity/Dummy.h"
+#include "Entity/Object.h"
+#include "Entity/CutsceneObject.h"
 
 PoolAllocator::Pool*      CPools::ms_pColModelPool;
 PoolAllocator::Pool*      CPools::ms_pEventPool;
@@ -21,7 +21,6 @@ PoolAllocator::Pool*      CPools::ms_pNodeRoutePool;
 PoolAllocator::Pool*      CPools::ms_pTaskAllocatorPool;
 PoolAllocator::Pool*      CPools::ms_pPedIntelligencePool;
 PoolAllocator::Pool*      CPools::ms_pPedAttractorPool;
-
 
 void CPools::Initialise()
 {

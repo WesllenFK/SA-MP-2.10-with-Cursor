@@ -1,19 +1,24 @@
 #include "CFileMgr.h"
 #include "main.h"
 #include "../vendor/armhook/patch.h"
+#include "../platform/storage/AssetManager.h"
 
 void CFileMgr::SetDir(const char *path) {
     ( ( void(*)(const char *path) )(g_libGTASA + (VER_x32 ? 0x003F0C54 + 1 : 0x4D293C)) )(path);
 }
 
 FILE* CFileMgr::OpenFile(const char *path, const char *mode) {
-    // Verifica se g_pszStorage é válido antes de usar
-    if (g_pszStorage == nullptr || g_pszStorage[0] == '\0') {
+    using namespace samp::platform::storage;
+    
+    AssetManager& assetMgr = AssetManager::Get();
+    const std::string& basePath = assetMgr.GetBasePath();
+    
+    if (basePath.empty()) {
         FLog("OpenFile failed: storage path not set");
         return nullptr;
     }
 
-    sprintf(ms_path, "%s%s", g_pszStorage, path);
+    sprintf(ms_path, "%s%s", basePath.c_str(), path);
 
     auto file = fopen(ms_path, mode);
 

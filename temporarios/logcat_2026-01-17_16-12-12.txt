@@ -1,0 +1,814 @@
+[2026-01-17 16:11:52.896 Uid(value=10348):17694:17694 I/com.samp.mobile]
+Using CollectorTypeCMC GC.
+
+[2026-01-17 16:11:52.913 Uid(value=10348):17694:17694 D/nativeloader]
+Load libframework-connectivity-tiramisu-jni.so using APEX ns com_android_tethering for caller /apex/com.android.tethering/javalib/framework-connectivity-t.jar: ok
+
+[2026-01-17 16:11:52.923 Uid(value=10348):17694:17694 I/MessageMonitor]
+Load libmiui_runtime
+
+[2026-01-17 16:11:52.934 Uid(value=10348):17694:17694 E/MQSEventManagerDelegate]
+failed to get MQSService.
+
+[2026-01-17 16:11:52.934 Uid(value=10348):17694:17694 W/ActivityThread]
+registerApplicationScoutThread result:false
+
+[2026-01-17 16:11:52.936 Uid(value=10348):17694:17694 D/MiuiMonitorThread]
+Shared singleton Thread for stability monitor start
+
+[2026-01-17 16:11:52.942 Uid(value=10348):17694:17705 E/MQSEventManagerDelegate]
+failed to get MQSService.
+
+[2026-01-17 16:11:52.942 Uid(value=10348):17694:17705 W/MQSEventManagerDelegate]
+getReportAppLaunch getMQSService null
+
+[2026-01-17 16:11:52.944 Uid(value=10348):17694:17704 D/AppScoutStateMachine]
+17694-ScoutStateMachinecreated
+
+[2026-01-17 16:11:52.951 Uid(value=10348):17694:17694 D/ActivityThread]
+setEmbeddedParam packageName=com.samp.mobile processName=com.samp.mobile isEmbedded=false isIsolated=false
+
+[2026-01-17 16:11:52.958 Uid(value=10348):17694:17694 D/nativeloader]
+Configuring clns-7 for other apk /data/app/~~Wymzq0KPk8_686P2a5Zvpw==/com.samp.mobile-NJK1olGtCUGB9vHGNT416A==/base.apk. target_sdk_version=36, uses_libraries=, library_path=/data/app/~~Wymzq0KPk8_686P2a5Zvpw==/com.samp.mobile-NJK1olGtCUGB9vHGNT416A==/lib/arm64:/data/app/~~Wymzq0KPk8_686P2a5Zvpw==/com.samp.mobile-NJK1olGtCUGB9vHGNT416A==/base.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand:/data/user/0/com.samp.mobile
+
+[2026-01-17 16:11:52.976 Uid(value=10348):17694:17694 V/GraphicsEnvironment]
+Currently set values for:
+
+[2026-01-17 16:11:52.976 Uid(value=10348):17694:17694 V/GraphicsEnvironment]
+  angle_gl_driver_selection_pkgs=[]
+
+[2026-01-17 16:11:52.976 Uid(value=10348):17694:17694 V/GraphicsEnvironment]
+  angle_gl_driver_selection_values=[]
+
+[2026-01-17 16:11:52.976 Uid(value=10348):17694:17694 V/GraphicsEnvironment]
+Global.Settings values are invalid: number of packages: 0, number of values: 0
+
+[2026-01-17 16:11:52.976 Uid(value=10348):17694:17694 V/GraphicsEnvironment]
+Neither updatable production driver nor prerelease driver is supported.
+
+[2026-01-17 16:11:52.977 Uid(value=10348):17694:17694 I/ActivityThread]
+TrafficStats init done
+
+[2026-01-17 16:11:52.982 Uid(value=10348):17694:17694 D/ActivityThread]
+useGrowthLimitOutExpendMethod invoke error.
+
+[2026-01-17 16:11:52.986 Uid(value=10348):17694:17694 I/ForceDarkHelperStubImpl]
+initialize for com.samp.mobile , ForceDarkAppConfig: null
+
+[2026-01-17 16:11:52.989 Uid(value=10348):17694:17694 D/nativeloader]
+Load libforcedarkimpl.so using system ns (caller=/system_ext/framework/miui-framework.jar): ok
+
+[2026-01-17 16:11:52.989 Uid(value=10348):17694:17694 D/HWUI]
+JNI_OnLoad success
+
+[2026-01-17 16:11:52.989 Uid(value=10348):17694:17694 I/MiuiForceDarkConfig]
+setConfig density:2.000000, mainRule:0, secondaryRule:0, tertiaryRule:0
+
+[2026-01-17 16:11:52.998 Uid(value=10348):17694:17694 I/ActivityThread]
+Miui Feature Init done
+
+[2026-01-17 16:11:53.007 Uid(value=10348):17694:17694 I/ResMonitorStub]
+Get RMS proxy takes 1 ms
+
+[2026-01-17 16:11:53.019 Uid(value=10348):17694:17694 I/FirebaseApp]
+Device unlocked: initializing all Firebase APIs for app [DEFAULT]
+
+[2026-01-17 16:11:53.037 Uid(value=10348):17694:17694 I/FirebaseInitProvider]
+FirebaseApp initialization successful
+
+[2026-01-17 16:11:53.056 Uid(value=10348):17694:17715 W/com.samp.mobile]
+ClassLoaderContext classpath size mismatch. expected=1, found=0 (DLC[];PCL[base.apk*940910263]{PCL[/system/framework/org.apache.http.legacy.jar*4025584831]#PCL[/system/framework/com.android.media.remotedisplay.jar*2042759013]#PCL[/system/framework/com.android.location.provider.jar*3414091812]#PCL[/system_ext/framework/androidx.window.extensions.jar*4126717798]#PCL[/system_ext/framework/androidx.window.sidecar.jar*2958050178]} | DLC[];PCL[])
+
+[2026-01-17 16:11:53.066 Uid(value=10348):17694:17715 I/DynamiteModule]
+Considering local module com.google.android.gms.measurement.dynamite:86 and remote module com.google.android.gms.measurement.dynamite:172
+
+[2026-01-17 16:11:53.066 Uid(value=10348):17694:17715 I/DynamiteModule]
+Selected remote version of com.google.android.gms.measurement.dynamite, version >= 172
+
+[2026-01-17 16:11:53.066 Uid(value=10348):17694:17715 V/DynamiteModule]
+Dynamite loader version >= 2, using loadModule2NoCrashUtils
+
+[2026-01-17 16:11:53.095 Uid(value=10348):17694:17694 D/nativeloader]
+Load /data/app/~~Wymzq0KPk8_686P2a5Zvpw==/com.samp.mobile-NJK1olGtCUGB9vHGNT416A==/base.apk!/lib/arm64-v8a/libshadowhook.so using class loader ns clns-7 (caller=/data/app/~~Wymzq0KPk8_686P2a5Zvpw==/com.samp.mobile-NJK1olGtCUGB9vHGNT416A==/base.apk): ok
+
+[2026-01-17 16:11:53.098 Uid(value=10348):17694:17715 W/System]
+ClassLoader referenced unknown path: 
+
+[2026-01-17 16:11:53.098 Uid(value=10348):17694:17715 D/nativeloader]
+Configuring clns-8 for other apk . target_sdk_version=36, uses_libraries=, library_path=/data/app/~~cYe7Ud6DwJMYCXgEqfr8IQ==/com.google.android.gms-y4GkKUUbWiFUYvY26ycLgg==/lib/arm64:/data/app/~~cYe7Ud6DwJMYCXgEqfr8IQ==/com.google.android.gms-y4GkKUUbWiFUYvY26ycLgg==/base.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand:/data/user/0/com.google.android.gms
+
+[2026-01-17 16:11:53.102 Uid(value=10348):17694:17694 E/shadowhook_tag]
+shadowhook version 2.0.0: shadowhook init(default_mode: UNIQUE, debuggable: false), return: 0, real-init: yes
+
+[2026-01-17 16:11:53.103 Uid(value=10348):17694:17694 I/System.out]
+**** Loading SO's
+
+[2026-01-17 16:11:53.103 Uid(value=10348):17694:17694 I/System.out]
+vmVersion 2.1.0
+
+[2026-01-17 16:11:53.104 Uid(value=10348):17694:17694 D/nativeloader]
+Load libImmEmulatorJ.so using class loader ns clns-7 (caller=/data/app/~~Wymzq0KPk8_686P2a5Zvpw==/com.samp.mobile-NJK1olGtCUGB9vHGNT416A==/base.apk): dlopen failed: library "libImmEmulatorJ.so" not found
+
+[2026-01-17 16:11:53.144 Uid(value=10348):17694:17694 D/nativeloader]
+Load /data/app/~~Wymzq0KPk8_686P2a5Zvpw==/com.samp.mobile-NJK1olGtCUGB9vHGNT416A==/base.apk!/lib/arm64-v8a/libGTASA.so using class loader ns clns-7 (caller=/data/app/~~Wymzq0KPk8_686P2a5Zvpw==/com.samp.mobile-NJK1olGtCUGB9vHGNT416A==/base.apk): ok
+
+[2026-01-17 16:11:53.145 Uid(value=10348):17694:17694 D/NVEvent]
+JNI_OnLoad called
+
+[2026-01-17 16:11:53.145 Uid(value=10348):17694:17694 D/NVEvent]
+RegisterNatives 13
+
+[2026-01-17 16:11:53.148 Uid(value=10348):17694:17694 D/nativeloader]
+Load /data/app/~~Wymzq0KPk8_686P2a5Zvpw==/com.samp.mobile-NJK1olGtCUGB9vHGNT416A==/base.apk!/lib/arm64-v8a/libbass.so using class loader ns clns-7 (caller=/data/app/~~Wymzq0KPk8_686P2a5Zvpw==/com.samp.mobile-NJK1olGtCUGB9vHGNT416A==/base.apk): ok
+
+[2026-01-17 16:11:53.151 Uid(value=10348):17694:17715 W/com.samp.mobile]
+ClassLoaderContext classpath element checksum mismatch. expected=940910263, found=2850706047 (DLC[];PCL[base.apk*940910263]{PCL[/system/framework/org.apache.http.legacy.jar*4025584831]#PCL[/system/framework/com.android.media.remotedisplay.jar*2042759013]#PCL[/system/framework/com.android.location.provider.jar*3414091812]#PCL[/system_ext/framework/androidx.window.extensions.jar*4126717798]#PCL[/system_ext/framework/androidx.window.sidecar.jar*2958050178]} | DLC[];PCL[/data/app/~~Wymzq0KPk8_686P2a5Zvpw==/com.samp.mobile-NJK1olGtCUGB9vHGNT416A==/base.apk*2850706047])
+
+[2026-01-17 16:11:53.153 Uid(value=10348):17694:17694 D/nativeloader]
+Load /data/app/~~Wymzq0KPk8_686P2a5Zvpw==/com.samp.mobile-NJK1olGtCUGB9vHGNT416A==/base.apk!/lib/arm64-v8a/libsamp.so using class loader ns clns-7 (caller=/data/app/~~Wymzq0KPk8_686P2a5Zvpw==/com.samp.mobile-NJK1olGtCUGB9vHGNT416A==/base.apk): ok
+
+[2026-01-17 16:11:53.153 Uid(value=10348):17694:17694 I/AXL]
+SA-MP library loaded! Build time: Jan 17 2026 13:52:03
+
+[2026-01-17 16:11:53.157 Uid(value=10348):17694:17694 I/AXL]
+libGTASA.so: 0xc103f000
+
+[2026-01-17 16:11:53.157 Uid(value=10348):17694:17694 I/AXL]
+libsamp.so: 0x33a09000
+
+[2026-01-17 16:11:53.157 Uid(value=10348):17694:17694 I/AXL]
+libc.so: 0x0
+
+[2026-01-17 16:11:53.158 Uid(value=10348):17694:17694 I/AXL]
+InjectHooks
+
+[2026-01-17 16:11:53.158 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188e2d0 (len=8): Permission denied
+
+[2026-01-17 16:11:53.159 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc1889bb0 (len=8): Permission denied
+
+[2026-01-17 16:11:53.159 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188a558 (len=8): Permission denied
+
+[2026-01-17 16:11:53.159 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188a2b0 (len=8): Permission denied
+
+[2026-01-17 16:11:53.159 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188db58 (len=8): Permission denied
+
+[2026-01-17 16:11:53.159 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188abe0 (len=8): Permission denied
+
+[2026-01-17 16:11:53.159 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188f068 (len=8): Permission denied
+
+[2026-01-17 16:11:53.159 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188a4c8 (len=8): Permission denied
+
+[2026-01-17 16:11:53.159 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188b7e0 (len=8): Permission denied
+
+[2026-01-17 16:11:53.159 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188e948 (len=8): Permission denied
+
+[2026-01-17 16:11:53.159 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188fdb8 (len=8): Permission denied
+
+[2026-01-17 16:11:53.159 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188f9a0 (len=8): Permission denied
+
+[2026-01-17 16:11:53.159 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188e280 (len=8): Permission denied
+
+[2026-01-17 16:11:53.159 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188bd28 (len=8): Permission denied
+
+[2026-01-17 16:11:53.159 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188bd90 (len=8): Permission denied
+
+[2026-01-17 16:11:53.159 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188a1a8 (len=8): Permission denied
+
+[2026-01-17 16:11:53.159 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188b030 (len=8): Permission denied
+
+[2026-01-17 16:11:53.160 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188f4b8 (len=8): Permission denied
+
+[2026-01-17 16:11:53.160 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188be50 (len=8): Permission denied
+
+[2026-01-17 16:11:53.160 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188f960 (len=8): Permission denied
+
+[2026-01-17 16:11:53.160 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188cc10 (len=8): Permission denied
+
+[2026-01-17 16:11:53.160 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc1890a90 (len=8): Permission denied
+
+[2026-01-17 16:11:53.160 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188c388 (len=8): Permission denied
+
+[2026-01-17 16:11:53.160 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc1890b90 (len=8): Permission denied
+
+[2026-01-17 16:11:53.160 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188bc30 (len=8): Permission denied
+
+[2026-01-17 16:11:53.160 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188edb8 (len=8): Permission denied
+
+[2026-01-17 16:11:53.160 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188a698 (len=8): Permission denied
+
+[2026-01-17 16:11:53.160 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc1890850 (len=8): Permission denied
+
+[2026-01-17 16:11:53.160 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188ce48 (len=8): Permission denied
+
+[2026-01-17 16:11:53.160 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188d6f0 (len=8): Permission denied
+
+[2026-01-17 16:11:53.160 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188a968 (len=8): Permission denied
+
+[2026-01-17 16:11:53.160 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188da90 (len=8): Permission denied
+
+[2026-01-17 16:11:53.160 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188a7c0 (len=8): Permission denied
+
+[2026-01-17 16:11:53.160 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc1889330 (len=8): Permission denied
+
+[2026-01-17 16:11:53.160 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc1888ea8 (len=8): Permission denied
+
+[2026-01-17 16:11:53.160 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188bd98 (len=8): Permission denied
+
+[2026-01-17 16:11:53.160 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188ca38 (len=8): Permission denied
+
+[2026-01-17 16:11:53.160 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc1889df0 (len=8): Permission denied
+
+[2026-01-17 16:11:53.161 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188d8d8 (len=8): Permission denied
+
+[2026-01-17 16:11:53.161 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188b4b8 (len=8): Permission denied
+
+[2026-01-17 16:11:53.161 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc1889938 (len=8): Permission denied
+
+[2026-01-17 16:11:53.161 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188a028 (len=8): Permission denied
+
+[2026-01-17 16:11:53.161 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188d680 (len=8): Permission denied
+
+[2026-01-17 16:11:53.161 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc1889580 (len=8): Permission denied
+
+[2026-01-17 16:11:53.161 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188ecb0 (len=8): Permission denied
+
+[2026-01-17 16:11:53.161 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188cad0 (len=8): Permission denied
+
+[2026-01-17 16:11:53.161 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188aa20 (len=8): Permission denied
+
+[2026-01-17 16:11:53.161 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc18894a8 (len=8): Permission denied
+
+[2026-01-17 16:11:53.161 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188fc78 (len=8): Permission denied
+
+[2026-01-17 16:11:53.161 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc1890d80 (len=8): Permission denied
+
+[2026-01-17 16:11:53.161 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188f408 (len=8): Permission denied
+
+[2026-01-17 16:11:53.161 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188fb68 (len=8): Permission denied
+
+[2026-01-17 16:11:53.161 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188a5d0 (len=8): Permission denied
+
+[2026-01-17 16:11:53.161 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188bb10 (len=8): Permission denied
+
+[2026-01-17 16:11:53.161 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188cbd0 (len=8): Permission denied
+
+[2026-01-17 16:11:53.161 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188c910 (len=8): Permission denied
+
+[2026-01-17 16:11:53.161 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188c540 (len=8): Permission denied
+
+[2026-01-17 16:11:53.161 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188d7c8 (len=8): Permission denied
+
+[2026-01-17 16:11:53.161 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188b7c0 (len=8): Permission denied
+
+[2026-01-17 16:11:53.161 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188eb18 (len=8): Permission denied
+
+[2026-01-17 16:11:53.161 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc1881408 (len=4096): Permission denied
+
+[2026-01-17 16:11:53.162 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188da38 (len=8): Permission denied
+
+[2026-01-17 16:11:53.162 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188f780 (len=8): Permission denied
+
+[2026-01-17 16:11:53.162 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188e4b0 (len=8): Permission denied
+
+[2026-01-17 16:11:53.162 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188cf30 (len=8): Permission denied
+
+[2026-01-17 16:11:53.162 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188b3d8 (len=8): Permission denied
+
+[2026-01-17 16:11:53.162 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188ce00 (len=8): Permission denied
+
+[2026-01-17 16:11:53.162 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188e7e0 (len=8): Permission denied
+
+[2026-01-17 16:11:53.162 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc1888a20 (len=4096): Permission denied
+
+[2026-01-17 16:11:53.162 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188e8a0 (len=8): Permission denied
+
+[2026-01-17 16:11:53.162 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188fdf0 (len=8): Permission denied
+
+[2026-01-17 16:11:53.162 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188c6a0 (len=8): Permission denied
+
+[2026-01-17 16:11:53.162 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188bff8 (len=8): Permission denied
+
+[2026-01-17 16:11:53.162 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188a7d0 (len=8): Permission denied
+
+[2026-01-17 16:11:53.162 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188b1d0 (len=8): Permission denied
+
+[2026-01-17 16:11:53.162 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc1890528 (len=8): Permission denied
+
+[2026-01-17 16:11:53.162 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188ff20 (len=8): Permission denied
+
+[2026-01-17 16:11:53.162 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc1890e90 (len=8): Permission denied
+
+[2026-01-17 16:11:53.162 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc1888f60 (len=8): Permission denied
+
+[2026-01-17 16:11:53.162 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc1889dc8 (len=8): Permission denied
+
+[2026-01-17 16:11:53.162 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc1888fa0 (len=8): Permission denied
+
+[2026-01-17 16:11:53.162 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc1889a10 (len=8): Permission denied
+
+[2026-01-17 16:11:53.162 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188f2c8 (len=8): Permission denied
+
+[2026-01-17 16:11:53.162 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188c210 (len=8): Permission denied
+
+[2026-01-17 16:11:53.163 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188b428 (len=8): Permission denied
+
+[2026-01-17 16:11:53.163 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188db18 (len=8): Permission denied
+
+[2026-01-17 16:11:53.163 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188ad68 (len=8): Permission denied
+
+[2026-01-17 16:11:53.163 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188dc20 (len=4096): Permission denied
+
+[2026-01-17 16:11:53.163 Uid(value=10348):17694:17694 I/AXL]
+ApplyPatches_level0
+
+[2026-01-17 16:11:53.163 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc188d7a8 (len=8): Permission denied
+
+[2026-01-17 16:11:53.163 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc18906d8 (len=8): Permission denied
+
+[2026-01-17 16:11:53.164 Uid(value=10348):17694:17694 I/AXL]
+Initializing RenderWare..
+
+[2026-01-17 16:11:53.164 Uid(value=10348):17694:17694 I/AXL]
+Initializing multi touch..
+
+[2026-01-17 16:11:53.164 Uid(value=10348):17694:17694 E/AXL]
+ReFuck failed for 0x6cc1890d38 (len=8): Permission denied
+
+[2026-01-17 16:11:53.283 Uid(value=10348):17694:17694 I/SAMP]
+**** onCreate
+
+[2026-01-17 16:11:53.283 Uid(value=10348):17694:17694 I/System.out]
+GTASA onCreate
+
+[2026-01-17 16:11:53.286 Uid(value=10348):17694:17694 I/System.out]
+**** onCreate
+
+[2026-01-17 16:11:53.298 Uid(value=10348):17694:17694 I/System.out]
+Calling init(false)
+
+[2026-01-17 16:11:53.299 Uid(value=10348):17694:17694 D/NVEvent]
+Thiz NewGlobalRef: 0x0x2fe6
+
+[2026-01-17 16:11:53.299 Uid(value=10348):17694:17694 D/NVEvent]
+initMap
+
+[2026-01-17 16:11:53.299 Uid(value=10348):17694:17694 D/NVEvent]
+file methods
+
+[2026-01-17 16:11:53.299 Uid(value=10348):17694:17694 D/NVEvent]
+texture methods
+
+[2026-01-17 16:11:53.299 Uid(value=10348):17694:17694 D/NVEvent]
+Leave NVEventInit
+
+[2026-01-17 16:11:53.299 Uid(value=10348):17694:17694 D/WarGamepad]
+JNI Init
+
+[2026-01-17 16:11:53.299 Uid(value=10348):17694:17694 D/WarGamepad]
+JNI Done Init
+
+[2026-01-17 16:11:53.299 Uid(value=10348):17694:17694 D/OSWrapper]
+JNI Init (Billing)
+
+[2026-01-17 16:11:53.299 Uid(value=10348):17694:17694 D/OSWrapper]
+JNI Init Done (Billing)
+
+[2026-01-17 16:11:53.299 Uid(value=10348):17694:17694 D/NVEvent]
+Calling NVEventAppInit
+
+[2026-01-17 16:11:53.299 Uid(value=10348):17694:17694 I/AXL]
+NvUtilInit
+
+[2026-01-17 16:11:53.299 Uid(value=10348):17694:17694 D/OSWrapper]
+AttachCurrentThread: 0, 0x0xb400006f5d9d07d0
+
+[2026-01-17 16:11:53.299 Uid(value=10348):17694:17694 D/OSWrapper]
+Storage root is /storage/emulated/0/Android/data/com.samp.mobile/files/
+
+[2026-01-17 16:11:53.300 Uid(value=10348):17694:17694 I/AXL]
+Storage path from libGTASA buffer: /storage/emulated/0/Android/data/com.samp.mobile/files/
+
+[2026-01-17 16:11:53.300 Uid(value=10348):17694:17694 I/AXL]
+WARNING: Using libGTASA buffer - may not work on Android 11+
+
+[2026-01-17 16:11:53.300 Uid(value=10348):17694:17694 I/AXL]
+Storage path OK: /storage/emulated/0/Android/data/com.samp.mobile/files/
+
+[2026-01-17 16:11:53.300 Uid(value=10348):17694:17694 I/AXL]
+Loading settings..
+
+[2026-01-17 16:11:53.300 Uid(value=10348):17694:17694 I/AXL]
+Error: can't load /storage/emulated/0/Android/data/com.samp.mobile/files/SAMP/settings.ini
+
+[2026-01-17 16:11:53.300 Uid(value=10348):17694:17694 E/libc++abi]
+terminating
+
+[2026-01-17 16:11:53.300 Uid(value=10348):17694:17694 D/NVEvent]
+android_sigaction signal 6 (-1 0 6)
+
+[2026-01-17 16:11:53.300 Uid(value=10348):17694:17694 F/libc]
+Fatal signal 6 (SIGABRT), code -1 (SI_QUEUE) in tid 17694 (com.samp.mobile), pid 17694 (com.samp.mobile)
+
+[2026-01-17 16:11:53.302 Uid(value=10348):17694:17694 I/libc]
+debuggerd_dispatch_pseudothread start. crashing tid: 17694
+
+[2026-01-17 16:11:53.352 Uid(value=10348):17694:17736 E/com.samp.mobile]
+No package ID 6a found for resource ID 0x6a0b0013.
+
+[2026-01-17 16:11:53.353 Uid(value=10348):17694:17736 I/FA]
+App measurement initialized, version: 148000
+
+[2026-01-17 16:11:53.354 Uid(value=10348):17694:17736 I/FA]
+To enable debug logging run: adb shell setprop log.tag.FA VERBOSE
+
+[2026-01-17 16:11:53.354 Uid(value=10348):17694:17736 I/FA]
+To enable faster debug mode event logging run:
+  adb shell setprop debug.firebase.analytics.app com.samp.mobile
+
+[2026-01-17 16:11:53.355 Uid(value=10348):17739:17739 W/libc]
+Access denied finding property "persist.vendor.track.malloc.enable"
+
+[2026-01-17 16:11:53.355 Uid(value=10348):17739:17739 W/libc]
+Access denied finding property "persist.vendor.fd.monitor.enable"
+
+[2026-01-17 16:11:53.361 Uid(value=10348):17741:17741 E/crash_dump64]
+failed to get the guest state header for thread 17694: Bad address
+
+[2026-01-17 16:11:53.362 Uid(value=10348):17741:17741 E/crash_dump64]
+failed to get the guest state header for thread 17695: Bad address
+
+[2026-01-17 16:11:53.362 Uid(value=10348):17741:17741 E/crash_dump64]
+failed to get the guest state header for thread 17696: Bad address
+
+[2026-01-17 16:11:53.362 Uid(value=10348):17741:17741 E/crash_dump64]
+failed to get the guest state header for thread 17697: Bad address
+
+[2026-01-17 16:11:53.363 Uid(value=10348):17741:17741 E/crash_dump64]
+failed to get the guest state header for thread 17698: Bad address
+
+[2026-01-17 16:11:53.363 Uid(value=10348):17741:17741 E/crash_dump64]
+failed to get the guest state header for thread 17699: Bad address
+
+[2026-01-17 16:11:53.364 Uid(value=10348):17741:17741 E/crash_dump64]
+failed to get the guest state header for thread 17700: Bad address
+
+[2026-01-17 16:11:53.364 Uid(value=10348):17741:17741 E/crash_dump64]
+failed to get the guest state header for thread 17701: Bad address
+
+[2026-01-17 16:11:53.365 Uid(value=10348):17741:17741 E/crash_dump64]
+failed to get the guest state header for thread 17702: Bad address
+
+[2026-01-17 16:11:53.365 Uid(value=10348):17741:17741 E/crash_dump64]
+failed to get the guest state header for thread 17703: Bad address
+
+[2026-01-17 16:11:53.366 Uid(value=10348):17741:17741 E/crash_dump64]
+failed to get the guest state header for thread 17704: Bad address
+
+[2026-01-17 16:11:53.366 Uid(value=10348):17741:17741 E/crash_dump64]
+failed to get the guest state header for thread 17705: Bad address
+
+[2026-01-17 16:11:53.366 Uid(value=10348):17741:17741 E/crash_dump64]
+failed to get the guest state header for thread 17706: Bad address
+
+[2026-01-17 16:11:53.367 Uid(value=10348):17741:17741 E/crash_dump64]
+failed to get the guest state header for thread 17708: Bad address
+
+[2026-01-17 16:11:53.368 Uid(value=10348):17741:17741 E/crash_dump64]
+failed to get the guest state header for thread 17710: Bad address
+
+[2026-01-17 16:11:53.368 Uid(value=10348):17741:17741 E/crash_dump64]
+failed to get the guest state header for thread 17711: Bad address
+
+[2026-01-17 16:11:53.369 Uid(value=10348):17741:17741 E/crash_dump64]
+failed to get the guest state header for thread 17712: Bad address
+
+[2026-01-17 16:11:53.370 Uid(value=10348):17741:17741 E/crash_dump64]
+failed to get the guest state header for thread 17713: Bad address
+
+[2026-01-17 16:11:53.370 Uid(value=10348):17741:17741 E/crash_dump64]
+failed to get the guest state header for thread 17714: Bad address
+
+[2026-01-17 16:11:53.371 Uid(value=10348):17741:17741 E/crash_dump64]
+failed to get the guest state header for thread 17715: Bad address
+
+[2026-01-17 16:11:53.371 Uid(value=10348):17741:17741 E/crash_dump64]
+failed to get the guest state header for thread 17716: Bad address
+
+[2026-01-17 16:11:53.372 Uid(value=10348):17741:17741 E/crash_dump64]
+failed to get the guest state header for thread 17717: Bad address
+
+[2026-01-17 16:11:53.372 Uid(value=10348):17741:17741 E/crash_dump64]
+failed to get the guest state header for thread 17718: Bad address
+
+[2026-01-17 16:11:53.373 Uid(value=10348):17741:17741 E/crash_dump64]
+failed to get the guest state header for thread 17719: Bad address
+
+[2026-01-17 16:11:53.373 Uid(value=10348):17741:17741 E/crash_dump64]
+failed to get the guest state header for thread 17720: Bad address
+
+[2026-01-17 16:11:53.373 Uid(value=10348):17741:17741 E/crash_dump64]
+failed to get the guest state header for thread 17721: Bad address
+
+[2026-01-17 16:11:53.374 Uid(value=10348):17741:17741 E/crash_dump64]
+failed to get the guest state header for thread 17723: Bad address
+
+[2026-01-17 16:11:53.374 Uid(value=10348):17741:17741 E/crash_dump64]
+failed to get the guest state header for thread 17724: Bad address
+
+[2026-01-17 16:11:53.374 Uid(value=10348):17741:17741 E/crash_dump64]
+failed to get the guest state header for thread 17728: Bad address
+
+[2026-01-17 16:11:53.374 Uid(value=10348):17741:17741 E/crash_dump64]
+failed to get the guest state header for thread 17731: Bad address
+
+[2026-01-17 16:11:53.374 Uid(value=10348):17741:17741 E/crash_dump64]
+failed to get the guest state header for thread 17733: Bad address
+
+[2026-01-17 16:11:53.374 Uid(value=10348):17741:17741 E/crash_dump64]
+failed to get the guest state header for thread 17736: Bad address
+
+[2026-01-17 16:11:53.375 Uid(value=10348):17741:17741 E/crash_dump64]
+failed to get the guest state header for thread 17740: Bad address
+
+[2026-01-17 16:11:53.409 Uid(value=10348):17741:17741 I/crash_dump64]
+obtaining output fd from tombstoned, type: kDebuggerdTombstoneProto
+
+[2026-01-17 16:11:53.413 Uid(value=10348):17741:17741 I/crash_dump64]
+performing dump of process 17694 (target tid = 17694)
+
+[2026-01-17 16:11:53.889 Uid(value=10348):17741:17741 F/DEBUG]
+*** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+
+[2026-01-17 16:11:53.889 Uid(value=10348):17741:17741 F/DEBUG]
+Build fingerprint: 'POCO/lake_p_global/lake:15/AP3A.240905.015.A2/OS2.0.202.0.VGTMIXM:user/release-keys'
+
+[2026-01-17 16:11:53.889 Uid(value=10348):17741:17741 F/DEBUG]
+Revision: '0'
+
+[2026-01-17 16:11:53.889 Uid(value=10348):17741:17741 F/DEBUG]
+ABI: 'arm64'
+
+[2026-01-17 16:11:53.889 Uid(value=10348):17741:17741 F/DEBUG]
+Timestamp: 2026-01-17 16:11:53.441639494-0300
+
+[2026-01-17 16:11:53.889 Uid(value=10348):17741:17741 F/DEBUG]
+Process uptime: 1s
+
+[2026-01-17 16:11:53.889 Uid(value=10348):17741:17741 F/DEBUG]
+Cmdline: com.samp.mobile
+
+[2026-01-17 16:11:53.889 Uid(value=10348):17741:17741 F/DEBUG]
+pid: 17694, tid: 17694, name: com.samp.mobile  >>> com.samp.mobile <<<
+
+[2026-01-17 16:11:53.889 Uid(value=10348):17741:17741 F/DEBUG]
+uid: 10348
+
+[2026-01-17 16:11:53.889 Uid(value=10348):17741:17741 F/DEBUG]
+tagged_addr_ctrl: 0000000000000001 (PR_TAGGED_ADDR_ENABLE)
+
+[2026-01-17 16:11:53.889 Uid(value=10348):17741:17741 F/DEBUG]
+signal 6 (SIGABRT), code -1 (SI_QUEUE), fault addr --------
+
+[2026-01-17 16:11:53.889 Uid(value=10348):17741:17741 F/DEBUG]
+Abort message: 'terminating'
+
+[2026-01-17 16:11:53.889 Uid(value=10348):17741:17741 F/DEBUG]
+    x0  0000000000000000  x1  000000000000451e  x2  0000000000000006  x3  0000007fc88efcf0
+
+[2026-01-17 16:11:53.889 Uid(value=10348):17741:17741 F/DEBUG]
+    x4  fefefefeff666d68  x5  fefefefeff666d68  x6  fefefefeff666d68  x7  7f7f7f7f7f7f7f7f
+
+[2026-01-17 16:11:53.889 Uid(value=10348):17741:17741 F/DEBUG]
+    x8  00000000000000f0  x9  0000007021c9d558  x10 0000000000000001  x11 0000007021cef5e0
+
+[2026-01-17 16:11:53.889 Uid(value=10348):17741:17741 F/DEBUG]
+    x12 00000000696bdef9  x13 000000007fffffff  x14 0000000001c2ac30  x15 000001218c947690
+
+[2026-01-17 16:11:53.889 Uid(value=10348):17741:17741 F/DEBUG]
+    x16 0000007021d59008  x17 0000007021d43140  x18 0000006cc1ccaf18  x19 000000000000451e
+
+[2026-01-17 16:11:53.889 Uid(value=10348):17741:17741 F/DEBUG]
+    x20 000000000000451e  x21 00000000ffffffff  x22 0000007fc88efe20  x23 0000007fc88efe60
+
+[2026-01-17 16:11:53.889 Uid(value=10348):17741:17741 F/DEBUG]
+    x24 0000007fc88eff10  x25 0000006cc1777743  x26 0000007049af7029  x27 0000006cc18f5000
+
+[2026-01-17 16:11:53.889 Uid(value=10348):17741:17741 F/DEBUG]
+    x28 0000000000000000  x29 0000007fc88efd70
+
+[2026-01-17 16:11:53.889 Uid(value=10348):17741:17741 F/DEBUG]
+    lr  0000007021cd7ed8  sp  0000007fc88efcd0  pc  0000007021cd7f04  pst 0000000000000000
+
+[2026-01-17 16:11:53.889 Uid(value=10348):17741:17741 F/DEBUG]
+9 total frames
+
+[2026-01-17 16:11:53.889 Uid(value=10348):17741:17741 F/DEBUG]
+backtrace:
+
+[2026-01-17 16:11:53.889 Uid(value=10348):17741:17741 F/DEBUG]
+      #00 pc 000000000005df04  /apex/com.android.runtime/lib64/bionic/libc.so (abort+164) (BuildId: 4f9662f2c4cc93880474c7b483cce276)
+
+[2026-01-17 16:11:53.889 Uid(value=10348):17741:17741 F/DEBUG]
+      #01 pc 00000000002a6b48  /data/app/~~Wymzq0KPk8_686P2a5Zvpw==/com.samp.mobile-NJK1olGtCUGB9vHGNT416A==/base.apk!libsamp.so (offset 0x1c00000) (BuildId: 82221e2b929942febc2416022755202b45c58639)
+
+[2026-01-17 16:11:53.889 Uid(value=10348):17741:17741 F/DEBUG]
+      #02 pc 00000000002a635c  /data/app/~~Wymzq0KPk8_686P2a5Zvpw==/com.samp.mobile-NJK1olGtCUGB9vHGNT416A==/base.apk!libsamp.so (offset 0x1c00000) (BuildId: 82221e2b929942febc2416022755202b45c58639)
+
+[2026-01-17 16:11:53.889 Uid(value=10348):17741:17741 F/DEBUG]
+      #03 pc 00000000002a62f8  /data/app/~~Wymzq0KPk8_686P2a5Zvpw==/com.samp.mobile-NJK1olGtCUGB9vHGNT416A==/base.apk!libsamp.so (offset 0x1c00000) (BuildId: 82221e2b929942febc2416022755202b45c58639)
+
+[2026-01-17 16:11:53.889 Uid(value=10348):17741:17741 F/DEBUG]
+      #04 pc 00000000002a6284  /data/app/~~Wymzq0KPk8_686P2a5Zvpw==/com.samp.mobile-NJK1olGtCUGB9vHGNT416A==/base.apk!libsamp.so (offset 0x1c00000) (std::terminate()+36) (BuildId: 82221e2b929942febc2416022755202b45c58639)
+
+[2026-01-17 16:11:53.889 Uid(value=10348):17741:17741 F/DEBUG]
+      #05 pc 00000000001897c0  /data/app/~~Wymzq0KPk8_686P2a5Zvpw==/com.samp.mobile-NJK1olGtCUGB9vHGNT416A==/base.apk!libsamp.so (offset 0x1c00000) (BuildId: 82221e2b929942febc2416022755202b45c58639)
+
+[2026-01-17 16:11:53.889 Uid(value=10348):17741:17741 F/DEBUG]
+      #06 pc 0000000000160450  /data/app/~~Wymzq0KPk8_686P2a5Zvpw==/com.samp.mobile-NJK1olGtCUGB9vHGNT416A==/base.apk!libsamp.so (offset 0x1c00000) (BuildId: 82221e2b929942febc2416022755202b45c58639)
+
+[2026-01-17 16:11:53.890 Uid(value=10348):17741:17741 F/DEBUG]
+      #07 pc 000000000013aa80  /data/app/~~Wymzq0KPk8_686P2a5Zvpw==/com.samp.mobile-NJK1olGtCUGB9vHGNT416A==/base.apk!libsamp.so (offset 0x1c00000) (BuildId: 82221e2b929942febc2416022755202b45c58639)
+
+[2026-01-17 16:11:53.890 Uid(value=10348):17741:17741 F/DEBUG]
+      #08 pc 0000000000002370  /data/app/~~Wymzq0KPk8_686P2a5Zvpw==/com.samp.mobile-NJK1olGtCUGB9vHGNT416A==/base.apk (offset 0x738000)
+
+[2026-01-17 16:11:53.952 Uid(value=10348):17741:17741 I/crash_dump64]
+start notify aee_aed tombstone path: /data/tombstones/.temporary15
+
+[2026-01-17 16:11:53.952 Uid(value=10348):17741:17741 I/crash_dump64]
+Built commit ee9c8d056d0978e98e0583affba824f8cf3d7097
+
+[2026-01-17 16:11:53.953 Uid(value=10348):17741:17741 I/crash_dump64]
+socket name: android:aee_aed, sfd: 8
+
+[2026-01-17 16:11:53.961 Uid(value=10348):17741:17741 I/crash_dump64]
+crash_temporary_file_notify: 
+
+[2026-01-17 16:11:53.961 Uid(value=10348):17741:17741 I/crash_dump64]
+crash_temporary_file_notify exit
+
+[2026-01-17 16:11:53.963 Uid(value=10348):17741:17741 I/crash_dump64]
+start aee dumping
+
+[2026-01-17 16:11:53.963 Uid(value=10348):17741:17741 E/crash_dump64]
+crash_mini_dump_notify: writing 'start dumping' fail: Broken pipe
+
+[2026-01-17 16:11:53.963 Uid(value=10348):17741:17741 I/crash_dump64]
+crash_mini_dump_notify exit!
+
+[2026-01-17 16:11:53.964 Uid(value=10348):17741:17741 E/MIUINDBG]
+miui_native_debug_process_O
+
+[2026-01-17 16:11:53.964 Uid(value=10348):17741:17741 E/MIUINDBG]
+unable to connect to mqsas crash info socket
+
+[2026-01-17 16:11:53.964 Uid(value=10348):17741:17741 E/MIUINDBG]
+write pid uid adj to mqsas crash info socket failed
+
+[2026-01-17 16:11:53.964 Uid(value=10348):17741:17741 E/MIUINDBG]
+unable to connect to mqsas native socket
+
+[2026-01-17 16:11:54.007 Uid(value=10348):17694:17694 I/AXL]
+SIGABRT | Fault address: 0x451e
+
+[2026-01-17 16:11:54.007 Uid(value=10348):17694:17694 I/AXL]
+1: libGTASA.so + 0x360c98f04
+
+[2026-01-17 16:11:54.007 Uid(value=10348):17694:17694 I/AXL]
+2: libGTASA.so + 0x360c98ed8
+
+[2026-01-17 16:11:54.007 Uid(value=10348):17694:17694 I/AXL]
+1: libsamp.so + 0x3ee2cef04
+
+[2026-01-17 16:11:54.007 Uid(value=10348):17694:17694 I/AXL]
+2: libsamp.so + 0x3ee2ceed8
+
+[2026-01-17 16:11:54.007 Uid(value=10348):17694:17694 I/AXL]
+Last rendered object: 0
+
+[2026-01-17 16:11:54.007 Uid(value=10348):17694:17694 I/AXL]
+------------ START BACKTRACE ------------
+
+[2026-01-17 16:11:54.007 Uid(value=10348):17694:17694 I/AXL]
+ 
+
+[2026-01-17 16:11:54.009 Uid(value=10348):17694:17694 I/AXL]
+[adr: 0x704ac83848 samp: 0x41727a848 gta: 0x389c44848] __kernel_rt_sigreturn
+
+[2026-01-17 16:11:54.009 Uid(value=10348):17694:17694 I/AXL]
+[adr: 0x7021cd7f04 samp: 0x3ee2cef04 gta: 0x360c98f04] abort
+
+[2026-01-17 16:11:54.009 Uid(value=10348):17694:17694 I/AXL]
+[adr: 0x6c33cafb4c samp: 0x2a6b4c gta: 0xffffffff72c70b4c] name not found
+
+[2026-01-17 16:11:54.009 Uid(value=10348):17694:17694 I/AXL]
+[adr: 0x6c33caf360 samp: 0x2a6360 gta: 0xffffffff72c70360] name not found
+
+[2026-01-17 16:11:54.010 Uid(value=10348):17694:17694 I/AXL]
+[adr: 0x6c33caf2fc samp: 0x2a62fc gta: 0xffffffff72c702fc] name not found
+
+[2026-01-17 16:11:54.010 Uid(value=10348):17694:17694 I/AXL]
+[adr: 0x6c33caf288 samp: 0x2a6288 gta: 0xffffffff72c70288] _ZSt9terminatev
+
+[2026-01-17 16:11:54.010 Uid(value=10348):17694:17694 I/AXL]
+[adr: 0x6c33b927c4 samp: 0x1897c4 gta: 0xffffffff72b537c4] name not found
+
+[2026-01-17 16:11:54.010 Uid(value=10348):17694:17694 I/AXL]
+[adr: 0x6c33b69454 samp: 0x160454 gta: 0xffffffff72b2a454] name not found
+
+[2026-01-17 16:11:54.010 Uid(value=10348):17694:17694 I/AXL]
+[adr: 0x6c33b43a84 samp: 0x13aa84 gta: 0xffffffff72b04a84] name not found
+
+[2026-01-17 16:11:54.010 Uid(value=10348):17694:17694 I/AXL]
+[adr: 0x6cc1369374 samp: 0x8d960374 gta: 0x32a374] name not found
+

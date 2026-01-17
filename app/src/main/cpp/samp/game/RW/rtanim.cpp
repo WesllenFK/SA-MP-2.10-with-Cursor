@@ -1,5 +1,5 @@
 #include "RenderWare.h"
-#include "game/common.h"
+#include "../common.h"
 #include "../vendor/armhook/patch.h"
 
 void RtAnimAnimationFreeListCreateParams(RwInt32 blockSize, RwInt32 numBlocksToPrealloc) {

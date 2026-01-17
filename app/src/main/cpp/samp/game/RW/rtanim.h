@@ -207,7 +207,6 @@ struct RtAnimInterpolatorInfo
     /**< Amount of custom data required per animation. */
 };
 
-
 /**
  * \ingroup rtanim
  * \struct RtAnimAnimation
@@ -426,7 +425,6 @@ struct RtAnimInterpolator
  */
 #define rtANIMGETINTERPFRAME(anim, nodeIndex) \
                             ( (void *)( ( (RwUInt8 *)&(anim[1]) + ((nodeIndex) *anim->currentInterpKeyFrameSize) ) ) )
-
 
 void RtAnimAnimationFreeListCreateParams(RwInt32 blockSize, RwInt32 numBlocksToPrealloc); // 0x7CCC80
 RwBool RtAnimInitialize(); // 0x7CCCA0

@@ -4,7 +4,6 @@
 #include "ClumpModelInfo.h"
 #include "../vendor/armhook/patch.h"
 
-
 void CClumpModelInfo::CClumpModelInfo__SetClump(RpClump* clump)
 {
     CHook::CallFunction<void >("_ZN15CClumpModelInfo8SetClumpEP7RpClump", this, clump);

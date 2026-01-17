@@ -6,7 +6,6 @@
 #include "Event.h"
 #include "../vendor/armhook/patch.h"
 
-
 CEvent::CEvent() {
     m_nTimeActive = 0;
     m_bValid = false;

@@ -119,8 +119,7 @@ void Plugin::MainLoop()
 
     int defaultKey = 0x42;
 
-    
-    //
+//
     if(MicroIcon::IsShowed())
     {
         if (MicType == 1)

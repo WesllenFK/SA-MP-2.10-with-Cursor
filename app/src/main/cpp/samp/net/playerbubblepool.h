@@ -23,7 +23,6 @@ public:
     void Delete(PLAYERID playerId);
 
     void Render(ImGuiRenderer* renderer);
-    
 
 private:
     void Draw(ImGuiRenderer* renderer);

@@ -75,8 +75,7 @@ public:
 	void SetMapIcon(uint8_t byteIconID, float fPosX, float fPosY, float fPosZ, uint8_t byteType, uint32_t dwColor, uint8_t byteStyle);
 	void DisableMapIcon(uint8_t byteIconID);
 
-
-	char	m_szHostName[256 + 1];
+char	m_szHostName[256 + 1];
 	char	m_szHostOrIp[256 + 1];
 	int		m_iPort;
 	bool	m_bLanMode;

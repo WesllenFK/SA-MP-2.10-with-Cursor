@@ -4,10 +4,10 @@
 
 #pragma once
 
-#include "main.h"
-#include "game/Tasks/TaskManager.h"
-#include "game/Events/EventHandler.h"
-#include "game/Events/EventGroup.h"
+#include "../main.h"
+#include "Tasks/TaskManager.h"
+#include "Events/EventHandler.h"
+#include "Events/EventGroup.h"
 
 class CTaskSimpleJetPack;
 

@@ -239,8 +239,6 @@ struct RwPluginRegEntry
 static_assert(sizeof(RwPluginRegEntry) == (VER_x32 ? 0x3C : 0x70));
 #endif /* (!defined(DOXYGEN)) */
 
-
-
 /****************************************************************************
  Function prototypes
  */
@@ -299,7 +297,6 @@ _rwPluginRegistryPlaceValidationCodes(const RwPluginRegistry * reg,
                                 void *object);
 
 #endif         /* RWDEBUG */
-
 
 #ifdef    __cplusplus
 }

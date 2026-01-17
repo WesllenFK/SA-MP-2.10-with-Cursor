@@ -7,7 +7,7 @@
 #pragma once
 
 #include "AnimBlendSequence.h"
-#include "game/Core/Link.h"
+#include "../Core/Link.h"
 #include <span>
 
 class CAnimBlendHierarchy {

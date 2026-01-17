@@ -66,7 +66,6 @@
 #include "rtquat.h"
 #include "rtanim.h"
 
-
 #define rpHANIMSTREAMCURRENTVERSION 0x100
 
 #if (!defined(DOXYGEN))
@@ -92,7 +91,6 @@ MACRO_START                                                     \
     (o)->z = (((a)->z) + ((s)) * (((b)->z) - ((a)->z)));        \
 }                                                               \
 MACRO_STOP
-
 
 /**
  * \ingroup rphanim
@@ -253,7 +251,6 @@ struct RpHAnimFrameExtension
 };
 
 /* Legacy TypeDef */
-
 
 typedef RtAnimAnimation RpHAnimAnimation;
 typedef RpHAnimKeyFrame RpHAnimStdKeyFrame;

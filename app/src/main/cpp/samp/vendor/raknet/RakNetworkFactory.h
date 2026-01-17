@@ -35,8 +35,7 @@ public:
 	static RakServerInterface* GetRakServerInterface( void );
 	static RakPeerInterface* GetRakPeerInterface( void );
 
-
-	// To delete the object returned by the Get functions above.
+// To delete the object returned by the Get functions above.
 	static void DestroyRakClientInterface( RakClientInterface* i );
 	static void DestroyRakServerInterface( RakServerInterface* i );
 	static void DestroyRakPeerInterface( RakPeerInterface* i );

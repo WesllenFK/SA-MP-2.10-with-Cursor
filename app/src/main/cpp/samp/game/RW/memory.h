@@ -315,8 +315,6 @@
 #  endif /* ((_MSC_VER>=1000) && defined(_DEBUG)) */
 # endif /* (defined(_MSC_VER)) */
 
-
-
 #if (!defined(rwDEADPTRFILL))
 #define rwDEADPTRFILL      ((void *)0xDDDDDDDD)
 #endif /* (!defined(rwDEADPTRFILL)) */
@@ -637,7 +635,6 @@ typedef struct RwMemoryFunctions RwMemoryFunctions;
  * \see RwFreeListSetFlags
  */
 #define rwFREELISTFLAG_FREEBLOCKS 0x00000002
-
 
 typedef struct RwFreeList RwFreeList;
 

@@ -431,9 +431,8 @@ void BitStream::WriteCompressed( const unsigned char* input,
 			
 			WriteBits( input, ( currentByte + 1 ) << 3, true );
 			//  currentByte--;
-			
-			
-			return ;
+
+return ;
 		}
 		
 		currentByte--;
@@ -514,9 +513,8 @@ bool BitStream::ReadCompressed( unsigned char* output,
 	const int size, const bool unsignedData )
 {
 	int currentByte = ( size >> 3 ) - 1;
-	
-	
-	unsigned char byteMatch, halfByteMatch;
+
+unsigned char byteMatch, halfByteMatch;
 	
 	if ( unsignedData )
 	{
@@ -668,7 +666,6 @@ void BitStream::PrintBits( void ) const
 	putchar( '\n' );
 }
 
-
 // Exposes the data for you to look at, like PrintBits does.
 // Data will point to the stream.  Returns the length in bits of the stream.
 int BitStream::CopyData( unsigned char** _data ) const
@@ -717,7 +714,6 @@ int BitStream::GetReadOffset( void ) const
 {
 	return readOffset;
 }
-
 
 // Sets the read bit index
 void BitStream::SetReadOffset( int newReadOffset )

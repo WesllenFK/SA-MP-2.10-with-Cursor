@@ -1,9 +1,9 @@
 #include "AnimBlendHierarchy.h"
 #include "AnimManager.h"
-#include "game/Core/KeyGen.h"
-#include "../vendor/armhook/patch.h"
-#include "game/Core/Quaternion.h"
-#include "game/MemoryMgr.h"
+#include "../Core/KeyGen.h"
+#include "../../vendor/armhook/patch.h"
+#include "../Core/Quaternion.h"
+#include "../MemoryMgr.h"
 
 void CAnimBlendHierarchy::InjectHooks() {
 

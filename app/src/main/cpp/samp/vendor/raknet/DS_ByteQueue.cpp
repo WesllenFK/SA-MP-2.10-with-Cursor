@@ -14,7 +14,6 @@ ByteQueue::ByteQueue()
 ByteQueue::~ByteQueue()
 {
 	Clear();
-	
 
 }
 void ByteQueue::WriteBytes(const char *in, unsigned length)

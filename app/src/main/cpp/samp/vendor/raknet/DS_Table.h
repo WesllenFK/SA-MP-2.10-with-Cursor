@@ -36,9 +36,8 @@ namespace DataStructures
 			// Cell::c holds data.  Cell::i holds data length of c in bits.
 			BINARY
 		};
-		
-		
-		/// Holds the actual data in the table
+
+/// Holds the actual data in the table
 		struct Cell
 		{
 			Cell();

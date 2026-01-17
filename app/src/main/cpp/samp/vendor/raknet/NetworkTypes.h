@@ -204,7 +204,6 @@ const int PING_TIMES_ARRAY_SIZE = 5;
 /// rakServer->RPC("MyFunc", 0, clientID, false);
 /// @endcode
 
-
 /// \def REGISTER_STATIC_RPC
 /// \ingroup RAKNET_RPC
 /// Register a C function as a Remote procedure.

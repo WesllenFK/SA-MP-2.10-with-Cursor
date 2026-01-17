@@ -46,7 +46,6 @@ typedef int socklen_t;
 #include "AsynchronousFileIO.h"
 #endif
 
-
 #ifdef _MSC_VER
 #pragma warning( push )
 #endif
@@ -455,8 +454,7 @@ int SocketLayer::RecvFrom( const SOCKET s, RakPeer *rakPeer, int *errorCode )
 //			printf( "A previous send operation resulted in an ICMP Port Unreachable message.\n" );
 #endif
 
-
-			unsigned short portnum=0;
+unsigned short portnum=0;
 			ProcessPortUnreachable(sa.sin_addr.s_addr, portnum, rakPeer);
 			// *errorCode = dwIOError;
 			return SOCKET_ERROR;
@@ -621,7 +619,6 @@ unsigned short SocketLayer::GetLocalPort ( SOCKET s )
 		return 0;
 	return ntohs(sa.sin_port);
 }
-
 
 #ifdef _MSC_VER
 #pragma warning( pop )

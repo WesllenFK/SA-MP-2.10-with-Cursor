@@ -1,6 +1,6 @@
 
 #include "RegisteredCorona.h"
-#include "game/Enums/eEntityType.h"
+#include "Enums/eEntityType.h"
 inline const float invLerp(float fMin, float fMax, float fVal) {
     return (fVal - fMin) / (fMax - fMin);
 }

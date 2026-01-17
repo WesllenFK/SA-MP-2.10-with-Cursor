@@ -20,7 +20,6 @@ void CTask::StopTimer(const CEvent* event) {
     // NOP
 }
 
-
 bool CTask::IsGoToTask(CTask* task) {
     switch (task->GetTaskType()) {
         case TASK_SIMPLE_GO_TO_POINT:

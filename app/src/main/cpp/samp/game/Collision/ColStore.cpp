@@ -3,8 +3,8 @@
 //
 
 #include "ColStore.h"
-#include "../vendor/armhook/patch.h"
-#include "game/constants.h"
+#include "../../vendor/armhook/patch.h"
+#include "../constants.h"
 
 void CColStore::RequestCollision(const CVector *pos, int32 areaCode) {
 

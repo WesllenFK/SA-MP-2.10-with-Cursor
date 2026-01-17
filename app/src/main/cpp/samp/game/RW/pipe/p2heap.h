@@ -9,7 +9,6 @@ typedef struct rxHeapSuperBlockDescriptor rxHeapSuperBlockDescriptor;
 typedef struct RxHeap RxHeap;
 typedef struct rxHeapBlockHeader rxHeapBlockHeader;
 
-
 struct rxHeapFreeBlock
 {
     RwUInt32            size;
@@ -45,7 +44,6 @@ struct RxHeap
                                          *   the heap needs resetting or not. */
 };
 static_assert(sizeof(RxHeap) == (VER_x32 ? 0x1C : 0x30));
-
 
 struct rxHeapBlockHeader
 {

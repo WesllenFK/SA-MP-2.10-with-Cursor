@@ -3,7 +3,7 @@
 //
 
 #include "RenderWare.h"
-#include "game/common.h"
+#include "../common.h"
 #include "../vendor/armhook/patch.h"
 
 RpClump* RpClumpForAllAtomics(RpClump* clump, RpAtomicCallBack callback, void* data) {

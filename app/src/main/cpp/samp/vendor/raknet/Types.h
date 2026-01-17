@@ -98,10 +98,8 @@
 
 #else
 
-
 #endif
 #endif
-
 
 namespace cat
 {
@@ -132,7 +130,6 @@ namespace cat
 # define LITTLE_ENDIAN
 
 #else
-
 
 #endif
 #endif
@@ -231,7 +228,6 @@ namespace cat
 #  define DEBUG
 # endif
 
-
 # define INLINE inline
 # define ASSEMBLY_INTEL_SYNTAX
 # define ASSEMBLY_BLOCK _asm
@@ -324,8 +320,7 @@ namespace cat
 
 #endif // compilers
 
-
-	// Generic basic types
+// Generic basic types
 #if !defined(BASIC_TYPES_ALREADY_DEFINED)
 	/**
 	* Typename for 8 bits unsigned integer 
@@ -371,8 +366,7 @@ namespace cat
 # endif
 #endif
 
-
-	/**
+/**
 	* Fixed-point types
 	* hi-Siiiiiiiiiiiiiiiiiiiii-lo | hi-ffffffffff-lo
 	*/
@@ -479,8 +473,7 @@ namespace cat
 		NoCopies &operator=( const NoCopies &cp );
 	};
 
-
-	// Byte-order swapping
+// Byte-order swapping
 #define BOSWAP32(n) ( ((n) << 24) | (((n) & 0x00ff0000) >> 8) | (((n) & 0x0000ff00) << 8) | ((n) >> 24) ) /* only works for u32 */
 #define BOSWAP16(n) ( ((n) << 8) | ((n) >> 8) ) /* only works for u16 */
 
@@ -574,7 +567,6 @@ namespace cat
 #endif
 
 } // namespace cat
-
 
 // Rotation
 #define ROL8(n, r)  ( ((n) << (r)) | ((n) >> ( 8 - (r))) ) /* only works for u8 */
@@ -696,6 +688,5 @@ Quick character manipulation
 
 //#define TO_LOWER(ch) (char)( (ch) | 0x20 ) /* must be upper/lower-case alpha */
 //#define TO_UPPER(ch) (char)( (ch) & (~0x20) ) /* must be upper/lower-case alpha */
-
 
 #endif // TYPES_H

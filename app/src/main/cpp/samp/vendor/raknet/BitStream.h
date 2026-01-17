@@ -15,7 +15,6 @@
 /// Software Foundation; either version 2 of the License, or (at your
 /// option) any later version.
 
-
 #if defined(_MSC_VER) && _MSC_VER < 1299 // VC6 doesn't support template specialization
 #include "BitStream_NoTemplate.h"
 #else
@@ -465,8 +464,7 @@ namespace RakNet
 		/// Reallocates (if necessary) in preparation of writing numberOfBitsToWrite 
 		void AddBitsAndReallocate( const int numberOfBitsToWrite );
 
-
-		/// ---- Member function template specialization declarations ----
+/// ---- Member function template specialization declarations ----
 		// Used for VC7
 #if defined(_MSC_VER) && _MSC_VER == 1300
 		/// Write a bool to a bitstream
@@ -1142,8 +1140,7 @@ namespace RakNet
 		return false;
 	}
 
-
-	/// Read any integral type from a bitstream.  If the written value differed from the value compared against in the write function,
+/// Read any integral type from a bitstream.  If the written value differed from the value compared against in the write function,
 	/// var will be updated.  Otherwise it will retain the current value.
 	/// the current value will be updated.
 	/// For floating point, this is lossy, using 2 bytes for a float and 4 for a double.  The range must be between -1 and +1.
@@ -1170,8 +1167,7 @@ namespace RakNet
 		return Read(var);
 	}
 
-
-	template <class templateType> // templateType for this function must be a float or double
+template <class templateType> // templateType for this function must be a float or double
 		void BitStream::WriteNormVector( templateType x, templateType y, templateType z )
 	{
 #ifdef _DEBUG

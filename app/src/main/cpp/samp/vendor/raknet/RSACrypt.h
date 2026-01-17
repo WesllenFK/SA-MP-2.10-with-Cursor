@@ -1059,8 +1059,7 @@ start_squaring:
 
 #endif // RSASUPPORTGENPRIME
 
-
-	//////// RSACrypt class ////////
+//////// RSACrypt class ////////
 
 	BIGONETYPE class RAK_DLL_EXPORT RSACrypt
 	{

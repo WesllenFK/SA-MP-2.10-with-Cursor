@@ -1,11 +1,11 @@
 // psychobye
 
 #include "CSkyBox.h"
-#include "main.h"
+#include "../main.h"
 #include "game.h"
-#include "patch.h"
-#include "net/netgame.h"
-#include "game/Models/ModelInfo.h"
+#include "../vendor/armhook/patch.h"
+#include "../net/netgame.h"
+#include "Models/ModelInfo.h"
 
 extern CGame* pGame;
 extern CNetGame* pNetGame;

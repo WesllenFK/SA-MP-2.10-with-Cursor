@@ -4,8 +4,7 @@
 
 #pragma once
 
-
-#include "game/Core/Rect.h"
+#include "../Core/Rect.h"
 #include "AdjustableButton.h"
 
 class CAdjustableHUD {

@@ -5,8 +5,7 @@
 #pragma once
 
 #include "ClumpModelInfo.h"
-#include "game/Enums/ePedType.h"
-
+#include "../Enums/ePedType.h"
 
 struct CPedModelInfo : public CClumpModelInfo{
 public:
@@ -25,6 +24,5 @@ public:
     int16_t     m_LastVoice;
     int16_t     m_NextVoice;
 };
-
 
 static_assert(sizeof(CPedModelInfo) == (VER_x32 ? 0x5c : 0x78));

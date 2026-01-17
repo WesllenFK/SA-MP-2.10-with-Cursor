@@ -10,10 +10,8 @@
 #include "../voice_new/SpeakerList.h"
 #include "../voice_new/include/util/Render.h"
 
-
 extern UI* pUI;
 extern CNetGame* pNetGame;
-
 
 ImGuiWrapper::ImGuiWrapper(const ImVec2& display_size, const std::string& font_path)
 {
@@ -84,8 +82,7 @@ void ImGuiWrapper::render()
 {
 	ImGui::NewFrame();
 
-
-	// voice
+// voice
 	/*if (pNetGame) {
 
 		if (pUI->dialog()->visible() || pUI->playertablist()->visible() || pNetGame->GetTextDrawPool()->GetState()) {

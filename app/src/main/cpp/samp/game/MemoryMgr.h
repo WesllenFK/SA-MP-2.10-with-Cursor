@@ -2,7 +2,6 @@
 #ifndef LIVERUSSIA_MEMORYMGR_H
 #define LIVERUSSIA_MEMORYMGR_H
 
-
 class CMemoryMgr {
 
 public:
@@ -21,6 +20,5 @@ public:
 
     static void *MoveMemory(void *memory);
 };
-
 
 #endif //LIVERUSSIA_MEMORYMGR_H

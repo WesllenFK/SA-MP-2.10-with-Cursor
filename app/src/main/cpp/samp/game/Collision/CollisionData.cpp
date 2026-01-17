@@ -1,6 +1,6 @@
 
 #include "CollisionData.h"
-#include "game/MemoryMgr.h"
+#include "../MemoryMgr.h"
 #include "Collision.h"
 
 void CCollisionData::InjectHooks() {

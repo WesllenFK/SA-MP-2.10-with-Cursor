@@ -6,7 +6,6 @@
 #include "../main.h"
 #include "game/SimpleTransform.h"
 
-
 class CUtil {
 public:
     static uintptr_t FindLib(const char *libname);

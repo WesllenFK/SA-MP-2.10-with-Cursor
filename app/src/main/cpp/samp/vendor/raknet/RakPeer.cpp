@@ -210,8 +210,7 @@ RakPeer::~RakPeer()
 
 	Disconnect( 0, 0);
 
-
-	StringCompressor::RemoveReference();
+StringCompressor::RemoveReference();
 	StringTable::RemoveReference();
 }
 
@@ -279,8 +278,7 @@ bool RakPeer::Initialize( unsigned short maxConnections, unsigned short localPor
 		//remoteSystemList = new RemoteSystemStruct[ remoteSystemListSize ];
 		remoteSystemList = new RemoteSystemStruct[ maximumNumberOfPeers ];
 
-
-		for ( i = 0; i < maximumNumberOfPeers; i++ )
+for ( i = 0; i < maximumNumberOfPeers; i++ )
 		//for ( i = 0; i < remoteSystemListSize; i++ )
 		{
 			// remoteSystemList in Single thread
@@ -382,8 +380,7 @@ bool RakPeer::Initialize( unsigned short maxConnections, unsigned short localPor
 			processPacketsThreadHandle = 0;
 #endif
 
-
-			// Wait for the threads to activate.  When they are active they will set these variables to true
+// Wait for the threads to activate.  When they are active they will set these variables to true
 
 			while (  /*isRecvfromThreadActive==false || */isMainLoopThreadActive == false )
 				RakSleep(10);
@@ -1253,12 +1250,10 @@ bool RakPeer::RPC( int* uniqueID, const char *data, unsigned int bitLength, Pack
 		
 		// No mapping, so write the encoded RPC name
 		outgoingBitStream.Write((BYTE)(*uniqueID));
-			
 
-		outgoingBitStream.WriteCompressed( bitLength );
+outgoingBitStream.WriteCompressed( bitLength );
 
-
-		if ( bitLength > 0 )
+if ( bitLength > 0 )
 			outgoingBitStream.WriteBits( (const unsigned char *) data, bitLength, false ); // Last param is false to write the raw data originally from another bitstream, rather than shifting from user data
 		else
 			outgoingBitStream.WriteCompressed( ( unsigned int ) 0 );
@@ -1639,9 +1634,6 @@ void RakPeer::Ping( const char* host, unsigned short remotePort, bool onlyReplyO
 		messageHandlerList[i]->OnDirectSocketSend((const char*)bitStream.GetData(), bitStream.GetNumberOfBitsUsed(), playerId);
 	// No timestamp for 255.255.255.255
 	SocketLayer::Instance()->SendTo( connectionSocket, (const char*)bitStream.GetData(), bitStream.GetNumberOfBytesUsed(), ( char* ) host, remotePort );
-
-
-
 
 }
 
@@ -2042,9 +2034,7 @@ void RakPeer::AdvertiseSystem( const char *host, unsigned short remotePort, cons
 		messageHandlerList[i]->OnDirectSocketSend((const char*)bitStream.GetData(), bitStream.GetNumberOfBitsUsed(), playerId);
 	SocketLayer::Instance()->SendTo( connectionSocket, (const char*)bitStream.GetData(), bitStream.GetNumberOfBytesUsed(), ( char* ) host, remotePort );
 
-
-
-	/*
+/*
 	// If the host starts with something other than 0, 1, or 2 it's (probably) a domain name.
 	if ( host[ 0 ] < '0' || host[ 0 ] > '2' )
 	{
@@ -2919,8 +2909,7 @@ bool RakPeer::HandleRPCPacket( const char *data, int length, PlayerID playerId )
 #endif
 			userData = new unsigned char[BITS_TO_BYTES(incomingBitStream.GetNumberOfUnreadBits())];
 
-
-		// The false means read out the internal representation of the bitstream data rather than
+// The false means read out the internal representation of the bitstream data rather than
 		// aligning it as we normally would with user data.  This is so the end user can cast the data received
 		// into a bitstream for reading
 		if ( incomingBitStream.ReadBits( ( unsigned char* ) userData, rpcParms.numberOfBitsOfData, false ) == false )
@@ -2945,8 +2934,6 @@ bool RakPeer::HandleRPCPacket( const char *data, int length, PlayerID playerId )
 
 	return true;
 }
-
-
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 /**
@@ -3300,8 +3287,7 @@ void RakPeer::SendBuffered( const char *data, int numberOfBitsToSend, PacketPrio
 	assert(orderingChannel >=0 && orderingChannel < 32);
 #endif
 
-
-	BufferedCommandStruct *bcs;
+BufferedCommandStruct *bcs;
 
 #ifdef _RAKNET_THREADSAFE
 	rakPeerMutexes[bufferedCommands_Mutex].Lock();
@@ -3527,8 +3513,7 @@ bool RakPeer::HandleBufferedRPC(BufferedCommandStruct *bcs, RakNetTime time)
 			outgoingBitStream.Write(bcs->networkID);
 		}
 
-
-		if ( bcs->numberOfBitsToSend > 0 )
+if ( bcs->numberOfBitsToSend > 0 )
 			outgoingBitStream.WriteBits( (const unsigned char*) userData, bcs->numberOfBitsToSend, false ); // Last param is false to write the raw data originally from another bitstream, rather than shifting from user data
 		else
 			outgoingBitStream.WriteCompressed( ( int ) 0 );
@@ -4306,8 +4291,7 @@ bool RakPeer::RunUpdateCycle( void )
 	if (rcsFirst)
 		requestedConnectionList.CancelReadLock(rcsFirst);
 
-	 
-	// remoteSystemList in network thread
+// remoteSystemList in network thread
 	for ( remoteSystemIndex = 0; remoteSystemIndex < maximumNumberOfPeers; ++remoteSystemIndex )
 	//for ( remoteSystemIndex = 0; remoteSystemIndex < remoteSystemListSize; ++remoteSystemIndex )
 	{
@@ -4333,8 +4317,7 @@ bool RakPeer::RunUpdateCycle( void )
 				//printf("timeNS = %I64i timeMS=%i\n", timeNS, timeMS);
 			}
 
-
-			if (timeMS > remoteSystem->lastReliableSend && timeMS-remoteSystem->lastReliableSend > 5000 && remoteSystem->connectMode==RemoteSystemStruct::CONNECTED)
+if (timeMS > remoteSystem->lastReliableSend && timeMS-remoteSystem->lastReliableSend > 5000 && remoteSystem->connectMode==RemoteSystemStruct::CONNECTED)
 			{
 				// If no reliable packets are waiting for an ack, do a one byte reliable send so that disconnections are noticed
 				rnss=remoteSystem->reliabilityLayer.GetStatistics();
@@ -4627,7 +4610,6 @@ bool RakPeer::RunUpdateCycle( void )
 						}
 						*/
 
-						
 //						packet->playerId = playerId;
 //						packet->playerIndex = ( PlayerIndex ) remoteSystemIndex;
 
@@ -4777,8 +4759,7 @@ bool RakPeer::RunUpdateCycle( void )
 							remoteSystem->myExternalPlayerId = externalID;
 							remoteSystem->connectMode=RemoteSystemStruct::CONNECTED;
 
-
-							if (alreadyConnected==false)
+if (alreadyConnected==false)
 							{
 #ifdef __USE_IO_COMPLETION_PORTS
 								bool b;
@@ -4956,13 +4937,11 @@ void* UpdateNetworkLoop( void* arguments )
 		}
 	}
 
-
 #ifdef __USE_IO_COMPLETION_PORTS
 	AsynchronousFileIO::Instance()->DecreaseUserCount();
 #endif
 
-
-	/*
+/*
 #ifdef _WIN32
 #if (_WIN32_WINNT >= 0x0400) || (_WIN32_WINDOWS > 0x0400)
 	CloseHandle( timerHandle );

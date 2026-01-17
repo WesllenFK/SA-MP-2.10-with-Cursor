@@ -55,8 +55,7 @@ public:
         return x * lhs.x + y * lhs.y;
     }
 
-
-    CVector2D(const CVector& vec3d);
+CVector2D(const CVector& vec3d);
 };
 
 constexpr inline CVector2D operator*(const CVector2D& vecOne, const CVector2D& vecTwo) {
@@ -82,5 +81,4 @@ constexpr inline CVector2D operator+(const CVector2D& vecOne, const CVector2D& v
 inline float DistanceBetweenPoints2D(const CVector2D& pointOne, const CVector2D& pointTwo) {
     return (pointTwo - pointOne).Magnitude();
 }
-
 

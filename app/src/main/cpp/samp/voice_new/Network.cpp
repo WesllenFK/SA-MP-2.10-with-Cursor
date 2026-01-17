@@ -180,11 +180,9 @@ std::size_t Network::AddDisconnectCallback(DisconnectCallback callback) noexcept
 {
     if(!Network::initStatus) return -1;
 
-
-    Network::disconnectCallbacks.emplace_back(std::move(callback));
+Network::disconnectCallbacks.emplace_back(std::move(callback));
     return Network::disconnectCallbacks.size() - 1;
 }
-
 
 void Network::VoiceThread() noexcept
 {

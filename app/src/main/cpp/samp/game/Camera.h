@@ -4,14 +4,13 @@
 
 #pragma once
 
-
 #include "common.h"
-#include "game/Enums/eCamMode.h"
+#include "Enums/eCamMode.h"
 #include "Cam.h"
 #include "QueuedMode.h"
 #include "Matrix.h"
-#include "game/Entity/Placeable.h"
-#include "game/Entity/CEntityGTA.h"
+#include "Entity/Placeable.h"
+#include "Entity/CEntityGTA.h"
 
 struct CPedGTA;
 enum class eFadeFlag : uint16 {

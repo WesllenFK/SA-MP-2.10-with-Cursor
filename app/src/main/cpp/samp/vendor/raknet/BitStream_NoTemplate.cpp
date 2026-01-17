@@ -560,7 +560,6 @@ void BitStream::WriteCompressed( const int64_t input )
 }
 #endif
 
-
 void BitStream::WriteCompressed( const float input )
 {
 #ifdef TYPE_CHECKING
@@ -1195,9 +1194,8 @@ bool BitStream::ReadCompressed( float &output )
 	assert( ID == 20 );
 	
 #endif
-	
 
-	// Not yet implemented
+// Not yet implemented
 #ifdef __BITSTREAM_NATIVE_END
 	return ReadBits( ( unsigned char* ) & output, sizeof( output ) * 8 );
 #else
@@ -1554,9 +1552,8 @@ void BitStream::WriteCompressed( const unsigned char* input,
 			
 			WriteBits( input, ( currentByte + 1 ) << 3, true );
 			//  currentByte--;
-			
-			
-			return ;
+
+return ;
 		}
 		
 		currentByte--;
@@ -1638,9 +1635,8 @@ bool BitStream::ReadCompressed( unsigned char* output,
 	const int size, const bool unsignedData )
 {
 	int currentByte = ( size >> 3 ) - 1;
-	
-	
-	unsigned char byteMatch, halfByteMatch;
+
+unsigned char byteMatch, halfByteMatch;
 	
 	if ( unsignedData )
 	{
@@ -1791,7 +1787,6 @@ void BitStream::PrintBits( void ) const
 	
 	putchar( '\n' );
 }
-
 
 // Exposes the data for you to look at, like PrintBits does.
 // Data will point to the stream.  Returns the length in bits of the stream.

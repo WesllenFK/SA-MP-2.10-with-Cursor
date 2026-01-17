@@ -123,8 +123,7 @@ namespace DataStructures
 			delete [] listArray;
 	}
 
-
-	template <class list_type>
+template <class list_type>
 		List<list_type>::List( const List& original_copy )
 	{
 		// Allocate memory for copy
@@ -179,8 +178,7 @@ namespace DataStructures
 		return *this;
 	}
 
-
-	template <class list_type>
+template <class list_type>
 		inline list_type& List<list_type>::operator[] ( const unsigned int position ) const
 	{
 #ifdef _DEBUG
@@ -236,8 +234,7 @@ namespace DataStructures
 
 	}
 
-
-	template <class list_type>
+template <class list_type>
 		void List<list_type>::Insert( const list_type input )
 	{
 		// Reallocate list if necessary

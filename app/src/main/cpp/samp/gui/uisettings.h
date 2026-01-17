@@ -128,8 +128,7 @@ private:
 
 	/* splashscreen */
 
-
-	/* keyboard */
+/* keyboard */
 	static ImColor m_keyboardBackgroundColor;
 
 	/* dialog */

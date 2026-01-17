@@ -25,7 +25,6 @@
 
 class RakPeerInterface;
 
-
 /// \defgroup RAKNET_RPC Remote Procedure Call Subsystem 
 /// \brief A system to call C or object member procudures on other systems, and even to return return values.
 

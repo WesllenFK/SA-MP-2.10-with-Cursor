@@ -5,7 +5,6 @@
 #ifndef LIVERUSSIA_CROSSHAIR_H
 #define LIVERUSSIA_CROSSHAIR_H
 
-
 #include "RW/rwcore.h"
 #include "sprite2d.h"
 
@@ -18,6 +17,5 @@ public:
     static void Init();
     static void Render();
 };
-
 
 #endif //LIVERUSSIA_CROSSHAIR_H

@@ -4,17 +4,16 @@
 
 #pragma once
 
-
 #include "Placeable.h"
-#include "Link.h"
-#include "game/Enums/eEntityStatus.h"
-#include "game/Enums/eEntityType.h"
-#include "game/Enums/eSurfaceType.h"
-#include "game/Enums/eAreaCodes.h"
-#include "game/Reference.h"
-#include "Rect.h"
-#include "game/Models/BaseModelInfo.h"
-#include "game/Enums/eModelID.h"
+#include "../Core/Link.h"
+#include "../Enums/eEntityStatus.h"
+#include "../Enums/eEntityType.h"
+#include "../Enums/eSurfaceType.h"
+#include "../Enums/eAreaCodes.h"
+#include "../Reference.h"
+#include "../Core/Rect.h"
+#include "../Models/BaseModelInfo.h"
+#include "../Enums/eModelID.h"
 
 struct CEntityGTA : public CPlaceable{
 public:
@@ -89,7 +88,6 @@ public:
     eEntityType     m_nType : 3;          // Mask: & 0x7  = 7
     eEntityStatus   m_nStatus : 5;        // Mask: & 0xF8 = 248 (Remember: In the original code unless this was left shifted the value it's compared to has to be left shifted by 3!)
     uint8_t         pad_0;
-
 
 public:
     [[nodiscard]] bool IsPhysical() const { return m_nType > ENTITY_TYPE_BUILDING && m_nType < ENTITY_TYPE_DUMMY; }

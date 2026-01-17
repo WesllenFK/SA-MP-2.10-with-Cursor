@@ -228,7 +228,6 @@ typedef RwBool
                                             RwImVertexIndex *indices,
                                             RwInt32 numIndices);
 
-
 typedef struct RwDevice RwDevice;
 
 #if (!defined(DOXYGEN))
@@ -309,7 +308,6 @@ struct RwMetrics
     RwUInt32    numResourceAllocs;      /**< The number of resource blocks swapped. */
     void        *devSpecificMetrics;    /**< Device specific metrics. */
 };
-
 
 #define SUBSYSTEMNAME_MAXLEN 80
 
@@ -761,7 +759,6 @@ typedef struct RwLockFunctions RwLockFunctions;
 #endif // ( ( defined RWDEBUG ) && ( defined USE_THREADSAFE_CHECK ) )
 #endif //  defined USE_THREADSAFE_ATOMIC
 
-
 //@} DDonSS
 
 /****************************************************************************
@@ -820,7 +817,6 @@ extern RwMetrics *RwEngineGetMetrics(void);
 extern RwBool _rwDeviceSystemRequest(RwDevice *d, RwInt32 id, void *out,
                                  void *inOut, RwInt32 numIn);
 extern RwUInt32 _rwGetNumEngineInstances(void);
-
 
 /*
  * _rwDeviceGetHandle() is not defined in badevice.c;

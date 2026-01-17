@@ -1,8 +1,8 @@
 
 #include "Sphere.h"
-#include "game/Lines.h"
-#include "Matrix.h"
-#include "Vector.h"
+#include "../Lines.h"
+#include "../Core/Matrix.h"
+#include "../Core/Vector.h"
 #include "../rgba.h"
 
 // 0x40FCF0

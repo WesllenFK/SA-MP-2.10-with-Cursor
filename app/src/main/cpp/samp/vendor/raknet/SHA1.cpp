@@ -17,10 +17,8 @@
 *  34AA973C D4C4DAA4 F61EEB2B DBAD2731 6534016F
 */
 
-
 #include "SHA1.h"
 #include <stdlib.h>
-
 
 CSHA1::CSHA1()
 {
@@ -31,7 +29,6 @@ CSHA1::~CSHA1()
 {
 	Reset();
 }
-
 
 void CSHA1::Reset()
 {

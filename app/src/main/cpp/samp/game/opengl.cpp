@@ -35,7 +35,6 @@
     strcat(pxlbuf, "\n");                    \
   } while (0)
 
-
 #define VTX_EMIT(...)                        \
   do {                                       \
     snprintf(tmp, sizeof(tmp), __VA_ARGS__); \
@@ -56,7 +55,6 @@ char* byte_619294 = 0; //vertex
 
 #define VTX_SOURCE(str) \
         strcat(byte_619294, str) \
-
 
 void BuildVertexSource(int flags) {
     int uVar1;

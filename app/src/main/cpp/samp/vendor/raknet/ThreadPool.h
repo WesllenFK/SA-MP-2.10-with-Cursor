@@ -428,5 +428,4 @@ void ThreadPool<InputType, OutputType>::ClearOutput(void)
 	outputQueue.Clear();
 }
 
-
 #endif

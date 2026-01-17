@@ -7,7 +7,7 @@
 #pragma once
 
 #include "common.h"
-#include "game/Core/RQVector.h"
+#include "Core/RQVector.h"
 #include "rgba.h"
 
 class CColourSet {

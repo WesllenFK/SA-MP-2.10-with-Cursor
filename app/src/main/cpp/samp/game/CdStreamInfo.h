@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include "common.h"
 #include "../vendor/armhook/patch.h"
 

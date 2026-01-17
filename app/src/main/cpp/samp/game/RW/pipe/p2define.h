@@ -107,12 +107,10 @@ RxPipelineLock(RxPipeline *pipeline);
 extern RxPipeline *
 RxLockedPipeUnlock(RxLockedPipe *pipeline);
 
-
 extern RxLockedPipe *
 RxLockedPipeAddFragment(RxLockedPipe *pipeline,
                         RwUInt32 *firstIndex,
                         RxNodeDefinition *nodeDef0, RwUInt32 nodeUnk = 0U);
-
 
 extern RxPipeline *
 RxLockedPipeReplaceNode(RxLockedPipe *pipeline,
@@ -123,15 +121,12 @@ extern RxPipeline *
 RxLockedPipeDeleteNode(RxLockedPipe *pipeline,
                        RxPipelineNode *node);
 
-
 extern RxPipeline *
 RxLockedPipeSetEntryPoint(RxLockedPipe *pipeline,
                           RxNodeInput in);
 
-
 extern RxPipelineNode *
 RxLockedPipeGetEntryPoint(RxLockedPipe *pipeline);
-
 
 extern RxPipeline *
 RxLockedPipeAddPath(RxLockedPipe *pipeline,
@@ -142,7 +137,6 @@ extern RxPipeline *
 RxLockedPipeDeletePath(RxLockedPipe *pipeline,
                        RxNodeOutput out,
                        RxNodeInput in);
-
 
 extern RxPipeline *
 RxPipelineInsertDebugNode(RxPipeline *pipeline,

@@ -79,7 +79,6 @@ typedef struct _SPECTATOR_SYNC_DATA
 } SPECTATOR_SYNC_DATA;
 #pragma pack(pop)
 
-
 #pragma pack(push, 1)
 typedef struct _AIM_SYNC_DATA
 {
@@ -283,8 +282,7 @@ public:
 	VEHICLEID			m_LastVehicle;
 	VEHICLEID			m_nLastVehicle;
 
-
-	bool                 m_bWasInCar;
+bool                 m_bWasInCar;
 private:
 	CPlayerPed*			m_pPlayerPed;
 	bool				m_bIsWasted;

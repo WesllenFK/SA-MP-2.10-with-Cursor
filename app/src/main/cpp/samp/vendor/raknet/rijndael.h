@@ -5,12 +5,10 @@
 ///  taken from the 'aescrypt' project: www.sf.net/projects/aescrypt
 ///  See LICENSE-EST for the license applicable to this file
 
-
 /// \note  Although the routines claim to support 192 and 256 bit blocks,
 /// don't take your chances - stick to the 128 bit (16 byte) blocks unless
 /// you've run tests to prove that 192 and 256 are correctly supported.
 /// - Cirilo
-
 
 #include <stdio.h>
 
@@ -40,17 +38,14 @@ int rijndaelDecryptRound (word8 a[4][4],
 
 // End of algorithm headers.  begin the AES API header defs
 
-
 #ifndef __RIJNDAEL_API_H
 #define __RIJNDAEL_API_H
 
 // rijndael-api-fst.h   v2.0   August '99
 // Optimised ANSI C code
 
-
 //  Defines:
 // Add any additional defines you need
-
 
 #define     DIR_ENCRYPT     0    //  Are we encrpyting? 
 #define     DIR_DECRYPT     1    //  Are we decrpyting? 
@@ -73,7 +68,6 @@ int rijndaelDecryptRound (word8 a[4][4],
 #define     BAD_CIPHER_STATE   -5  //  Cipher in wrong state (e.g., not initialized)
 #define     BAD_BLOCK_LENGTH   -6 
 #define     BAD_CIPHER_INSTANCE   -7 
-
 
 //  CHANGE POSSIBLE:  inclusion of algorithm specific defines 
 // 14.Dec.2005 Cirilo: keys are now unsigned char rather than hex (ASCII)
@@ -103,7 +97,6 @@ typedef struct {  // changed order of the components
       int   blockLen;    	/// Sample: Handles non-128 bit block sizes	(if available)
       } cipherInstance;
 
-
 //  Function protoypes 
 //  CHANGED: makeKey(): parameter blockLen added this parameter is absolutely necessary if you want to
 // setup the round keys in a variable block length setting 
@@ -120,6 +113,5 @@ int blockDecrypt(cipherInstance *cipher, keyInstance *key, BYTE *input,
 			int inputLen, BYTE *outBuffer);
 int cipherUpdateRounds(cipherInstance *cipher, keyInstance *key, BYTE *input, 
                         int inputLen, BYTE *outBuffer, int Rounds);
-
 
 #endif // __RIJNDAEL_API_H  

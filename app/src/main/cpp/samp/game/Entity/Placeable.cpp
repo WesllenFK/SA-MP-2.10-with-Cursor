@@ -3,8 +3,8 @@
 //
 #include "../common.h"
 #include "Placeable.h"
-#include "game/Core/MatrixLinkList.h"
-#include "../vendor/armhook/patch.h"
+#include "../Core/MatrixLinkList.h"
+#include "../../vendor/armhook/patch.h"
 
 void CPlaceable::InitMatrixArray() {
     gMatrixList.Init(CPlaceable::NUM_MATRICES_TO_CREATE);
@@ -97,7 +97,6 @@ bool CPlaceable::IsWithinArea(float x1, float y1, float x2, float y2) const {
 
     return vecPos.x >= x1 && vecPos.x <= x2 && vecPos.y >= y1 && vecPos.y <= y2;
 }
-
 
 bool CPlaceable::IsWithinArea(float x1, float y1, float z1, float x2, float y2, float z2) const {
     const auto& vecPos = GetPosition();

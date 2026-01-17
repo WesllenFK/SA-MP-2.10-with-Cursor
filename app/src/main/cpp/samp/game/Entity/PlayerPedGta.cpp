@@ -3,9 +3,9 @@
 //
 
 #include "PlayerPedGta.h"
-#include "game/Plugins/RpAnimBlendPlugin/RpAnimBlend.h"
-#include "game/Animation/AnimManager.h"
-#include "../vendor/armhook/patch.h"
+#include "../Plugins/RpAnimBlendPlugin/RpAnimBlend.h"
+#include "../Animation/AnimManager.h"
+#include "../../vendor/armhook/patch.h"
 
 void CPlayerPedGta::ReApplyMoveAnims() {
    // Log("ReApplyMoveAnims");
@@ -30,7 +30,6 @@ void CPlayerPedGta::ReApplyMoveAnims() {
         }
     }
 }
-
 
 // --- hooks
 

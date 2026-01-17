@@ -4,11 +4,10 @@
 
 #pragma once
 
-
 #include "common.h"
 #include "CFileMgr.h"
 #include "Quaternion.h"
-#include "game/Entity/CEntityGTA.h"
+#include "Entity/CEntityGTA.h"
 
 class CFileObjectInstance {
 public:

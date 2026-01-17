@@ -4,11 +4,10 @@
 
 #pragma once
 
-
 #include "CEntityGTA.h"
-#include "PtrNodeDoubleLink.h"
-#include "EntryInfoList.h"
-#include "game/RealTimeShadow.h"
+#include "../Core/PtrNodeDoubleLink.h"
+#include "../Core/EntryInfoList.h"
+#include "../RealTimeShadow.h"
 
 struct CPhysical : public CEntityGTA {
     float       m_fPrevDistFromCam;

@@ -1,0 +1,5 @@
+﻿
+C/C++: fatal error: too many errors emitted, stopping now [-ferror-limit=]
+  fatal error: too many errors emitted, stopping now [-ferror-limit=]
+
+

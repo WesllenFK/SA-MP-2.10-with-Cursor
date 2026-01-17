@@ -5,7 +5,7 @@
 #pragma once
 
 #include "../common.h"
-#include "game/Enums/eSurfaceType.h"
+#include "../Enums/eSurfaceType.h"
 
 struct tColLighting {
     union {

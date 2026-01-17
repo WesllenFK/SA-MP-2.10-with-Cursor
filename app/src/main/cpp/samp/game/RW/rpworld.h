@@ -91,7 +91,6 @@ typedef enum RpGeometryLockMode RpGeometryLockMode;
 /* Convenience macro for generating a tex coord lock flag */
 #define rpGEOMETRYLOCKTEXCOORDSIDX(_idx) (rpGEOMETRYLOCKTEXCOORDS1 << (_idx))
 
-
 #define RpGeometryGetMaterialMacro(_geometry, _num)             \
     (((_geometry)->matList.materials)[(_num)])
 
@@ -153,10 +152,8 @@ typedef enum RpGeometryLockMode RpGeometryLockMode;
 #define RpAtomicGetFrameMacro(_atomic)                                  \
     ((RwFrame *) rwObjectGetParent(_atomic))
 
-
 #define RpAtomicGetFrame(_atomic) \
     RpAtomicGetFrameMacro(_atomic)
-
 
 #define RpAtomicGetClumpMacro(_atomic)                                  \
     ((_atomic)->clump)
@@ -169,7 +166,6 @@ typedef enum RpGeometryLockMode RpGeometryLockMode;
 
 #define RpGeometrySetFlags(_geometry, _flags)              \
     (((_geometry)->flags = (_flags)), (_geometry))
-
 
 /****************************** Object type ID ******************************/
 
@@ -484,7 +480,6 @@ struct RpPlaneSector
  * Copyright (c) 1998 Criterion Software Ltd.
  */
 
-
 /****************************************************************************
  Defines
  */
@@ -628,7 +623,6 @@ struct RpLightTie
 #define RpLightGetFlagsMacro(_light)                        \
     (rwObjectGetFlags((_light)))
 
-
 #if !(defined(RWDEBUG) || defined(RWSUPPRESSINLINE))
 
 #define RpLightGetRadius(_light)                            \
@@ -653,7 +647,6 @@ struct RpLightTie
     RpLightGetFlagsMacro(_light)
 
 #endif /* !(defined(RWDEBUG) || defined(RWSUPPRESSINLINE)) */
-
 
 /**
  * \ingroup rpmaterial
@@ -917,7 +910,6 @@ typedef enum RpWorldFlag RpWorldFlag;
 /* Maximum depth of BSP tree */
 #define rpWORLDMAXBSPDEPTH 64
 
-
 typedef struct RpMesh RpMesh;
 
 /**
@@ -993,7 +985,6 @@ enum RwCriterionWorldID
     rwCRITERIONWORLDIDFORCEENUMSIZEINT = RWFORCEENUMSIZEINT
 };
 typedef enum RwCriterionWorldID RwCriterionWorldID;
-
 
 /**
  * \ingroup rpworldsub

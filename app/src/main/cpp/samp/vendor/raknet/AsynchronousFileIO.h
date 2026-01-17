@@ -44,8 +44,7 @@ public:
 	
  /// Destructor 
 	~AsynchronousFileIO();
-	
-	
+
 /// Associate a socket with a completion port
 /// \param[in] socket the socket used for communication 
 /// \param[in] dwCompletionKey the completion port key 

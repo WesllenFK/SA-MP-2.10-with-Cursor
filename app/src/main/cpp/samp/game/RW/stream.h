@@ -86,7 +86,6 @@ struct RwStreamMemory
 static_assert(sizeof(RwStreamMemory) == (VER_x32 ? 0xC : 0x10));
 #endif /* (!defined(DOXYGEN)) */
 
-
 typedef union RwStreamFile RwStreamFile;
 /**
  * \ingroup rwstream
@@ -99,7 +98,6 @@ union RwStreamFile
     void    *fpFile;               /**< file pointer */
     const void    *constfpFile;    /**< const file pointer */
 };
-
 
 /* Custom stream function pointer types */
 typedef             RwBool(*rwCustomStreamFnClose) (void *data);
@@ -168,7 +166,6 @@ struct RwStream
 static_assert(sizeof(RwStream) == (VER_x32 ? 0x24 : 0x40));
 #endif /* (!defined(DOXYGEN)) */
 
-
 typedef struct RwMemory RwMemory;
 /**
  * \ingroup rwstream
@@ -225,7 +222,6 @@ extern RwBool
 RwStreamClose(RwStream * stream,
               void *pData);
 
-
 /* Stream read/write */
 extern RwUInt32     
 RwStreamRead(RwStream * stream,
@@ -237,12 +233,10 @@ RwStreamWrite(RwStream * stream,
               const void *buffer,
               RwUInt32 length);
 
-
 /* Stream skipping */
 extern RwStream *
 RwStreamSkip(RwStream * stream,
              RwUInt32 offset);
-
 
 /* RWPUBLICEND */
 
@@ -256,7 +250,6 @@ extern void *
 _rwStreamModuleClose(void *instance,
                      RwInt32 offset,
                      RwInt32 size);
-
 
 /* RWPUBLIC */
 #ifdef    __cplusplus

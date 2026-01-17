@@ -4,9 +4,9 @@
 
 #pragma once
 
-#include "../common.h"
-#include "Pool.h"
-#include "game/Pipelines/RxPipeline.h"
+#include "../../common.h"
+#include "../../Core/Pool.h"
+#include "../RxPipeline.h"
 
 constexpr auto ENV_MAP_PLUGIN_ID = 0x253F2FC;
 constexpr auto ENV_MAP_ATM_PLUGIN_ID = 0x253F2F4;

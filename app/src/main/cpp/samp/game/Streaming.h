@@ -10,9 +10,9 @@
 #include "constants.h"
 #include "common.h"
 #include "CdStreamInfo.h"
-#include "game/Core/LinkList.h"
+#include "Core/LinkList.h"
 #include "StreamingInfo.h"
-#include "game/Enums/eAreaCodes.h"
+#include "Enums/eAreaCodes.h"
 #include "main.h"
 #include "Timer.h"
 
@@ -77,7 +77,6 @@ enum class eModelType {
 };
 
 // Helper functions to deal with modelID's
-
 
 inline bool IsModelDFF(int32 model) { return RESOURCE_ID_DFF <= model && model < RESOURCE_ID_TXD; }
 inline bool IsModelTXD(int32 model) { return RESOURCE_ID_TXD <= model && model < RESOURCE_ID_COL; }

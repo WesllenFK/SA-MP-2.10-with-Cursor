@@ -43,7 +43,6 @@ void Button::touchPopEvent()
 	if (m_callback) m_callback();
 }
 
-
 //============== Custom Button=========================//
 CButton::CButton(const std::string& caption, float font_size)
 {
@@ -73,8 +72,7 @@ void CButton::draw(ImGuiRenderer* renderer)
 	renderer->drawRect(absolutePosition(), absolutePosition() + size(),
 		focused() ? m_colorFocused : m_color, true);
 
-	
-	renderer->drawRect(absolutePosition() + ImVec2(UISettings::outlineSize(), UISettings::outlineSize()),
+renderer->drawRect(absolutePosition() + ImVec2(UISettings::outlineSize(), UISettings::outlineSize()),
 		(absolutePosition() + size()) - ImVec2(UISettings::outlineSize(), UISettings::outlineSize()),
 		ImColor(0x64, 0x95, 0xED)/*ImColor(0, 0, 0, 200)*/, false, UISettings::outlineSize());
 
@@ -123,8 +121,7 @@ void OButton::draw(ImGuiRenderer* renderer)
 	renderer->drawRect(absolutePosition(), absolutePosition() + size(),
 		focused() ? m_colorFocused : m_color, true);
 
-
-	renderer->drawRect(absolutePosition() + ImVec2(UISettings::outlineSize(), UISettings::outlineSize()),
+renderer->drawRect(absolutePosition() + ImVec2(UISettings::outlineSize(), UISettings::outlineSize()),
 		(absolutePosition() + size()) - ImVec2(UISettings::outlineSize(), UISettings::outlineSize()),
 		ImColor(0x64, 0x95, 0xED)/*ImColor(0, 0, 0, 200)*/, false, UISettings::outlineSize());
 

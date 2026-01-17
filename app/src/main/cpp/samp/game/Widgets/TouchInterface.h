@@ -157,7 +157,6 @@ public:
         NUM_WIDGET_POSITIONS = 0x8A,
     };
 
-
 public:
     static void LoadDefaultConfigFile();
     static void LoadFromFile(const char *pszFilename, bool bFullLoad);

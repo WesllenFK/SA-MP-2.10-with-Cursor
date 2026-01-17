@@ -1,6 +1,6 @@
 #pragma once
 
-#include "game/RW/RenderWare.h"
+#include "../RW/RenderWare.h"
 #include "Vector.h"
 
 #pragma pack(push, 1)
@@ -82,7 +82,6 @@ public:
 };
 #pragma pack(pop)
 static_assert(sizeof(CQuaternion) == 0x10);
-
 
 constexpr float DotProduct(const CQuaternion& q1, const CQuaternion& q2) {
     return q1.x * q2.x +

@@ -3,8 +3,8 @@
 //
 
 #include "CPhysical.h"
-#include "game/Timer.h"
-#include "patch.h"
+#include "../Timer.h"
+#include "../../vendor/armhook/patch.h"
 
 CPhysical::CPhysical() : CEntityGTA()
 {

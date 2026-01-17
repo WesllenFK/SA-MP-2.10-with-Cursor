@@ -45,8 +45,7 @@ public:
 	void render() override;
 	void shutdown() override;
 
-
-	SplashScreen* splashscreen() const { return m_splashScreen; }
+SplashScreen* splashscreen() const { return m_splashScreen; }
 	Chat* chat() const { return m_chat; }
 	Spawn* spawn() const { return m_spawn; }
 	Keyboard* keyboard() const { return m_keyboard; }
@@ -118,8 +117,7 @@ private:
     Label* label3;
     Label* label4;
 
-
-    float 		m_fFontSize;
+float 		m_fFontSize;
 
 	bool m_bNeedClearMousePos = false;
 

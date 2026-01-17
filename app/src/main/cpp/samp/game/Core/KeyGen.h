@@ -9,7 +9,6 @@
 // CRC-32-IEEE
 // https://www.xilinx.com/support/documentation/application_notes/xapp209.pdf
 
-
 #include "../common.h"
 
 class CKeyGen {

@@ -1,6 +1,6 @@
 #include "AnimBlendSequence.h"
-#include "game/MemoryMgr.h"
-#include "game/Core/KeyGen.h"
+#include "../MemoryMgr.h"
+#include "../Core/KeyGen.h"
 
 void CAnimBlendSequence::InjectHooks() {
 

@@ -4,11 +4,10 @@
 
 #pragma once
 
-#include "game/Core/Vector.h"
+#include "Core/Vector.h"
 #include "cTransmission.h"
 #include "Enums/eVehicleHandlingModelFlags.h"
 #include "Enums/eVehicleHandlingFlags.h"
-
 
 enum eVehicleLightsSize : uint8_t {
     LIGHTS_LONG,

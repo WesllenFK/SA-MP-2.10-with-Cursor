@@ -3,7 +3,6 @@
 #include "pipe/p2core.h"
 #include "pipe/p2renderstate.h"
 
-
 struct rwPipeGlobals
 {
     RwFreeList          *pipesFreeList;   /* Save mallocs, use a freelist */
@@ -36,7 +35,6 @@ static_assert(sizeof(rwPipeGlobals) == (VER_x32 ?0x60 : 0x98));
 typedef struct rwPipeGlobals rwPipeGlobals;
 
 #define RXPIPELINEGLOBAL(var) (RWPLUGINOFFSET(rwPipeGlobals, RwEngineInstance, _rxPipelineGlobalsOffset)->var)
-
 
 extern void *_rwRenderPipelineOpen( void *instance, RwInt32 offset, RwInt32 size);
 extern void *_rwRenderPipelineClose(void *instance, RwInt32 offset, RwInt32 size);

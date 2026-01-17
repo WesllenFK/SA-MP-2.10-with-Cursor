@@ -5,7 +5,7 @@
 #pragma once
 
 #include "common.h"
-#include "game/Core/Rect.h"
+#include "Core/Rect.h"
 #include "CPlayerInfoGta.h"
 #include "RepeatSector.h"
 #include "Sector.h"
@@ -108,7 +108,6 @@ public:
 
 CSector* GetSector(int32 x, int32 y);
 CRepeatSector* GetRepeatSector(int32 x, int32 y);
-
 
 CPlayerInfoGta&   FindPlayerInfo(int32 playerId = -1);
 CPlayerPedGta*    FindPlayerPed(int32 playerId = -1);

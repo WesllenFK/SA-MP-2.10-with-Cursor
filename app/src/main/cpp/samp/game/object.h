@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../game/Core/Quaternion.h"
-#include "game/Entity/CPhysical.h"
+#include "Core/Quaternion.h"
+#include "Entity/CPhysical.h"
 
 #define MATERIAL_TYPE_MATERIAL	1
 #define MATERIAL_TYPE_TEXT		2

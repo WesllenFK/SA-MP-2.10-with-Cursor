@@ -4,8 +4,7 @@
 
 #pragma once
 
-#include "game/Core/Vector.h"
-
+#include "Core/Vector.h"
 
 class CSimpleTransform {
 public:
@@ -19,6 +18,5 @@ public:
     void Invert(const CSimpleTransform& base);
     void UpdateMatrix(class CMatrix* out);
 };
-
 
 static_assert(sizeof(CSimpleTransform) == 0x10, "Invalid size CSimpleTransform");

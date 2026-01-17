@@ -19,7 +19,6 @@ void CSimpleTransform::UpdateRwMatrix(RwMatrix* out)
     RwMatrixUpdate(out);
 }
 
-
 void CSimpleTransform::Invert(const CSimpleTransform& base)
 {
     const float cosHeading = cosf(base.m_fHeading);

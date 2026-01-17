@@ -1,6 +1,6 @@
 
 #include "rphanim.h"
-#include "game/common.h"
+#include "../common.h"
 #include "../vendor/armhook/patch.h"
 
 void RpHAnimHierarchySetFreeListCreateParams(RwInt32 blockSize, RwInt32 numBlocksToPrealloc) {

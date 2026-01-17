@@ -125,7 +125,6 @@ RwCamera* CShadowCamera::Create(int32 rasterSizePower) {
     return m_pRwCamera;
 }
 
-
 RwRaster* CShadowCamera::GetRwRenderRaster() const {
     return RwCameraGetRaster(m_pRwCamera);
 }

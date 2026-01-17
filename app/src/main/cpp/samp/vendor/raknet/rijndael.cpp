@@ -3,12 +3,10 @@
 // authors: v1.0: Antoon Bosselaers
 //          v2.0: Vincent Rijmen
 
-
 /*
  *  taken from the 'aescrypt' project: www.sf.net/projects/aescrypt
  *  See LICENSE-EST for the license applicable to this file
  */
-
 
 // 14.Dec.2005 Cirilo:  Removed silly hex keys; keys are now effectively unsigned char.
 
@@ -131,7 +129,6 @@ void InvMixColumn(word8 a[4][4], word8 BC) {
 								^ *((word32*)U2[a[j][1]])
 								^ *((word32*)U3[a[j][2]])
 								^ *((word32*)U4[a[j][3]]);
-
 
 }
 
@@ -297,8 +294,7 @@ int rijndaelEncryptRound (word8 a[4][4],
 	int r;
    word8 temp[4][4];
 
-
-	// make number of rounds sane
+// make number of rounds sane
 	if (rounds > ROUNDS) rounds = ROUNDS;
 
 	*((word32*)a[0]) = *((word32*)a[0]) ^ *((word32*)rk[0][0]);
@@ -355,14 +351,12 @@ int rijndaelEncryptRound (word8 a[4][4],
 	return 0;
 }   
 
-
 int rijndaelDecrypt (word8 a[16], word8 b[16], word8 rk[MAXROUNDS+1][4][4])
 {
 	int r;
    word8 temp[4][4];
-	
 
-    *((word32*)temp[0]) = *((word32*)a) ^ *((word32*)rk[ROUNDS][0]);
+*((word32*)temp[0]) = *((word32*)a) ^ *((word32*)rk[ROUNDS][0]);
     *((word32*)temp[1]) = *((word32*)(a+4)) ^ *((word32*)rk[ROUNDS][1]);
     *((word32*)temp[2]) = *((word32*)(a+8)) ^ *((word32*)rk[ROUNDS][2]);
     *((word32*)temp[3]) = *((word32*)(a+12)) ^ *((word32*)rk[ROUNDS][3]);
@@ -433,7 +427,6 @@ int rijndaelDecrypt (word8 a[16], word8 b[16], word8 rk[MAXROUNDS+1][4][4])
 	return 0;
 }
 
-
 int rijndaelDecryptRound (word8 a[4][4],  
 	word8 rk[MAXROUNDS+1][4][4], int rounds)
 // Decrypt only a certain number of rounds.
@@ -444,9 +437,8 @@ int rijndaelDecryptRound (word8 a[4][4],
 
 {
 	int r;
-	
 
-	// make number of rounds sane
+// make number of rounds sane
 	if (rounds > ROUNDS) rounds = ROUNDS;
 
         // First the special round:
@@ -476,7 +468,6 @@ int rijndaelDecryptRound (word8 a[4][4],
 }
 
 /*** End Rijndael algorithm,  Begin the AES Interface ***/
-
 
 int makeKey(keyInstance *key, BYTE direction, int keyByteLen, char *keyMaterial)
 {
@@ -528,9 +519,8 @@ int cipherInit(cipherInstance *cipher, BYTE mode, char *IV)
 	} else {
 		return BAD_CIPHER_MODE;
 	}
-	
 
-	if (IV != NULL) {
+if (IV != NULL) {
  		for(i = 0; i < 16; i++) cipher->IV[i] = IV[i];
 	}
 	else
@@ -542,7 +532,6 @@ int cipherInit(cipherInstance *cipher, BYTE mode, char *IV)
 
 	return TRUE;
 }
-
 
 int blockEncrypt(cipherInstance *cipher,
 	keyInstance *key, BYTE *input, int inputByteLen, BYTE *outBuffer)
@@ -556,9 +545,8 @@ int blockEncrypt(cipherInstance *cipher,
 		key->direction == DIR_DECRYPT) {
 		return BAD_CIPHER_STATE;
 	}
-	
 
-	numBlocks = inputLen/128;
+numBlocks = inputLen/128;
 	
 	switch (cipher->mode) {
 	case MODE_ECB: 
@@ -651,9 +639,8 @@ int blockDecrypt(cipherInstance *cipher,
 		cipher->mode != MODE_CFB1 && key->direction == DIR_ENCRYPT) {
 		return BAD_CIPHER_STATE;
 	}
-	
 
-	numBlocks = inputLen/128;
+numBlocks = inputLen/128;
 	
 	switch (cipher->mode) {
 	case MODE_ECB: 
@@ -747,7 +734,6 @@ int blockDecrypt(cipherInstance *cipher,
 	
 	return numBlocks*128;
 }
-
 
 /**
  *	cipherUpdateRounds:

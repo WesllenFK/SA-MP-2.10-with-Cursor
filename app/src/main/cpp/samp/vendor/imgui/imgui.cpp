@@ -107,8 +107,7 @@ CODE
  - Doesn't look fancy, doesn't animate.
  - Limited layout features, intricate layouts are typically crafted in code.
 
-
- END-USER GUIDE
+END-USER GUIDE
  ==============
 
  - Double-click on title bar to collapse window.
@@ -131,8 +130,7 @@ CODE
  - General Keyboard controls: enable with ImGuiConfigFlags_NavEnableKeyboard.
  - General Gamepad controls: enable with ImGuiConfigFlags_NavEnableGamepad. See suggested mappings in imgui.h ImGuiNavInput_ + download PNG/PSD at http://goo.gl/9LgVZW
 
-
- PROGRAMMER GUIDE
+PROGRAMMER GUIDE
  ================
 
  READ FIRST:
@@ -360,8 +358,7 @@ CODE
       (In a setup when you may not have easy control over the mouse cursor, e.g. uSynergy.c doesn't expose moving remote mouse cursor, you may want
        to set a boolean to ignore your other external mouse positions until the external source is moved again.)
 
-
- API BREAKING CHANGES
+API BREAKING CHANGES
  ====================
 
  Occasionally introducing changes that are breaking the API. We try to make the breakage minor and easy to fix.
@@ -558,8 +555,7 @@ CODE
  - 2014/08/30 (1.09) - moved IMGUI_FONT_TEX_UV_FOR_WHITE preprocessor define to IO.FontTexUvForWhite
  - 2014/08/28 (1.09) - changed the behavior of IO.PixelCenterOffset following various rendering fixes
 
-
- FREQUENTLY ASKED QUESTIONS (FAQ), TIPS
+FREQUENTLY ASKED QUESTIONS (FAQ), TIPS
  ======================================
 
  Q: Where is the documentation?
@@ -7450,7 +7446,6 @@ ImVec2 ImGui::FindBestWindowPosForPopup(ImGuiWindow* window)
     return window->Pos;
 }
 
-
 //-----------------------------------------------------------------------------
 // [SECTION] KEYBOARD/GAMEPAD NAVIGATION
 //-----------------------------------------------------------------------------
@@ -8869,7 +8864,6 @@ void ImGui::Columns(int columns_count, const char* id, bool border)
         BeginColumns(id, columns_count, flags);
 }
 
-
 //-----------------------------------------------------------------------------
 // [SECTION] DRAG AND DROP
 //-----------------------------------------------------------------------------
@@ -9162,7 +9156,6 @@ void ImGui::EndDragDropTarget()
     IM_ASSERT(g.DragDropWithinSourceOrTarget);
     g.DragDropWithinSourceOrTarget = false;
 }
-
 
 //-----------------------------------------------------------------------------
 // [SECTION] LOGGING/CAPTURING
@@ -9583,20 +9576,17 @@ static void SettingsHandlerWindow_WriteAll(ImGuiContext* ctx, ImGuiSettingsHandl
     }
 }
 
-
 //-----------------------------------------------------------------------------
 // [SECTION] VIEWPORTS, PLATFORM WINDOWS
 //-----------------------------------------------------------------------------
 
 // (this section is filled in the 'docking' branch)
 
-
 //-----------------------------------------------------------------------------
 // [SECTION] DOCKING
 //-----------------------------------------------------------------------------
 
 // (this section is filled in the 'docking' branch)
-
 
 //-----------------------------------------------------------------------------
 // [SECTION] PLATFORM DEPENDENT HELPERS

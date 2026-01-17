@@ -56,8 +56,7 @@ namespace DataStructures
 		unsigned int allocation_size;
 	};
 
-
-	template <class queue_type>
+template <class queue_type>
 		inline unsigned int Queue<queue_type>::Size( void ) const
 	{
 		if ( head <= tail )
@@ -165,8 +164,7 @@ namespace DataStructures
 		}
 	}
 
-
-	template <class queue_type>
+template <class queue_type>
 		inline queue_type Queue<queue_type>::Peek( void ) const
 	{
 #ifdef _DEBUG

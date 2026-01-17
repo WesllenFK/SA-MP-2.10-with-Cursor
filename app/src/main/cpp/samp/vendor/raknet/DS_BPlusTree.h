@@ -354,8 +354,7 @@ namespace DataStructures
 				cur->keys[branchIndex]=source->keys[0];
 			}
 
-
-			dest->size++;
+dest->size++;
 			ShiftNodeLeft(source);
 
 			//cur->keys[branchIndex]=source->keys[0];

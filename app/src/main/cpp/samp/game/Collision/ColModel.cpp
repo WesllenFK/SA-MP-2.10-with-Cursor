@@ -1,8 +1,8 @@
 
 #include "ColModel.h"
-#include "main.h"
-#include "game/MemoryMgr.h"
-#include "../vendor/armhook/patch.h"
+#include "../../main.h"
+#include "../MemoryMgr.h"
+#include "../../vendor/armhook/patch.h"
 #include "Collision.h"
 
 //#define COL_EXTRA_DEBUG
@@ -134,8 +134,6 @@ void CColModel::AllocateData(int32 size) {
     assert(m_pColData);
 }
 
-
-
 void CColModel::CalculateTrianglePlanes() {
     if (m_pColData)
         m_pColData->CalculateTrianglePlanes();
@@ -155,7 +153,6 @@ void CColModel::operator delete(void* data) {
     FLog("Err no func CColModel::operator delete(void* data)");
    // GetColModelPool()->Delete(static_cast<CColModel*>(data));
 }
-
 
 // ============= hooks
 void CColModel::InjectHooks() {

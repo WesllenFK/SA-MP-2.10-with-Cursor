@@ -227,7 +227,6 @@ static_assert(sizeof(rwRasterGlobals) == (VER_x32 ? 0x64 : 0xA8));
 #define RwRasterGetParentMacro(_raster) \
     ((_raster)->parent)
 
-
 #if !(defined(RWDEBUG) || defined(RWSUPPRESSINLINE))
 
 #define RwRasterGetWidth(_raster)                   \
@@ -252,7 +251,6 @@ static_assert(sizeof(rwRasterGlobals) == (VER_x32 ? 0x64 : 0xA8));
     RwRasterGetParentMacro(_raster)
 
 #endif /* (defined(RWDEBUG) || defined(RWSUPPRESSINLINE)) */
-
 
 /****************************************************************************
  Function prototypes

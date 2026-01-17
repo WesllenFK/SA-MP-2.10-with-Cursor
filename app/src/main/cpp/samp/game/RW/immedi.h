@@ -22,7 +22,6 @@
  Defines
  */
 
-
 /* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
                         Immediate mode interface V2.0
@@ -502,7 +501,6 @@ extern "C"
 {
 #endif                          /* __cplusplus */
 
-
 #if (! ( defined(RWDEBUG) || defined(RWSUPPRESSINLINE) ))
 
 #else /* (! ( defined(RWDEBUG) || defined(RWSUPPRESSINLINE) )) */
@@ -522,7 +520,6 @@ extern RwBool RwIm2DRenderIndexedPrimitive(RwPrimitiveType primType, RwIm2DVerte
                                                              RwImVertexIndex *indices, RwInt32 numIndices);
 
 #endif /* (! ( defined(RWDEBUG) || defined(RWSUPPRESSINLINE) )) */
-
 
 #ifdef    __cplusplus
 }

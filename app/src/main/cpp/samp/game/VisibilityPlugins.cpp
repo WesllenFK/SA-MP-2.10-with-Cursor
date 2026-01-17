@@ -5,7 +5,6 @@
 #include "VisibilityPlugins.h"
 #include "../vendor/armhook/patch.h"
 
-
 void CVisibilityPlugins::Initialise() {
     CHook::CallFunction<void>(g_libGTASA + (VER_x32 ? 0x005D446C + 1 : 0x6F954C));
 }
@@ -35,7 +34,6 @@ float CVisibilityPlugins::GetDistanceSquaredFromCamera(RwFrame* frame) {
     return distance.SquaredMagnitude();
 }
 
-
 int32 CVisibilityPlugins::GetClumpAlpha(RpClump* clump) {
     return CHook::CallFunction<int32>(g_libGTASA + (VER_x32 ? 0x005D4FEC + 1 : 0x6FA290), clump);
 }
@@ -61,5 +59,4 @@ void CVisibilityPlugins::RenderReallyDrawLastObjects() {
 uint16 CVisibilityPlugins::GetAtomicId(RpAtomic* atomic) {
     return CHook::CallFunction<uint16>(g_libGTASA + (VER_x32 ? 0x5D4B54 + 1 : 0x6F9D68), atomic);
 }
-
 

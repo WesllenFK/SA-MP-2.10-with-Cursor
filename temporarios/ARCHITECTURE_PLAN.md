@@ -547,18 +547,56 @@ Esta estrutura é adaptável para qualquer client multiplayer:
 
 ## 9. Checklist de Migração
 
-- [ ] Criar estrutura de pastas
-- [ ] Mover `main.cpp` conteúdo para `core/`
+**Status Atual:** ~30% completo (Última atualização: 2024-12-19)
+
+### Fase 1: Infraestrutura Core
+- [ ] Criar `core/services/ServiceLocator.h/cpp` (Service Locator)
+- [ ] Criar `core/events/EventBus.h/cpp` (Sistema de eventos)
+- [ ] Criar `core/interfaces/` (IGameService, INetworkService, IChatOutput, IAudioService)
+- [ ] Criar `core/bootstrap/Bootstrap.h/cpp` (Inicialização controlada)
+- [ ] Mover `main.cpp` conteúdo para `core/bootstrap/`
 - [ ] Criar `SAMPCore` como singleton central
-- [ ] Agrupar todos hooks em `game/hooks/`
-- [ ] Mover entidades para `game/entities/`
-- [ ] Organizar `game/` internamente
+
+### Fase 2: Reorganização Game Module
+- [x] Agrupar hooks em `game/hooks/` ✅
+- [x] Mover entidades para `game/entities/` ✅ (actor, object, playerped, vehicle)
+- [x] Criar `game/engine/` ✅ (game.cpp movido)
+- [x] Criar `game/input/` ✅ (pad.cpp movido)
+- [ ] Mover `RW/` para `game/rendering/RW/` ⚠️ (ainda em `game/RW/`)
+- [ ] Mover `Collision/` para `game/physics/Collision/` ⚠️ (ainda em `game/Collision/`)
+- [ ] Organizar arquivos restantes de `game/` em subdiretórios
+
+### Fase 3: Reorganização Multiplayer Module
+- [ ] Mover `net/netgame.*` para `multiplayer/connection/`
+- [ ] Mover `net/netrpc.*`, `net/scriptrpc.*` para `multiplayer/rpc/`
 - [ ] Mover pools de rede para `multiplayer/pools/`
+- [ ] Mover `net/localplayer.*`, `net/remoteplayer.*` para `multiplayer/sync/`
+- [ ] Remover diretório `net/` antigo
+
+### Fase 4: Reorganização UI Module
+- [ ] Mover `gui/gui.*` para `ui/core/ui_manager.*`
+- [ ] Mover `gui/samp_widgets/` para `ui/screens/`
+- [ ] Mover `gui/imguiwrapper.*` para `ui/core/imgui_wrapper.*`
 - [ ] Organizar `ui/` com widgets e screens
+- [ ] Remover diretório `gui/` antigo
+
+### Fase 5: Reorganização Audio Module
+- [ ] Mover `voice_new/*` para `audio/voice/`
+- [ ] Mover `audiostream.*` para `audio/audio_stream.*`
 - [ ] Consolidar audio e voice em `audio/`
-- [ ] Mover JNI para `platform/android/`
-- [ ] Remover globals gradualmente
-- [ ] Atualizar includes em todos os arquivos
+
+### Fase 6: Reorganização Platform Module
+- [x] Criar estrutura `platform/android/`, `platform/debug/`, `platform/lifecycle/` ✅
+- [ ] Mover JNI para `platform/android/jni_bridge.*`
+- [ ] Mover `crashlytics.*` para `platform/debug/`
+
+### Fase 7: Refatoração e Limpeza
+- [ ] Remover globals gradualmente (substituir por Service Locator)
+- [ ] Migrar chamadas diretas para eventos (Event Bus)
+- [ ] Implementar interfaces em classes existentes
+- [ ] Atualizar includes em todos os arquivos ⚠️ (parcial - muitos erros ainda)
+- [ ] Remover macros de compatibilidade (após migração completa)
+- [ ] Modularizar CMakeLists.txt
 - [ ] Testar cada fase
 
 ---

@@ -183,8 +183,7 @@ PipelineTopSort(TopSortData *data, RwUInt32 nodeIndex)
         data->pipeline->nodes[i].outputs = outputsJ;
         data->pipeline->nodes[j].outputs = outputsI;
 
-
-        /* Exchange topSortData for this node */
+/* Exchange topSortData for this node */
         topSortDataI = data->pipeline->nodes[i].topSortData;
         topSortDataJ = data->pipeline->nodes[j].topSortData;
         tempTopSortData = *topSortDataI;
@@ -194,8 +193,7 @@ PipelineTopSort(TopSortData *data, RwUInt32 nodeIndex)
         data->pipeline->nodes[i].topSortData = topSortDataJ;
         data->pipeline->nodes[j].topSortData = topSortDataI;
 
-
-        /* Exchange node data */
+/* Exchange node data */
         tmpNode = data->pipeline->nodes[i];
         data->pipeline->nodes[i] = data->pipeline->nodes[j];
         data->pipeline->nodes[j] = tmpNode;
@@ -279,8 +277,7 @@ CalcUnlockPersistentMemSize(RxPipeline *pipeline, RwUInt32 numClusters)
 
     RWFUNCTION(RWSTRING("CalcUnlockPersistentMemSize"));
 
-
-    /* The RxPipelineClusters (n separate allocs but they end up in an */
+/* The RxPipelineClusters (n separate allocs but they end up in an */
     /* array anyway - see _MyEnumPipelineClustersCallBack())           */
     blockSize += numClusters*sizeof(RxPipelineCluster);
     /* The input requirements of the *pipeline* */
@@ -645,7 +642,6 @@ PipelineCalcNumUniqueClusters(RxPipeline *pipeline)
     RWRETURN(numUniqueClusters);
 }
 
-
 RxPipeline* RxLockedPipeUnlock(RxPipeline * pipeline)
 {
     //   RwInt32      _rxPipelineGlobalsOffset;
@@ -712,8 +708,7 @@ RxPipeline* RxLockedPipeUnlock(RxPipeline * pipeline)
      * only expect it to reappear once/if we make pipe creation more
      * automated and data-driven). */
 
-
-    RWASSERT(RxPipelineInstanced);
+RWASSERT(RxPipelineInstanced);
     RWASSERT(NULL != pipeline);
     RWASSERT(FALSE != pipeline->locked);
 
@@ -736,8 +731,7 @@ RxPipeline* RxLockedPipeUnlock(RxPipeline * pipeline)
             RwUInt32  doneNodes = 0;
             RwInt32   i;
 
-
-            RWASSERT(pipeline->entryPoint < pipeline->numNodes);
+RWASSERT(pipeline->entryPoint < pipeline->numNodes);
             RWASSERT(ISNODELIVE(&pipeline->nodes[pipeline->entryPoint]));
 
             if (!( (pipeline->entryPoint < pipeline->numNodes) &&
@@ -748,13 +742,11 @@ RxPipeline* RxLockedPipeUnlock(RxPipeline * pipeline)
                 RWRETURN((RxPipeline *)NULL);
             }
 
-
-            /* Sets up numUniqueClusters, which is used in
+/* Sets up numUniqueClusters, which is used in
              * subsequent macros and dep-chase functions */
             numUniqueClusters = PipelineCalcNumUniqueClusters(pipeline);
 
-
-            /* We need to calculate a conservative value for the amount
+/* We need to calculate a conservative value for the amount
              * of memory we'll need during unlock() and allocate it.
              * Here's the sequence of memory usage and freeing/packing:
              *
@@ -785,8 +777,7 @@ RxPipeline* RxLockedPipeUnlock(RxPipeline * pipeline)
             depChaseBlockSize += CalcUnlockPersistentMemSize(
                     pipeline, numUniqueClusters);
 
-
-            /* Allocate the largest required block */
+/* Allocate the largest required block */
             unlockStartBlockSize = topSortBlockSize;
             if (depChaseBlockSize > unlockStartBlockSize)
             {
@@ -820,8 +811,7 @@ RxPipeline* RxLockedPipeUnlock(RxPipeline * pipeline)
                 RWRETURN((RxPipeline *)NULL);
             }
 
-
-            /* Now we compact the pipeline nodes and outputs arrays to the bottom
+/* Now we compact the pipeline nodes and outputs arrays to the bottom
              * of superBlock and move the topSortData array to the top of mem,
              * fixing up pointers as we go. NOTE: PipelineUnlockTopSort() should
              * have shuffled all three arrays to remain in the same order as
@@ -902,8 +892,7 @@ RxPipeline* RxLockedPipeUnlock(RxPipeline * pipeline)
 
             RXCHECKFORUSERTRAMPLING(pipeline);
 
-
-            /* init & config method calls flow from bottom to
+/* init & config method calls flow from bottom to
              * top (i.e. consumer -> producer) */
             for (i = (pipeline->numNodes - 1);i >= 0;--i)
             {

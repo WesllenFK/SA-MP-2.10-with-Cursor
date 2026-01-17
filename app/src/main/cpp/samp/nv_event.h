@@ -53,7 +53,6 @@ typedef void* NVEventPlatformAppHandle;
 
 #endif
 
-
 enum
 {
 /** Timeout argument to NVEventGetNextEvent() that indicates the function should 

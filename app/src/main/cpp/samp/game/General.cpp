@@ -141,8 +141,7 @@ bool CGeneral::SolveQuadratic(float a, float b, float c, float& x1, float& x2) {
         return false; // No solution
     }
 
-
-    const auto discriminantSqrt = std::sqrt(discr);
+const auto discriminantSqrt = std::sqrt(discr);
     const auto denom = 1.f / (2.f * a);
     x1 = (-b - discriminantSqrt) * denom;
     x2 = (-b + discriminantSqrt) * denom;

@@ -6,7 +6,6 @@
 */
 #pragma once
 
-
 #include "Core/PtrListDoubleLink.h"
 
 enum eRepeatSectorList {

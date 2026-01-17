@@ -1,8 +1,8 @@
 #pragma once
 
 #include "../Tasks/TaskTimer.h"
-#include "game/common.h"
-#include "game/Enums/eEventType.h"
+#include "../common.h"
+#include "../Enums/eEventType.h"
 
 class CEvent;
 class CTask;

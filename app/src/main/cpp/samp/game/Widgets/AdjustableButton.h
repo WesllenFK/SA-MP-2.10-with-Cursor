@@ -4,7 +4,6 @@
 
 #pragma once
 
-
 #include "TouchInterface.h"
 #include "../Core/Rect.h"
 

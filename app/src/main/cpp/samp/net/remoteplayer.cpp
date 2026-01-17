@@ -926,8 +926,7 @@ void CRemotePlayer::UpdateVehicleRotation()
 	RwMatrix matEnt;
 	CVector vec = { 0.0f, 0.0f, 0.0f };
 
-
-	if (!m_pCurrentVehicle) return;
+if (!m_pCurrentVehicle) return;
 
 	vec = m_pCurrentVehicle->m_pVehicle->GetTurnSpeed();
 	if (vec.x <= 0.02f)

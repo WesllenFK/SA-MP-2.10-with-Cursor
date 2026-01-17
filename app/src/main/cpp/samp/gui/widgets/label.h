@@ -26,9 +26,6 @@ private:
 	float m_fontSize;
 };
 
-
-
-
 class LabelImage : public Widget
 {
 public:

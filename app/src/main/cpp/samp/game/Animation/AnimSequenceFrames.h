@@ -1,6 +1,6 @@
 #pragma once
 
-#include "game/Core/Quaternion.h"
+#include "../Core/Quaternion.h"
 #include "../Core/Vector.h"
 #include <cstdint>
 

@@ -407,7 +407,6 @@ int main(int arg, char **argv)
 }
 #endif
 
-
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 ////
@@ -555,8 +554,6 @@ STBTT_DEF void stbtt_GetBakedQuad(const stbtt_bakedchar *chardata, int pw, int p
 // see discussion of "BASELINE" above.
 //
 // It's inefficient; you might want to c&p it and optimize it.
-
-
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -723,7 +720,6 @@ STBTT_DEF int stbtt_InitFont(stbtt_fontinfo *info, const unsigned char *data, in
 // need to do anything special to free it, because the contents are pure
 // value data with no additional data structures. Returns 0 on failure.
 
-
 //////////////////////////////////////////////////////////////////////////////
 //
 // CHARACTER TO GLYPH-INDEX CONVERSIOn
@@ -733,7 +729,6 @@ STBTT_DEF int stbtt_FindGlyphIndex(const stbtt_fontinfo *info, int unicode_codep
 // and you want a speed-up, call this function with the character you're
 // going to process, then use glyph-based functions instead of the
 // codepoint-based functions.
-
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -785,7 +780,6 @@ STBTT_DEF void stbtt_GetGlyphHMetrics(const stbtt_fontinfo *info, int glyph_inde
 STBTT_DEF int  stbtt_GetGlyphKernAdvance(const stbtt_fontinfo *info, int glyph1, int glyph2);
 STBTT_DEF int  stbtt_GetGlyphBox(const stbtt_fontinfo *info, int glyph_index, int *x0, int *y0, int *x1, int *y1);
 // as above, but takes one or more glyph indices for greater efficiency
-
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -886,7 +880,6 @@ STBTT_DEF void stbtt_MakeGlyphBitmapSubpixelPrefilter(const stbtt_fontinfo *info
 STBTT_DEF void stbtt_GetGlyphBitmapBox(const stbtt_fontinfo *font, int glyph, float scale_x, float scale_y, int *ix0, int *iy0, int *ix1, int *iy1);
 STBTT_DEF void stbtt_GetGlyphBitmapBoxSubpixel(const stbtt_fontinfo *font, int glyph, float scale_x, float scale_y,float shift_x, float shift_y, int *ix0, int *iy0, int *ix1, int *iy1);
 
-
 // @TODO: don't expose this structure
 typedef struct
 {
@@ -961,8 +954,6 @@ STBTT_DEF unsigned char * stbtt_GetCodepointSDF(const stbtt_fontinfo *info, floa
 // The algorithm has not been optimized at all, so expect it to be slow
 // if computing lots of characters or very large sizes. 
 
-
-
 //////////////////////////////////////////////////////////////////////////////
 //
 // Finding the right font...
@@ -983,7 +974,6 @@ STBTT_DEF unsigned char * stbtt_GetCodepointSDF(const stbtt_fontinfo *info, floa
 //     stbtt_GetFontNameString() lets you get any of the various strings
 //             from the file yourself and do your own comparisons on them.
 //             You have to have called stbtt_InitFont() first.
-
 
 STBTT_DEF int stbtt_FindMatchingFont(const unsigned char *fontdata, const char *name, int flags);
 // returns the offset (not index) of the font that matches, or -1 if none
@@ -2698,7 +2688,6 @@ typedef struct stbtt__edge {
    float x0,y0, x1,y1;
    int invert;
 } stbtt__edge;
-
 
 typedef struct stbtt__active_edge
 {
@@ -4752,7 +4741,6 @@ STBTT_DEF int stbtt_CompareUTF8toUTF16_bigendian(const char *s1, int len1, const
 #endif
 
 #endif // STB_TRUETYPE_IMPLEMENTATION
-
 
 // FULL VERSION HISTORY
 //

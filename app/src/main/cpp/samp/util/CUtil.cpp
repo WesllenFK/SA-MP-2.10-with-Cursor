@@ -6,7 +6,6 @@
 #include "CUtil.h"
 #include "game/Textures/TextureDatabaseRuntime.h"
 
-
 uintptr_t CUtil::FindLib(const char* libname)
 {
     void* handle = dlopen(libname, RTLD_LAZY);

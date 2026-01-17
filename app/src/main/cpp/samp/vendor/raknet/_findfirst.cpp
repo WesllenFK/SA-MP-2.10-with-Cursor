@@ -67,8 +67,7 @@ long _findfirst(const char *name, _finddata_t *f)
 		}
 	}
 
-
-	fileInfo.Insert(fi);
+fileInfo.Insert(fi);
 	return fileInfo.Size()-1;
 
 	//   return 0;

@@ -7,7 +7,7 @@
 #include "PtrNodeDoubleLink.h"
 #include "PtrNode.h"
 #include "PtrListDoubleLink.h"
-#include "game/Pools.h"
+#include "../Pools.h"
 
 void CPtrNodeDoubleLink::InjectHooks() {
 

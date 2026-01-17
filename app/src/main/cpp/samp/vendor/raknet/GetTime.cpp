@@ -67,7 +67,6 @@ RakNetTime RakNet::GetTime( void )
 #endif
 }
 
-
 RakNetTimeNS RakNet::GetTimeNS( void )
 {
 	if ( initialized == false )

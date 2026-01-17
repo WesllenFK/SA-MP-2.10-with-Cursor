@@ -673,8 +673,7 @@ CVector CCollision::GetClampedBaryCoordsIntoTriangle(CVector a, CVector b, CVect
         return { t, 0.0f, 1.0f - t };
     }
 
-
-    if (w < 0.f) {
+if (w < 0.f) {
         const auto t = Get(b, a);
         return { 1.0f - t, t, 0.0f };
     }

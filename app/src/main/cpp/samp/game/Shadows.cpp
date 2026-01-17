@@ -6,8 +6,8 @@
 #include "Camera.h"
 #include "TxdStore.h"
 #include "Core/Rect.h"
-#include "game/Pipelines/CustomBuilding/CustomBuildingDNPipeline.h"
-#include "patch.h"
+#include "Pipelines/CustomBuilding/CustomBuildingDNPipeline.h"
+#include "../vendor/armhook/patch.h"
 #include "Timer.h"
 
 void CShadows::RenderStaticShadows() {
@@ -247,8 +247,6 @@ void CShadows::UpdateStaticShadows() {
         sshdw.m_bJustCreated = false;
     }
 }
-
-
 
 bool CShadows::StoreStaticShadow(uint32 id, eShadowType type, RwTexture* texture, const CVector* posn, float frontX, float frontY, float sideX, float sideY, int16 intensity, uint8 red, uint8 green, uint8 blue, float zDistane, float scale, float drawDistance, bool temporaryShadow, float upDistance) {
     return CHook::CallFunction<bool>(g_libGTASA + (VER_x32 ? 0x005B8D38 + 1 : 0x6DD6A4), id, type, texture, posn, frontX, frontY, sideX, sideY, intensity, red, green, blue, zDistane, scale, drawDistance, temporaryShadow, upDistance);

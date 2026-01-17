@@ -54,9 +54,8 @@ private:
 	HuffmanEncodingTreeNode *root;
 	
  /// Used to hold bit encoding for one character
-	
-	
-	struct CharacterEncoding
+
+struct CharacterEncoding
 	{
 		unsigned char* encoding;
 		unsigned short bitLength;

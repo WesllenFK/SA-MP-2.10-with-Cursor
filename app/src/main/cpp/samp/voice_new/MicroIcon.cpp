@@ -6,7 +6,6 @@
 
 #include "PluginConfig.h"
 
-
 bool MicroIcon::Init() noexcept
 {
     if(MicroIcon::initStatus)

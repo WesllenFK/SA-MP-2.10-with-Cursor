@@ -21,7 +21,6 @@
 #include "DS_QueueLinkedList.h"
 #include "Export.h"
 
-
 #ifdef _MSC_VER
 #pragma warning( push )
 #endif
@@ -275,9 +274,8 @@ namespace DataStructures
 		  B
 		  /   \
 		  D
-		
-		
-		  <Leave all other branches branches AS-IS whether they point to another node or simply 0>
+
+<Leave all other branches branches AS-IS whether they point to another node or simply 0>
 		
 		*/
 		
@@ -339,9 +337,8 @@ namespace DataStructures
 		  B
 		  /   \
 		  D
-		
-		
-		  <Leave all other branches branches AS-IS whether they point to another node or simply 0>
+
+<Leave all other branches branches AS-IS whether they point to another node or simply 0>
 		
 		*/
 		
@@ -496,9 +493,8 @@ namespace DataStructures
 				return current;
 			}
 		}
-		
-		
-		this->direction = this->NOT_FOUND;
+
+this->direction = this->NOT_FOUND;
 		return current = 0;
 	}
 	
@@ -775,9 +771,8 @@ namespace DataStructures
 		else
 			return false;
 	}
-	
-	
-	template <class BinarySearchTreeType>
+
+template <class BinarySearchTreeType>
 	void BinarySearchTree<BinarySearchTreeType>::DisplayInorder( BinarySearchTreeType* return_array )
 	{
 		typename BinarySearchTree::node * current, *parent;
@@ -796,9 +791,8 @@ namespace DataStructures
 				return_array[ 0 ] = *( root->item );
 				return ;
 			}
-			
-			
-		direction = ROOT;  // Reset the direction
+
+direction = ROOT;  // Reset the direction
 		
 		while ( index != BinarySearchTree_size )
 		{
@@ -866,9 +860,8 @@ namespace DataStructures
 				return_array[ 0 ] = *( root->item );
 				return ;
 			}
-			
-			
-		direction = ROOT;  // Reset the direction
+
+direction = ROOT;  // Reset the direction
 		return_array[ index++ ] = *( current->item );
 		
 		while ( index != BinarySearchTree_size )
@@ -921,9 +914,8 @@ namespace DataStructures
 			
 		DisplayPostorderRecursive( root, return_array, index );
 	}
-	
-	
-	// Recursively do a postorder traversal
+
+// Recursively do a postorder traversal
 	template <class BinarySearchTreeType>
 	void BinarySearchTree<BinarySearchTreeType>::DisplayPostorderRecursive( typename BinarySearchTree::node* current, BinarySearchTreeType* return_array, unsigned int& index )
 	{
@@ -936,9 +928,8 @@ namespace DataStructures
 		return_array[ index++ ] = *( current->item );
 		
 	}
-	
-	
-	template <class BinarySearchTreeType>
+
+template <class BinarySearchTreeType>
 	void BinarySearchTree<BinarySearchTreeType>::DisplayBreadthFirstSearch( BinarySearchTreeType* return_array )
 	{
 		typename BinarySearchTree::node * current;
@@ -983,9 +974,8 @@ namespace DataStructures
 				while ( tree_queue.Size() > 0 );
 			}
 	}
-	
-	
-	template <class BinarySearchTreeType>
+
+template <class BinarySearchTreeType>
 	BinarySearchTree<BinarySearchTreeType>::BinarySearchTree( const BinarySearchTree& original_copy )
 	{
 		typename BinarySearchTree::node * current;
@@ -1044,9 +1034,8 @@ namespace DataStructures
 		BinarySearchTree_size = 0;
 		
 		root = 0;
-		
-		
-		// Copy the tree using a breadth first search
+
+// Copy the tree using a breadth first search
 		// Put the children of the current node into the queue
 		// Pop the queue, put its children into the queue, repeat until queue is empty
 		if ( original_copy.BinarySearchTree_size == 0 )

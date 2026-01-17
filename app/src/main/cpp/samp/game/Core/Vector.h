@@ -8,7 +8,7 @@
 
 #include <numeric>
 #include <span>
-#include "game/Core/Vector2D.h"
+#include "Vector2D.h"
 
 class CMatrix;
 #pragma pack(push, 1)
@@ -219,7 +219,6 @@ constexpr inline bool operator==(const CVector& vec, float equalTo) {
 constexpr inline bool operator==(const CVector& vecLeft, const CVector& vecRight) {
     return vecLeft.x == vecRight.x && vecLeft.y == vecRight.y && vecLeft.z == vecRight.z;
 }
-
 
 constexpr inline CVector operator/(const CVector& vec, float dividend) {
     return { vec.x / dividend, vec.y / dividend, vec.z / dividend };

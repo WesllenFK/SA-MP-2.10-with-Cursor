@@ -76,7 +76,6 @@ void CheckSum::Add ( unsigned char value )
 	sum += cipher;
 } // CheckSum::add(unsigned char)
 
-
 /****************************************************************************
 *       CheckSum::add
 * Inputs:

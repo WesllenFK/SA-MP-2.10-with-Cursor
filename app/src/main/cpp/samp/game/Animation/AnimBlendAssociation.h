@@ -6,9 +6,9 @@
 */
 #pragma once
 
-#include "game/common.h"
-#include "game/Enums/eAnimBlendCallbackType.h"
-#include "game/RW/rpworld.h"
+#include "../common.h"
+#include "../Enums/eAnimBlendCallbackType.h"
+#include "../RW/rpworld.h"
 #include "AnimBlendHierarchy.h"
 #include "AnimBlendNode.h"
 #include "AnimBlendStaticAssociation.h"

@@ -263,7 +263,6 @@
 // efficient, but it's not horrible on modern computers. But you wouldn't
 // want to edit million-line files with it.
 
-
 ////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
 ////
@@ -348,7 +347,6 @@ typedef struct
    StbUndoState undostate;
 } STB_TexteditState;
 
-
 ////////////////////////////////////////////////////////////////////////
 //
 //     StbTexteditRow
@@ -366,14 +364,12 @@ typedef struct
 } StbTexteditRow;
 #endif //INCLUDE_STB_TEXTEDIT_H
 
-
 ////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
 ////
 ////   Implementation mode
 ////
 ////
-
 
 // implementation isn't include-guarded, since it might have indirectly
 // included just the "header" portion
@@ -383,7 +379,6 @@ typedef struct
 #include <string.h>
 #define STB_TEXTEDIT_memmove memmove
 #endif
-
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1015,7 +1010,6 @@ retry:
          state->cursor = state->select_end = STB_TEXTEDIT_STRINGLEN(str);
          state->has_preferred_x = 0;
          break;
-
 
 #ifdef STB_TEXTEDIT_K_LINESTART2
       case STB_TEXTEDIT_K_LINESTART2:

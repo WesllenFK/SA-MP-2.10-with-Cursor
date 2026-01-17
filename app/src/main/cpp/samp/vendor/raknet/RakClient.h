@@ -100,9 +100,8 @@ public:
 	/// Call this to deallocate a packet returned by Receive when you are done handling it.
 	/// \param[in] packet The packet to deallocate.	
 	void DeallocatePacket( Packet *packet );
-	
-	
-	/// Send a ping to the server
+
+/// Send a ping to the server
 	void PingServer( void );
 	
 	/// Sends a ping request to a server we are not connected to.  This will also initialize the
@@ -404,8 +403,7 @@ public:
 	
 private:
 
-	
-	int GetOtherClientIndexByPlayerID( const PlayerID playerId );
+int GetOtherClientIndexByPlayerID( const PlayerID playerId );
 	int GetFreeOtherClientIndex( void );
 	RakNet::BitStream password;
 	

@@ -79,7 +79,6 @@ const uint32 CKeyGen::keyTable[256] = {
         0xB40BBE37, 0xC30C8EA1, 0x5A05DF1B, 0x2D02EF8D
 };
 
-
 // 0x53CF70
 uint32 CKeyGen::AppendStringToKey(uint32 key, const char* str) {
     for (int32 i = 0; str[i]; ++i) {

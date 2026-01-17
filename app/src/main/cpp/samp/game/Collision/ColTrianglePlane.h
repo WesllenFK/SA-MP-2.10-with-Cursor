@@ -7,7 +7,7 @@
 #pragma once
 
 #include "../common.h"
-#include "game/StoredCollPoly.h"
+#include "../StoredCollPoly.h"
 
 typedef CVector CollisionVector;
 

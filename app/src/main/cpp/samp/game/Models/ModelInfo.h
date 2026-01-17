@@ -7,9 +7,8 @@
 #include "PedModelInfo.h"
 #include "AtomicModelInfo.h"
 #include "VehicleModelInfo.h"
-#include "game/Core/Store.h"
-#include "game/constants.h"
-
+#include "../Core/Store.h"
+#include "../constants.h"
 
 class CModelInfo {
 public:

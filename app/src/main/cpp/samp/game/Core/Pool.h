@@ -62,8 +62,6 @@ struct PoolAllocator {
     }
 };
 
-
-
 // `DontDebugCheckAlloc` is NOTSA, used to skip allocation fail checking, as some places actually handle it correctly.
 template <class A, class B = A, bool DontDebugCheckAlloc = false> class CPool {
 public:
@@ -307,6 +305,5 @@ public:
         return idx;
     }
 };
-
 
 VALIDATE_SIZE(CPool<int32>, (VER_x32 ? 0x14 : 0x20));

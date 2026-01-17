@@ -1,6 +1,6 @@
 #include "AnimBlendStaticAssociation.h"
-#include "../vendor/armhook/patch.h"
-#include "game/MemoryMgr.h"
+#include "../../vendor/armhook/patch.h"
+#include "../MemoryMgr.h"
 
 void CAnimBlendStaticAssociation::InjectHooks() {
 

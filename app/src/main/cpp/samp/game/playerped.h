@@ -2,7 +2,7 @@
 
 #include "vehicle.h"
 #include "object.h"
-#include "game/Entity/CPedGTA.h"
+#include "Entity/CPedGTA.h"
 #include "aimstuff.h"
 
 enum eStuffType {
@@ -253,7 +253,6 @@ private:
 		int boneId;
 		RtQuat* quat;
 	} sCarryData[21];
-	
 
 public:
 	CPedGTA*	m_pPed;

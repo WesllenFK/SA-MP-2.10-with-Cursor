@@ -109,8 +109,7 @@ bool UI::initialize()
         d_label1->setPosition(ImVec2(3.0, 3.0));
     }
 
-
-    //InitHudLogo();
+//InitHudLogo();
     // ==== version ==== //
     //d_label = new Label("", ImColor(1.0f, 1.0f, 1.0f), true, UISettings::fontSize() / 2);
     //this->addChild(d_label);
@@ -326,8 +325,7 @@ void UI::DrawServerTexture() {
     float x = 10.0f;
     float y = displayHeight - textureHeight - 2.0f;
 
-
-    CSprite2d* server = new CSprite2d();
+CSprite2d* server = new CSprite2d();
     server->m_pRwTexture = (RwTexture*)CUtil::LoadTextureFromDB("samp", "serverlogo");
 
     CRGBA color {255, 255, 255, 255};

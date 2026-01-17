@@ -329,8 +329,7 @@ void ScrCreateObject(RPCParameters* rpcParams)
 		}
 	}
 
-
-	iTotalObjects++;
+iTotalObjects++;
 	//LOGI("CreateObject: model %d; Total objects: %d", iModel, iTotalObjects);
 	//MyLog2("CreateObject: model %d; Total objects: %d", iModel, iTotalObjects);
 	//MyLog2("CreateObject: id: %d model: %d x: %f y: %f z: %f", iTotalObjects, iModel, vecPos.x, vecPos.y, vecPos.z);
@@ -410,8 +409,7 @@ void ScrSetObjectMaterial(RPCParameters* rpcParams)
 
 		stringCompressor->DecodeString(text, 2048, &bsData);
 
-
-		if (strlen(fontname) > 0 && strlen(fontname) < 32)
+if (strlen(fontname) > 0 && strlen(fontname) < 32)
 		{
 			if (pObject) {
 				pObject->SetMaterialText(

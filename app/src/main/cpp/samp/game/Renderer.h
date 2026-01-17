@@ -5,7 +5,7 @@
 #ifndef LIVERUSSIA_RENDERER_H
 #define LIVERUSSIA_RENDERER_H
 
-#include "game/common.h"
+#include "common.h"
 
 struct CEntityGTA;
 constexpr auto MAX_INVISIBLE_ENTITY_PTRS = 150u;
@@ -24,6 +24,5 @@ public:
 public:
     static void InjectHooks();
 };
-
 
 #endif //LIVERUSSIA_RENDERER_H

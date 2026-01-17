@@ -236,8 +236,7 @@ namespace DataStructures
 
 	};
 
-
-	template <class CircularLinkedListType>
+template <class CircularLinkedListType>
 		inline void CircularLinkedList<CircularLinkedListType>::Beginning( void )
 	{
 		if ( this->root )
@@ -261,8 +260,7 @@ namespace DataStructures
 
 			this->Clear();
 
-
-			if ( original_copy.list_size == 0 )
+if ( original_copy.list_size == 0 )
 			{
 				this->root = 0;
 				this->position = 0;
@@ -298,8 +296,7 @@ namespace DataStructures
 					do
 					{
 
-
-						// Save the current element
+// Save the current element
 						last = this->position;
 
 						// Point to the next node in the source list
@@ -316,8 +313,7 @@ namespace DataStructures
 						if ( original_copy_pointer == original_copy.position )
 							save_position = this->position;
 
-
-						// Set the previous pointer for the new node
+// Set the previous pointer for the new node
 						( this->position->previous ) = last;
 
 						// Set the next pointer for the old node to the new node
@@ -341,8 +337,7 @@ namespace DataStructures
 		return true;
 	}
 
-
-	template <class CircularLinkedListType>
+template <class CircularLinkedListType>
 		CircularLinkedList<CircularLinkedListType>::CircularLinkedList()
 	{
 		this->root = 0;
@@ -488,8 +483,7 @@ namespace DataStructures
 				do
 				{
 
-
-					// Save the current element
+// Save the current element
 					last = this->position;
 
 					// Point to the next node in the source list
@@ -542,8 +536,7 @@ namespace DataStructures
 
 			this->Clear();
 
-
-			if ( original_copy.list_size == 0 )
+if ( original_copy.list_size == 0 )
 			{
 				this->root = 0;
 				this->position = 0;
@@ -1191,8 +1184,7 @@ namespace DataStructures
 		return X;
 	}
 
-
-	// Prefix
+// Prefix
 	template <class LinkedListType>
 		LinkedList<LinkedListType>& LinkedList<LinkedListType>::operator++()
 	{

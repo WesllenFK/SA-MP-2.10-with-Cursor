@@ -135,7 +135,6 @@ MACRO_STOP
     ( *(_target) = *(_source) )
 #endif /* (!defined(RwV3dAssignMacro)) */
 
-
 #define RwV3dAddMacro(o, a, b)                                  \
 MACRO_START                                                     \
 {                                                               \
@@ -298,7 +297,6 @@ struct RwTexCoords
     RwReal u;   /**< U value */
     RwReal v;   /**< V value */
 };
-
 
 /*****************/
 
@@ -550,7 +548,6 @@ struct RwMatrixTag
 static_assert(sizeof(RwMatrixTag) == 0x40);
 
 typedef RwMatrixTag RwMatrix;
-
 
 RwMatrix* RwMatrixUpdate(RwMatrix* matrix);
 RwBool RwMatrixDestroy(RwMatrix* mpMat);

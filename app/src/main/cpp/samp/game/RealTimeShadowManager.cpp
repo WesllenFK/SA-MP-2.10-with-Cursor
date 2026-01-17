@@ -3,8 +3,8 @@
 //
 
 #include "RealTimeShadowManager.h"
-#include "patch.h"
-#include "game/Entity/CPhysical.h"
+#include "../vendor/armhook/patch.h"
+#include "../Entity/CPhysical.h"
 #include "RealTimeShadow.h"
 
 void CRealTimeShadowManager::ReturnRealTimeShadow(CRealTimeShadow *shdw) {

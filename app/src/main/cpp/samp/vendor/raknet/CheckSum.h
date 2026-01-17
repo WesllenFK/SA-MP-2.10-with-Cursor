@@ -29,9 +29,8 @@ public:
 	}
 	
 	void Add ( unsigned int w );
-	
-	
-	void Add ( unsigned short w );
+
+void Add ( unsigned short w );
 	
 	void Add ( unsigned char* b, unsigned int length );
 	

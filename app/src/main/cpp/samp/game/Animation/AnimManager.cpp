@@ -9,19 +9,19 @@
 
 #include "../common.h"
 #include "AnimManager.h"
-#include "game/MemoryMgr.h"
-#include "../vendor/armhook/patch.h"
-#include "game/CFileMgr.h"
-#include "game/FileLoader.h"
-#include "game/Streaming.h"
-#include "game/Core/KeyGen.h"
+#include "../MemoryMgr.h"
+#include "../../vendor/armhook/patch.h"
+#include "../CFileMgr.h"
+#include "../FileLoader.h"
+#include "../Streaming.h"
+#include "../Core/KeyGen.h"
 #include "AnimBlendClumpData.h"
-#include "game/Plugins/RpAnimBlendPlugin/RpAnimBlend.h"
-#include "game/Models/ModelInfo.h"
-#include "game/RW/RwHelper.h"
-#include "game/Enums/eModelID.h"
-#include "game/RW/rpskin.h"
-#include "game/General.h"
+#include "../Plugins/RpAnimBlendPlugin/RpAnimBlend.h"
+#include "../Models/ModelInfo.h"
+#include "../RW/RwHelper.h"
+#include "../Enums/eModelID.h"
+#include "../RW/rpskin.h"
+#include "../General.h"
 #include "AnimAssocDescriptions.h"
 
 AnimAssocDefinition CAnimManager::*ms_aAnimAssocDefinitions[NUM_ANIM_ASSOC_GROUPS];
@@ -844,7 +844,6 @@ inline void CAnimManager::LoadAnimFile_ANP23(RwStream* stream, bool compress, bo
         ms_numAnimations = animIndex;
     }
 }
-
 
 // ---- hooks
 

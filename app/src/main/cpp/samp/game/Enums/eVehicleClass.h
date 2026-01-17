@@ -5,7 +5,6 @@
 #ifndef LIVERUSSIA_EVEHICLECLASS_H
 #define LIVERUSSIA_EVEHICLECLASS_H
 
-
 enum eVehicleClass : int8_t {
     VEHICLE_CLASS_IGNORE = -1,
     VEHICLE_CLASS_NORMAL = 0,
@@ -21,6 +20,5 @@ enum eVehicleClass : int8_t {
     VEHICLE_CLASS_WORKERBOAT,
     VEHICLE_CLASS_BICYCLE,
 };
-
 
 #endif //LIVERUSSIA_EVEHICLECLASS_H

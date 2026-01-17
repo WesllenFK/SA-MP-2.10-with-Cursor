@@ -12,6 +12,7 @@
 #include <dlfcn.h>
 #include "StackTrace.h"
 #include "servers.h"
+#include "platform/storage/AssetManager.h"
 
 // voice
 #include "voice_new/Plugin.h"
@@ -28,13 +29,6 @@ Peerapol Unarak
 */
 JavaVM* javaVM;
 
-char* g_pszStorage = nullptr;
-
-// Buffer próprio para armazenar o storage path recebido via JNI
-static char s_szStoragePath[512] = {0};
-
-// Flag para indicar se o storage path foi definido via JNI
-bool g_bStoragePathSetViaJNI = false;
 
 UI* pUI = nullptr;
 CGame *pGame = nullptr;
@@ -372,40 +366,6 @@ void GameBackground()
 */
 
 extern "C" {
-	// Função JNI para definir o storage path a partir do Java
-	JNIEXPORT void JNICALL Java_com_samp_mobile_game_SAMP_setStoragePath(
-		JNIEnv *pEnv, jobject thiz, jstring path)
-	{
-		if (path == nullptr) {
-			LOGE("setStoragePath: path is null!");
-			return;
-		}
-
-		const char* pathStr = pEnv->GetStringUTFChars(path, nullptr);
-		if (pathStr) {
-			// Copia o path para o buffer estático
-			strncpy(s_szStoragePath, pathStr, sizeof(s_szStoragePath) - 1);
-			s_szStoragePath[sizeof(s_szStoragePath) - 1] = '\0';
-
-			// Atualiza o ponteiro global
-			g_pszStorage = s_szStoragePath;
-			g_bStoragePathSetViaJNI = true;
-
-			LOGI("Storage path set via JNI: %s", g_pszStorage);
-
-			// Verifica se o diretório existe
-			if (access(g_pszStorage, F_OK) != 0) {
-				LOGE("WARNING: Storage path does not exist: %s", g_pszStorage);
-			} else {
-				LOGI("Storage path verified: exists and accessible");
-			}
-
-			pEnv->ReleaseStringUTFChars(path, pathStr);
-		} else {
-			LOGE("setStoragePath: failed to get string from Java!");
-		}
-	}
-
 	JNIEXPORT void JNICALL Java_com_samp_mobile_game_SAMP_initializeSAMP(JNIEnv *pEnv, jobject thiz)
 	{
 		FLog("[initializeSAMP] START - Iniciando inicialização do SAMP");
@@ -479,15 +439,19 @@ void InitGui()
 	Plugin::OnSampLoad();
 	FLog("[InitGui] Plugin::OnSampLoad() concluído");
 
-	// Verifica se g_pszStorage é válido
-	if (g_pszStorage == nullptr || g_pszStorage[0] == '\0') {
+	// Verifica se AssetManager está inicializado
+	using namespace samp::platform::storage;
+	AssetManager& assetMgr = AssetManager::Get();
+	const std::string& basePath = assetMgr.GetBasePath();
+	
+	if (basePath.empty()) {
 		LOGE("InitGui failed: storage path not set");
 		FLog("[InitGui] ERRO: storage path não definido!");
 		return;
 	}
-	FLog("[InitGui] Storage path verificado: %s", g_pszStorage);
+	FLog("[InitGui] Storage path verificado: %s", basePath.c_str());
 
-	std::string font_path = string_format("%sSAMP/fonts/%s", g_pszStorage, FONT_NAME);
+	std::string font_path = string_format("%sSAMP/fonts/%s", basePath.c_str(), FONT_NAME);
 	FLog("[InitGui] Caminho da fonte: %s", font_path.c_str());
 	
 	FLog("[InitGui] Criando UI...");
@@ -660,14 +624,18 @@ void FLog(const char* fmt, ...)
 {
 	char buffer[0xFF];
 	static FILE* flLog = nullptr;
-	const char* pszStorage = g_pszStorage;
 
-
-	// Tenta abrir arquivo apenas se o path for válido (não NULL e não vazio)
-	if (flLog == nullptr && pszStorage != nullptr && pszStorage[0] != '\0')
+	// Tenta abrir arquivo apenas se o path for válido
+	if (flLog == nullptr)
 	{
-		sprintf(buffer, "%s/samp_log.txt", pszStorage);
-		flLog = fopen(buffer, "a");
+		using namespace samp::platform::storage;
+		AssetManager& assetMgr = AssetManager::Get();
+		const std::string& basePath = assetMgr.GetBasePath();
+		
+		if (!basePath.empty()) {
+			sprintf(buffer, "%ssamp_log.txt", basePath.c_str());
+			flLog = fopen(buffer, "a");
+		}
 	}
 
 	memset(buffer, 0, sizeof(buffer));
@@ -693,13 +661,18 @@ void ChatLog(const char* fmt, ...)
 {
 	char buffer[0xFF];
 	static FILE* flLog = nullptr;
-	const char* pszStorage = g_pszStorage;
 
 	// Tenta abrir arquivo apenas se o path for válido
-	if (flLog == nullptr && pszStorage != nullptr && pszStorage[0] != '\0')
+	if (flLog == nullptr)
 	{
-		sprintf(buffer, "%s/chat_log.txt", pszStorage);
-		flLog = fopen(buffer, "a");
+		using namespace samp::platform::storage;
+		AssetManager& assetMgr = AssetManager::Get();
+		const std::string& basePath = assetMgr.GetBasePath();
+		
+		if (!basePath.empty()) {
+			sprintf(buffer, "%schat_log.txt", basePath.c_str());
+			flLog = fopen(buffer, "a");
+		}
 	}
 
 	memset(buffer, 0, sizeof(buffer));
@@ -719,13 +692,18 @@ void MyLog(const char* fmt, ...)
 {
 	char buffer[0xFF];
 	static FILE* flLog = nullptr;
-	const char* pszStorage = g_pszStorage;
 
 	// Tenta abrir arquivo apenas se o path for válido
-	if (flLog == nullptr && pszStorage != nullptr && pszStorage[0] != '\0')
+	if (flLog == nullptr)
 	{
-		sprintf(buffer, "%s/samp_log.txt", pszStorage);
-		flLog = fopen(buffer, "a");
+		using namespace samp::platform::storage;
+		AssetManager& assetMgr = AssetManager::Get();
+		const std::string& basePath = assetMgr.GetBasePath();
+		
+		if (!basePath.empty()) {
+			sprintf(buffer, "%ssamp_log.txt", basePath.c_str());
+			flLog = fopen(buffer, "a");
+		}
 	}
 
 	memset(buffer, 0, sizeof(buffer));
@@ -745,13 +723,18 @@ void MyLog2(const char* fmt, ...)
 {
 	char buffer[0xFF];
 	static FILE* flLog = nullptr;
-	const char* pszStorage = g_pszStorage;
 
 	// Tenta abrir arquivo apenas se o path for válido
-	if (flLog == nullptr && pszStorage != nullptr && pszStorage[0] != '\0')
+	if (flLog == nullptr)
 	{
-		sprintf(buffer, "%s/samp_log.txt", pszStorage);
-		flLog = fopen(buffer, "a");
+		using namespace samp::platform::storage;
+		AssetManager& assetMgr = AssetManager::Get();
+		const std::string& basePath = assetMgr.GetBasePath();
+		
+		if (!basePath.empty()) {
+			sprintf(buffer, "%ssamp_log.txt", basePath.c_str());
+			flLog = fopen(buffer, "a");
+		}
 	}
 
 	memset(buffer, 0, sizeof(buffer));
@@ -773,13 +756,18 @@ void LogVoice(const char* fmt, ...)
 {
 	char buffer[0xFF];
 	static FILE* flLog = nullptr;
-	const char* pszStorage = g_pszStorage;
 
 	// Tenta abrir arquivo apenas se o path for válido
-	if (flLog == nullptr && pszStorage != nullptr && pszStorage[0] != '\0')
+	if (flLog == nullptr)
 	{
-		sprintf(buffer, "%sSAMP/%s", pszStorage, SV::kLogFileName);
-		flLog = fopen(buffer, "w");
+		using namespace samp::platform::storage;
+		AssetManager& assetMgr = AssetManager::Get();
+		const std::string& basePath = assetMgr.GetBasePath();
+		
+		if (!basePath.empty()) {
+			sprintf(buffer, "%sSAMP/%s", basePath.c_str(), SV::kLogFileName);
+			flLog = fopen(buffer, "w");
+		}
 	}
 
 	memset(buffer, 0, sizeof(buffer));

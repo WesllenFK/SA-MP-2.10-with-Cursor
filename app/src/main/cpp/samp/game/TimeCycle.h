@@ -5,7 +5,6 @@
 #ifndef LIVERUSSIA_TIMECYCLE_H
 #define LIVERUSSIA_TIMECYCLE_H
 
-
 #include "ColourSet.h"
 
 class CTimeCycle {
@@ -17,6 +16,5 @@ public:
 public:
     static void InjectHooks();
 };
-
 
 #endif //LIVERUSSIA_TIMECYCLE_H

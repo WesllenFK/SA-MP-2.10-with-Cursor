@@ -66,8 +66,7 @@ void DataBlockEncryptor::Encrypt( unsigned char *input, int inputLength, unsigne
 
 	assert( input && inputLength );
 
-
-	// randomChar will randomize the data so the same data sent twice will not look the same
+// randomChar will randomize the data so the same data sent twice will not look the same
 	randomChar = (unsigned char) randomMT();
 
 	// 16-(((x-1) % 16)+1)
@@ -186,8 +185,7 @@ bool DataBlockEncryptor::Decrypt( unsigned char *input, int inputLength, unsigne
 	// Ignore the high 4 bytes
 	paddingBytes = encodedPad & 0x0F;
 
-
-	// Get the data length
+// Get the data length
 	*outputLength = inputLength - sizeof( randomChar ) - sizeof( checkSum ) - sizeof( encodedPad ) - paddingBytes;
 
 	// Calculate the checksum on the data.
@@ -202,6 +200,5 @@ bool DataBlockEncryptor::Decrypt( unsigned char *input, int inputLength, unsigne
 	else
 		memcpy( output, input + sizeof( randomChar ) + sizeof( checkSum ) + sizeof( encodedPad ) + paddingBytes, *outputLength );
 
-
-	return true;
+return true;
 }

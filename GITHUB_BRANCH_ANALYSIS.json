@@ -1,0 +1,67 @@
+{
+  "repository": {
+    "name": "SA-MP-2.10-with-Cursor",
+    "owner": "WesllenFK",
+    "default_branch": "main",
+    "visibility": "public",
+    "last_updated": "2026-01-16T13:10:45Z"
+  },
+  "branch_protection_status": {
+    "main": {
+      "protected": false,
+      "protection_enabled": false,
+      "required_status_checks": {
+        "enforcement_level": "off",
+        "contexts": [],
+        "checks": []
+      }
+    },
+    "all_branches": [
+      {
+        "name": "main",
+        "protected": false
+      },
+      {
+        "name": "cursor/arquitetura-monolito-modular-2966",
+        "protected": false
+      },
+      {
+        "name": "cursor/project-overview-analysis-9669",
+        "protected": false
+      },
+      {
+        "name": "cursor/projeto-readme-melhorias-2ba7",
+        "protected": false
+      }
+    ]
+  },
+  "analysis": {
+    "current_state": "NENHUMA BRANCH ESTÁ PROTEGIDA",
+    "implications": {
+      "direct_push_allowed": true,
+      "no_pr_required": true,
+      "no_review_required": true,
+      "no_status_checks": true
+    },
+    "recommendations": [
+      "Configurar branch protection para 'main' via GitHub Settings",
+      "Requerer Pull Request antes de merge",
+      "Configurar status checks (builds Android/Gradle)",
+      "Considerar aprovações mínimas (0-1 para projeto pessoal)",
+      "Habilitar enforce rules for administrators"
+    ]
+  },
+  "repository_settings": {
+    "merge_options": {
+      "allow_squash_merge": true,
+      "allow_merge_commit": true,
+      "allow_rebase_merge": true,
+      "allow_auto_merge": false
+    },
+    "security": {
+      "secret_scanning": "enabled",
+      "secret_scanning_push_protection": "enabled",
+      "dependabot_security_updates": "disabled"
+    }
+  }
+}

@@ -14,7 +14,6 @@ CAdjustableHUD::~CAdjustableHUD() {
     SaveToDisk();
 }
 
-
 void (*CAdjustableHUD__Destructor)(CAdjustableHUD* thiz);
 void CAdjustableHUD__Destructor_hook(CAdjustableHUD* thiz) {
     FLog("CAdjustableHUD::Destructor()");

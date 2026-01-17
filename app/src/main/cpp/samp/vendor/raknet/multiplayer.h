@@ -40,9 +40,8 @@ public:
  ///  Destructor
 	
 	virtual ~Multiplayer();
-	
-	
- 	/// Call every update cycle to read packets from RakNet and parse them down to the appropriate function.
+
+/// Call every update cycle to read packets from RakNet and parse them down to the appropriate function.
 	virtual void ProcessPackets( InterfaceType *interfaceType );
 	
 protected:
@@ -283,7 +282,6 @@ void Multiplayer<InterfaceType>::ReceiveConnectionBanned( Packet *packet, Interf
 #endif
 	// ProcessUnhandledPacket(packet, ID_REMOTE_EXISTING_CONNECTION,interfaceType);
 }
-
 
 template <class InterfaceType>
 void Multiplayer<InterfaceType>::ReceiveConnectionRequestAccepted( Packet *packet, InterfaceType *interfaceType )

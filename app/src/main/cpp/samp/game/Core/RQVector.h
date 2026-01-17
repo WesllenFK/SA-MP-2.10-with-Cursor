@@ -5,7 +5,6 @@
 #ifndef LIVERUSSIA_RQVECTOR_H
 #define LIVERUSSIA_RQVECTOR_H
 
-
 class RQVector {
 
     union {
@@ -23,6 +22,5 @@ class RQVector {
         };
     };
 };
-
 
 #endif //LIVERUSSIA_RQVECTOR_H

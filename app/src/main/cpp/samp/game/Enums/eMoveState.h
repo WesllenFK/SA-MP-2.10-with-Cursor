@@ -3,7 +3,7 @@
 //
 
 #pragma once
-#include "game/common.h"
+#include "../common.h"
 enum eMoveState : int32
 {
     PEDMOVE_NONE = 0x0,

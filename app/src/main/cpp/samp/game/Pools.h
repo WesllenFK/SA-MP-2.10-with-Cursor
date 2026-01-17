@@ -6,20 +6,18 @@
 
 #include <cstddef>
 #include <cstdint>
-#include "game/Core/Pool.h"
-#include "game/Entity/Object.h"
-#include "game/Core/PtrNodeSingleLink.h"
-#include "game/Core/PtrNodeDoubleLink.h"
-#include "game/Tasks/Task.h"
-#include "game/Core/EntryInfoNode.h"
-#include "game/Entity/Dummy.h"
-#include "game/Entity/Building.h"
-#include "game/Entity/CopPed.h"
-#include "game/Entity/Heli.h"
-#include "game/Entity/CutsceneObject.h"
-#include "game/Tasks/TaskTypes/TaskSimpleSlideToCoord.h"
-#include "game/Entity/Heli.h"
-
+#include "Core/Pool.h"
+#include "Entity/Object.h"
+#include "Core/PtrNodeSingleLink.h"
+#include "Core/PtrNodeDoubleLink.h"
+#include "Tasks/Task.h"
+#include "Core/EntryInfoNode.h"
+#include "Entity/Dummy.h"
+#include "Entity/Building.h"
+#include "Entity/CopPed.h"
+#include "Entity/Heli.h"
+#include "Entity/CutsceneObject.h"
+#include "Tasks/TaskTypes/TaskSimpleSlideToCoord.h"
 
 class CPools {
 public:

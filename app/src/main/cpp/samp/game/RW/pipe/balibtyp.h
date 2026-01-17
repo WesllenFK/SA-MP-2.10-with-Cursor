@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include "tkreg.h"
 //#include "badevice.h"
 #include "memory.h"
@@ -153,7 +152,6 @@ struct RwGlobals
 		CRITICAL_SECTION	csGeometry;
 #endif // defined USE_THREADSAFE_GEOMETRY
 
-
 #else // defined WIN32
 
 #if defined USE_THREADSAFE_FRAME
@@ -168,7 +166,6 @@ struct RwGlobals
 //@} DDonSS
 };
 static_assert(sizeof(RwGlobals) == (VER_x32 ? 0x150 : 0x288));
-
 
 typedef struct RwModuleInfo RwModuleInfo;
 struct RwModuleInfo

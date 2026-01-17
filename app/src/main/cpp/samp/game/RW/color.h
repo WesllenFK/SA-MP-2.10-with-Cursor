@@ -125,7 +125,6 @@ extern "C"
 {
 #endif                          /* __cplusplus */
 
-
 #if (! ( defined(RWDEBUG) || defined(RWSUPPRESSINLINE) ))
 
 #define RwRGBARealAdd(o,a,b) \

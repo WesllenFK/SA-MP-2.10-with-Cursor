@@ -1,7 +1,7 @@
 
 #include <cassert>
 #include "List_c.h"
-#include "game/common.h"
+#include "../common.h"
 
 void List_c::InjectHooks() {
 

@@ -1,0 +1,28 @@
+﻿WARNING: We recommend using a newer Android Gradle plugin to use compileSdk = 36
+
+This Android Gradle plugin (8.4.0) was tested up to compileSdk = 34.
+
+You are strongly encouraged to update your project to use a newer
+Android Gradle plugin that has been tested with compileSdk = 36.
+
+If you are already using the latest version of the Android Gradle plugin,
+you may need to wait until a newer version with support for compileSdk = 36 is available.
+
+To suppress this warning, add/update
+    android.suppressUnsupportedCompileSdk=36
+to this project's gradle.properties.
+> Task :clean UP-TO-DATE
+
+> Task :app:externalNativeBuildCleanDebug
+Clean opus-armeabi-v7a, launcher-armeabi-v7a, imgui_static-armeabi-v7a, samp-armeabi-v7a
+Clean opus-arm64-v8a, samp-arm64-v8a
+
+> Task :app:externalNativeBuildCleanRelease
+Clean opus-armeabi-v7a, launcher-armeabi-v7a, imgui_static-armeabi-v7a, samp-armeabi-v7a
+Clean opus-arm64-v8a, launcher-arm64-v8a, imgui_static-arm64-v8a, samp-arm64-v8a
+
+> Task :app:clean
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:configureCMakeDebug[arm64-v8a]
+> Task :app:buildCMakeDebug[arm64-v8a]

@@ -2,7 +2,7 @@
 // Created by x1y2z on 25.05.2023.
 //
 
-#include "../game/common.h"
+#include "common.h"
 
 #include <GLES3/gl32.h>
 #include <GLES3/gl3ext.h>
@@ -121,6 +121,5 @@ void CRQ_Commands::rqVertexBufferSelect(uintptr_t **qData)
 void CRQ_Commands::InjectHooks() {
    // bool (&RQCaps)[16] = *(bool(*)[16])0xA9B0C8;
 
-
-    CHook::Redirect("_Z31RQ_Command_rqVertexBufferSelectRPc", &CRQ_Commands::rqVertexBufferSelect);
+CHook::Redirect("_Z31RQ_Command_rqVertexBufferSelectRPc", &CRQ_Commands::rqVertexBufferSelect);
 }

@@ -21,14 +21,12 @@
 #include "PacketPriority.h"
 #include "NetworkTypes.h"
 
-
 /// This is the counter used for holding ordered packet numbers, so we can detect out-of-order packets.  It should be large enough that if the variables
 /// were to wrap, the newly wrapped values would no longer be in use.  Warning: Too large of a value wastes bandwidth!
 typedef unsigned short OrderingIndexType;
 
 typedef unsigned short SplitPacketIdType;
 typedef unsigned int SplitPacketIndexType;
-
 
 /// This is the counter used for holding packet numbers, so we can detect duplicate packets.  It should be large enough that if the variables
 /// were to wrap, the newly wrapped values would no longer be in use.  Warning: Too large of a value wastes bandwidth!

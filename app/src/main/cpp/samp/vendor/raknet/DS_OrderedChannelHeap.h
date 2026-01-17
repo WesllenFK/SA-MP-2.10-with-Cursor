@@ -230,8 +230,7 @@ namespace DataStructures
 		return heap[position].data;
 	}
 
-
-	template <class channel_key_type, class heap_data_type, int (*channel_key_comparison_func)(const channel_key_type&, const channel_key_type&)>
+template <class channel_key_type, class heap_data_type, int (*channel_key_comparison_func)(const channel_key_type&, const channel_key_type&)>
 		unsigned OrderedChannelHeap<channel_key_type, heap_data_type, channel_key_comparison_func>::ChannelSize(const channel_key_type &channelID)
 	{
 		QueueAndWeight *queueAndWeight=map.Get(channelID);

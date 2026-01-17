@@ -3,13 +3,13 @@
 //
 
 #include "CVehicleGTA.h"
-#include "patch.h"
-#include "game/Enums/ePedState.h"
-#include "game/RegisteredCorona.h"
-#include "game/Coronas.h"
-#include "game/Models/ModelInfo.h"
-#include "game/Entity/CPedGTA.h"
-#include "game/Entity/CEntityGTA.h"
+#include "../../vendor/armhook/patch.h"
+#include "../Enums/ePedState.h"
+#include "../RegisteredCorona.h"
+#include "../Coronas.h"
+#include "../Models/ModelInfo.h"
+#include "CPedGTA.h"
+#include "CEntityGTA.h"
 
 void CVehicleGTA::RenderDriverAndPassengers() {
     if(IsRCVehicleModelID())

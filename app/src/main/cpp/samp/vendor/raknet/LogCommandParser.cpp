@@ -10,7 +10,6 @@
 #define _stricmp strcasecmp
 #endif
 
-
 #ifdef _MSC_VER
 #pragma warning( push )
 #endif

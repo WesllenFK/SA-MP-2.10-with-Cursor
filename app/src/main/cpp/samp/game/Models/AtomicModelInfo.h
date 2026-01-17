@@ -6,11 +6,9 @@
 
 #include "BaseModelInfo.h"
 
-
 struct CAtomicModelInfo : public CBaseModelInfo {
 
 };
-
 
 void SetAtomicModelInfoFlags(CAtomicModelInfo* modelInfo, uint32 dwFlags);
 

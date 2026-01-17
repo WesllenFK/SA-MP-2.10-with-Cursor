@@ -4,8 +4,8 @@
 
 #pragma once
 
-#include "game/SimpleTransform.h"
-#include "game/Core/MatrixLink.h"
+#include "../SimpleTransform.h"
+#include "../Core/MatrixLink.h"
 #define VALIDATE_SIZE(struc, size) static_assert(sizeof(struc) == size, "Invalid structure size of " #struc)
 
 #pragma pack(push, 1)

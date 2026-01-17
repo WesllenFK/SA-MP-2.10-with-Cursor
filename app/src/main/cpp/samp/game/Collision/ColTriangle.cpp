@@ -1,8 +1,8 @@
 
 #include "ColTriangle.h"
-#include "game/Lines.h"
-#include "Matrix.h"
-#include "Vector.h"
+#include "../Lines.h"
+#include "../Core/Matrix.h"
+#include "../Core/Vector.h"
 
 // NOTSA
 void CColTriangle::DrawWireFrame(CRGBA color, const CollisionVector* vertices, const CMatrix& transform) const {

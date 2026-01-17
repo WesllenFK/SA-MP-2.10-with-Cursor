@@ -4,7 +4,7 @@
 
 #include "AnimAssocDescriptions.h"
 #include "AnimationStyleDescriptor.h"
-#include "game/Enums/eModelID.h"
+#include "../Enums/eModelID.h"
 #include "AnimAssocAnimations.h"
 
 //             animsCount,   anims

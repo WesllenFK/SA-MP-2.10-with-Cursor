@@ -2,7 +2,6 @@
 
 #include "rwplcore.h"
 
-
 #define RwFrameGetParentMacro(_f)   ((RwFrame *)rwObjectGetParent(_f))
 #if (! ( defined(RWDEBUG) || defined(RWSUPPRESSINLINE) ))
 #define RwFrameGetParent(_f)    RwFrameGetParentMacro(_f)
@@ -15,7 +14,6 @@
 
 #define RwIm3DVertexGetPos(_vert) (&((_vert)->objVertex))
 #define RwIm3DVertexGetNormal(vert) (&((vert)->objNormal))
-
 
 //-----------------------------------------------------------
 
@@ -46,7 +44,6 @@ struct RwFrame
 //    char          szName[RW_FRAME_NAME_LENGTH + 1];            // name (as stored in the frame extension)
 };
 static_assert(sizeof(RwFrame) == (VER_x32 ? 0xA4 : 0xC8));
-
 
 #include "raster.h"
 
@@ -113,13 +110,11 @@ MACRO_STOP
 #define RwCameraSetFrameMacro(_camera, _frame)                  \
     (_rwObjectHasFrameSetFrame((_camera), (_frame)), (_camera))
 
-
 #define RwCameraGetZRaster(_camera)                        \
     ((_camera)->zBuffer)
 
 #define RwCameraSetZRaster(_camera, _raster)               \
     (((_camera)->zBuffer = (_raster)), (_camera))
-
 
 #define RwTextureGetRasterMacro(_tex)                       \
     ((_tex)->raster)
@@ -156,7 +151,6 @@ MACRO_STOP
 
 #define RwCameraSetRaster(_camera, _raster)                     \
     RwCameraSetRasterMacro(_camera, _raster)
-
 
 #define RwRasterGetWidth(_raster)                   \
     RwRasterGetWidthMacro(_raster)
@@ -238,7 +232,6 @@ struct RwImage
 
 #define RwImageGetPaletteMacro(_image)              \
     ((_image)->palette)
-
 
 #define RwImageSetStride(_image, _stride)           \
     RwImageSetStrideMacro(_image, _stride)
@@ -326,7 +319,6 @@ extern RwImage* (*RwImageFindRasterFormat)(RwImage *ipImage,RwInt32 nRasterType,
                                         RwInt32 *npWidth,RwInt32 *npHeight,
                                         RwInt32 *npDepth,RwInt32 *npFormat);
 
-
 #define RwFrameGetParentMacro(_f)   ((RwFrame *)rwObjectGetParent(_f))
 #if (! ( defined(RWDEBUG) || defined(RWSUPPRESSINLINE) ))
 #define RwFrameGetParent(_f)    RwFrameGetParentMacro(_f)
@@ -376,7 +368,6 @@ MACRO_STOP
         _rwObjectHasFrameReleaseFrame(object)
 
 /*--- Automatically derived from: C:/daily/rwsdk/src/basync.h ---*/
-
 
 /*
  * Object Types - these are used in the binary object
@@ -468,7 +459,6 @@ enum RwFrustumTestResult
 };
 typedef enum RwFrustumTestResult RwFrustumTestResult;
 
-
 /**
  * \ingroup rwcamera
  * \struct RwCamera
@@ -556,7 +546,6 @@ static_assert(sizeof(RwCamera) == (VER_x32 ? 0x188 : 0x1B0));
 typedef RwCamera *(*RwCameraCallBack)(RwCamera *camera, void *data);
 
 /*--- Automatically derived from: C:/daily/rwsdk/src/bacamval.h ---*/
-
 
 extern RwCamera*    (*RwCameraBeginUpdate)(RwCamera * camera);
 extern RwCamera*    (*RwCameraShowRaster)(RwCamera * camera, void *pDev, RwUInt32 flags);
@@ -651,7 +640,6 @@ typedef RwTexture *(*RwTextureCallBackFind)(const RwChar *name);
  * \see RwTexDictionaryForAllTextures
  */
 typedef RwTexture *(*RwTextureCallBack)(RwTexture *texture, void *data);
-
 
 /**
  * \ingroup rwtexture
@@ -779,7 +767,6 @@ MACRO_STOP
     ((RwTextureAddressMode)(((_tex)->filterAddressing &                     \
                              rwTEXTUREADDRESSINGVMASK) >> 12))
 
-
 #if !(defined(RWDEBUG) || defined(RWSUPPRESSINLINE))
 
 #define RwTextureGetRaster(_tex)                            \
@@ -822,7 +809,6 @@ MACRO_STOP
     RwTextureGetAddressingVMacro(_tex)
 
 #endif /* !(defined(RWDEBUG) || defined(RWSUPPRESSINLINE)) */
-
 
 /* CamNorms.csl */
 /**

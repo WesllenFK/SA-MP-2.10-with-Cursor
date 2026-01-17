@@ -1,5 +1,5 @@
-#include "main.h"
-#include "game/game.h"
+#include "../../main.h"
+#include "../game.h"
 #include <cmath>
 
 void CQuaternion::SetFromMatrix(RwMatrix* mat)

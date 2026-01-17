@@ -1,5 +1,5 @@
 #pragma once
-#include "game/common.h"
+#include "../common.h"
 enum class eWeaponSkill : uint8 {
     POOR,
     STD,  // standard

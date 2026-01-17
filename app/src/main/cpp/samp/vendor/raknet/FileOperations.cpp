@@ -13,7 +13,6 @@
 #include "_findfirst.h"
 #endif
 
-
 bool WriteFileWithDirectories( const char *path, char *data, unsigned dataLength )
 {
 	int index;
@@ -88,8 +87,7 @@ bool WriteFileWithDirectories( const char *path, char *data, unsigned dataLength
 	delete [] systemCommand;
 #endif
 
-
-	return true;
+return true;
 }
 bool IsSlash(unsigned char c)
 {

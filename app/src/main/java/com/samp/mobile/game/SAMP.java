@@ -29,8 +29,7 @@ public class SAMP extends GTASA implements CustomKeyboard.InputListener {
 
     public native void sendDialogResponse(int i, int i2, int i3, byte[] str);
 
-    // Define o caminho de armazenamento para o código nativo
-    public native void setStoragePath(String path);
+    // setStoragePath removed - now using AssetManager
 
     public static SAMP getInstance() {
         return instance;
@@ -171,14 +170,7 @@ public class SAMP extends GTASA implements CustomKeyboard.InputListener {
         Log.i(TAG, "**** onCreate");
         super.onCreate(savedInstanceState);
 
-        // IMPORTANTE: Definir storage path ANTES de qualquer outra inicialização nativa
-        try {
-            String storagePath = getExternalFilesDir(null).getAbsolutePath() + "/";
-            Log.i(TAG, "Setting storage path: " + storagePath);
-            setStoragePath(storagePath);
-        } catch (Exception e) {
-            Log.e(TAG, "Failed to set storage path: " + e.getMessage());
-        }
+        // Storage path now managed by AssetManager - no need to set it manually
 
         mKeyboard = new CustomKeyboard(this);
 

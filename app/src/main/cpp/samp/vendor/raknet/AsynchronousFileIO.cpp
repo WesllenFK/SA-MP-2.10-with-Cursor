@@ -86,15 +86,13 @@ void AsynchronousFileIO::IncreaseUserCount()
 				0,      // Init flag
 				&nThreadID );   // Thread address
 
-
-			// Feel free to comment this out for regular thread priority
+// Feel free to comment this out for regular thread priority
 			SetThreadPriority( workerHandle, THREAD_PRIORITY_HIGHEST );
 
 			CloseHandle( workerHandle );
 		}
 
-
-		// Wait for the threads to start
+// Wait for the threads to start
 		while ( threadCount < systemInfo.dwNumberOfProcessors * 2 )
 			Sleep( 0 );
 	}

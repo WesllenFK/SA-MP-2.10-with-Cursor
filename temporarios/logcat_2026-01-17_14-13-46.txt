@@ -1,0 +1,139 @@
+[2026-01-17 14:07:53.849 Uid(value=10348):31610:31610 E/MQSEventManagerDelegate]
+failed to get MQSService.
+
+[2026-01-17 14:07:53.849 Uid(value=10348):31610:31610 W/ActivityThread]
+registerApplicationScoutThread result:false
+
+[2026-01-17 14:07:53.860 Uid(value=10348):31610:31626 E/MQSEventManagerDelegate]
+failed to get MQSService.
+
+[2026-01-17 14:07:53.861 Uid(value=10348):31610:31626 W/MQSEventManagerDelegate]
+getReportAppLaunch getMQSService null
+
+[2026-01-17 14:07:53.892 Uid(value=10348):31610:31610 I/ActivityThread]
+TrafficStats init done
+
+[2026-01-17 14:07:53.897 Uid(value=10348):31610:31610 D/ActivityThread]
+useGrowthLimitOutExpendMethod invoke error.
+
+[2026-01-17 14:07:53.913 Uid(value=10348):31610:31610 I/ActivityThread]
+Miui Feature Init done
+
+[2026-01-17 14:07:54.409 Uid(value=10348):31610:31610 F/libc]
+Fatal signal 6 (SIGABRT), code -1 (SI_QUEUE) in tid 31610 (com.samp.mobile), pid 31610 (com.samp.mobile)
+
+[2026-01-17 14:07:55.854 Uid(value=10348):31665:31665 F/DEBUG]
+*** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+
+[2026-01-17 14:07:55.854 Uid(value=10348):31665:31665 F/DEBUG]
+Build fingerprint: 'POCO/lake_p_global/lake:15/AP3A.240905.015.A2/OS2.0.202.0.VGTMIXM:user/release-keys'
+
+[2026-01-17 14:07:55.854 Uid(value=10348):31665:31665 F/DEBUG]
+Revision: '0'
+
+[2026-01-17 14:07:55.854 Uid(value=10348):31665:31665 F/DEBUG]
+ABI: 'arm64'
+
+[2026-01-17 14:07:55.854 Uid(value=10348):31665:31665 F/DEBUG]
+Timestamp: 2026-01-17 14:07:54.574729672-0300
+
+[2026-01-17 14:07:55.854 Uid(value=10348):31665:31665 F/DEBUG]
+Process uptime: 2s
+
+[2026-01-17 14:07:55.854 Uid(value=10348):31665:31665 F/DEBUG]
+Cmdline: com.samp.mobile
+
+[2026-01-17 14:07:55.854 Uid(value=10348):31665:31665 F/DEBUG]
+pid: 31610, tid: 31610, name: com.samp.mobile  >>> com.samp.mobile <<<
+
+[2026-01-17 14:07:55.854 Uid(value=10348):31665:31665 F/DEBUG]
+uid: 10348
+
+[2026-01-17 14:07:55.854 Uid(value=10348):31665:31665 F/DEBUG]
+tagged_addr_ctrl: 0000000000000001 (PR_TAGGED_ADDR_ENABLE)
+
+[2026-01-17 14:07:55.854 Uid(value=10348):31665:31665 F/DEBUG]
+signal 6 (SIGABRT), code -1 (SI_QUEUE), fault addr --------
+
+[2026-01-17 14:07:55.854 Uid(value=10348):31665:31665 F/DEBUG]
+Abort message: 'No pending exception expected: java.lang.NoSuchMethodError: no non-static method "Lcom/nvidia/devtech/NvEventQueueActivity;.getOrientation()I"
+  at boolean com.nvidia.devtech.NvEventQueueActivity.init(boolean) (NvEventQueueActivity.java:-2)
+  at void com.nvidia.devtech.NvEventQueueActivity.onCreate(android.os.Bundle) (NvEventQueueActivity.java:439)
+  at void com.wardrumstudios.utils.WarMedia.onCreate(android.os.Bundle) (WarMedia.java:43)
+  at void com.samp.mobile.game.GTASA.onCreate(android.os.Bundle) (GTASA.java:93)
+  at void com.samp.mobile.game.SAMP.onCreate(android.os.Bundle) (SAMP.java:172)
+  at void android.app.Activity.performCreate(android.os.Bundle, android.os.PersistableBundle) (Activity.java:9206)
+  at void android.app.Activity.performCreate(android.os.Bundle) (Activity.java:9162)
+  at void android.app.Instrumentation.callActivityOnCreate(android.app.Activity, android.os.Bundle) (Instrumentation.java:1537)
+  at android.app.Activity android.app.ActivityThread.performLaunchActivity(android.app.ActivityThread$ActivityClientRecord, android.content.Intent) (ActivityThread.java:4436)
+  at android.app.Activity android.app.ActivityThread.handleLaunchActivity(android.app.ActivityThread$ActivityClientRecord, android.app.servertransaction.PendingTransactionActions, int, android.content.Intent) (ActivityThread.java:4675)
+  at void android.app.servertransaction.LaunchActivityItem.execute(android.app.ClientTransactionHandler, android.app.servertransaction.PendingTransactionActions) (LaunchActivityItem.java:112)
+  at void android.app.servertransaction.TransactionExecutor.executeNonLifecycleItem(android.app.servertransaction.ClientTransaction, android.app.servertransaction.ClientTransactionItem, boolean) (TransactionExecutor.java:186)
+  at void android.app.servertransaction.TransactionExecutor.executeTransactionItems(android.app.servertransaction.ClientTransaction) (TransactionExecutor.java:112)
+  at void android.app.servertransaction.TransactionExecutor.execute(android.app.servertransaction.ClientTransaction) (TransactionExecutor.java:84)
+  at void android.app.ActivityThread$H.handleMessage(android.os.Message) (ActivityThread.java:2917)
+  at void android.os.Handler.dispatchMessage(android.os.Message) (Handler.java:107)
+  at boolean android.os.Looper.loopOnce(android.os.Looper, long, int) (Looper.java:249)
+  at void android.os.Looper.loop() (Looper.java:337)
+  at void android.app.ActivityThread.main(java.lang.String[]) (ActivityThread.java:9531)
+  at java.lang.Object java.lang.reflect.Method.invoke(java.lang.Object, java.lang.Object[]) (Method.java:-2)
+  at void com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run() (RuntimeInit.java:636)
+  at void com.android.internal.os.ZygoteInit.main(java.lang.String[]) (ZygoteInit.java:1005)'
+
+[2026-01-17 14:07:55.854 Uid(value=10348):31665:31665 F/DEBUG]
+    x0  0000000000000000  x1  0000000000007b7a  x2  0000000000000006  x3  0000007fc88ef940
+
+[2026-01-17 14:07:55.855 Uid(value=10348):31665:31665 F/DEBUG]
+    x4  2f303530321f1f2f  x5  2f303530321f1f2f  x6  2f303530321f1f2f  x7  7f7f7f7f7f7f7f7f
+
+[2026-01-17 14:07:55.855 Uid(value=10348):31665:31665 F/DEBUG]
+    x8  00000000000000f0  x9  0000007021c9d558  x10 0000000000000001  x11 0000007021cef5e0
+
+[2026-01-17 14:07:55.855 Uid(value=10348):31665:31665 F/DEBUG]
+    x12 0000007fc88ed14f  x13 00000070335072a0  x14 0000000000000001  x15 0000000000000190
+
+[2026-01-17 14:07:55.855 Uid(value=10348):31665:31665 F/DEBUG]
+    x16 0000007021d59008  x17 0000007021d43140  x18 0000006c3cb13f18  x19 0000000000007b7a
+
+[2026-01-17 14:07:55.855 Uid(value=10348):31665:31665 F/DEBUG]
+    x20 0000000000007b7a  x21 00000000ffffffff  x22 000000000000000b  x23 b400006e9d9c6be0
+
+[2026-01-17 14:07:55.855 Uid(value=10348):31665:31665 F/DEBUG]
+    x24 0000006d7cd00000  x25 0000000000fffff9  x26 000000005a000000  x27 0000007fc88efd80
+
+[2026-01-17 14:07:55.855 Uid(value=10348):31665:31665 F/DEBUG]
+    x28 0000000000000000  x29 0000007fc88ef9c0
+
+[2026-01-17 14:07:55.855 Uid(value=10348):31665:31665 F/DEBUG]
+    lr  0000007021cd7ed8  sp  0000007fc88ef920  pc  0000007021cd7f04  pst 0000000000001000
+
+[2026-01-17 14:07:55.855 Uid(value=10348):31665:31665 F/DEBUG]
+8 total frames
+
+[2026-01-17 14:07:55.855 Uid(value=10348):31665:31665 F/DEBUG]
+backtrace:
+
+[2026-01-17 14:07:55.855 Uid(value=10348):31665:31665 F/DEBUG]
+      #00 pc 000000000005df04  /apex/com.android.runtime/lib64/bionic/libc.so (abort+164) (BuildId: 4f9662f2c4cc93880474c7b483cce276)
+
+[2026-01-17 14:07:55.855 Uid(value=10348):31665:31665 F/DEBUG]
+      #01 pc 00000000008fde60  /apex/com.android.art/lib64/libart.so (art::Runtime::Abort(char const*)+1004) (BuildId: 759e344ef0291bdf924e23387b5bf9ea)
+
+[2026-01-17 14:07:55.855 Uid(value=10348):31665:31665 F/DEBUG]
+      #02 pc 000000000001654c  /apex/com.android.art/lib64/libbase.so (android::base::SetAborter(std::__1::function<void (char const*)>&&)::$_0::__invoke(char const*)+80) (BuildId: 4d7605789d21176764345a0353194396)
+
+[2026-01-17 14:07:55.855 Uid(value=10348):31665:31665 F/DEBUG]
+      #03 pc 0000000000015a4c  /apex/com.android.art/lib64/libbase.so (android::base::LogMessage::~LogMessage()+548) (BuildId: 4d7605789d21176764345a0353194396)
+
+[2026-01-17 14:07:55.855 Uid(value=10348):31665:31665 F/DEBUG]
+      #04 pc 000000000026bdc8  /apex/com.android.art/lib64/libart.so (art::Thread::AssertNoPendingException() const+708) (BuildId: 759e344ef0291bdf924e23387b5bf9ea)
+
+[2026-01-17 14:07:55.855 Uid(value=10348):31665:31665 F/DEBUG]
+      #05 pc 0000000000206bb0  /apex/com.android.art/lib64/libart.so (art::ClassLinker::FindClass(art::Thread*, char const*, unsigned long, art::Handle<art::mirror::ClassLoader>)+68) (BuildId: 759e344ef0291bdf924e23387b5bf9ea)
+
+[2026-01-17 14:07:55.855 Uid(value=10348):31665:31665 F/DEBUG]
+      #06 pc 000000000061b274  /apex/com.android.art/lib64/libart.so (art::JNI<false>::FindClass(_JNIEnv*, char const*)+836) (BuildId: 759e344ef0291bdf924e23387b5bf9ea)
+
+[2026-01-17 14:07:55.855 Uid(value=10348):31665:31665 F/DEBUG]
+      #07 pc 0000000000002070  /data/app/~~-a_MdFQ9gPeyL6jOnYBIXA==/com.samp.mobile-0dC5FvCp69iDuOuMelDKmw==/base.apk (offset 0x738000)
+

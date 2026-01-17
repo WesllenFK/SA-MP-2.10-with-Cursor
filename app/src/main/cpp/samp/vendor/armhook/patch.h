@@ -32,7 +32,6 @@ extern "C" bool MSHookFunction(void* symbol, void* replace, void** result);
     } while (0)
 //#endif
 
-
 #define SET_TO(__a1, __a2) *(void**)&(__a1) = (void*)(__a2)
 
 #include "shadowhook.h"
@@ -57,9 +56,7 @@ public:
         return 0;
     }
 
-
-
-    /**
+/**
      * NOP - Escreve instruções NOP na memória
      * Fluxo W^X: UnFuck → Write → cacheflush → ReFuck
      */

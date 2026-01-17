@@ -102,7 +102,6 @@ void CSprite2d::SetVertices(RwIm2DVertex* vertices, const CRect& posn, const CRG
 	RwIm2DVertexSetIntRGBA(&vertices[3], color1.r, color1.g, color1.b, color1.a);
 }
 
-
 // Sets sprite texture as current for device rendering
 // 0x727B30
 void CSprite2d::SetRenderState()

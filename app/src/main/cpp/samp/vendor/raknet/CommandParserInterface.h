@@ -135,8 +135,7 @@ protected:
 	/// \param[in] playerId The player this result will be sent to
 	virtual void ReturnResult(const char *command,TransportInterface *transport, PlayerID playerId);
 
-
-	/// Since there's no way to specify a playerID directly, the user needs to specify both the binary address and port.
+/// Since there's no way to specify a playerID directly, the user needs to specify both the binary address and port.
 	/// Given those parameters, this returns the corresponding PlayerID
 	/// \param[in] binaryAddress The binaryAddress portion of PlayerID
 	/// \param[in] port The port portion of PlayerID

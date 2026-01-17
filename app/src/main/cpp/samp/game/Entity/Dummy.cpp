@@ -2,7 +2,7 @@
 // Created by x1y2z on 19.04.2023.
 //
 #include "../common.h"
-#include "game/Pools.h"
+#include "../Pools.h"
 #include "Dummy.h"
 
 void* CDummy::operator new(size_t size) {

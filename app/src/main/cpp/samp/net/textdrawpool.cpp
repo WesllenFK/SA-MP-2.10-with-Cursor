@@ -115,8 +115,7 @@ bool CTextDrawPool::onTouchEvent(int type, bool multi, int x, int y)
 
     m_wClickedTextDrawID = 0xFFFF;
 
-
-    for (int i = 0; i < MAX_TEXT_DRAWS; i++)
+for (int i = 0; i < MAX_TEXT_DRAWS; i++)
     {
         if (m_bSlotState[i] && m_pTextDraw[i])
         {

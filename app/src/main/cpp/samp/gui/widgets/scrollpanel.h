@@ -17,7 +17,6 @@ public:
 
 	virtual void touchMoveEvent(const ImVec2& delta) override;
 
-
 private:
 	ImVec2 m_scroll;
 	bool m_scrollableX;

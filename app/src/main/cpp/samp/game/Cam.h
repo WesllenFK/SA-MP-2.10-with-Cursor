@@ -123,5 +123,4 @@ struct CCam
     uint8 pad1[3];
 };
 
-
 VALIDATE_SIZE(CCam, (VER_x32 ? 0x210 : 0x228));

@@ -27,6 +27,7 @@
 ### 1.1 Objetivo
 
 Sistema modular unificado de carregamento de assets que:
+
 - Centraliza todo o acesso a arquivos do projeto
 - Copia assets de `assets/` (APK) para `data/data/` na primeira execução (inicialização)
 - Fornece API única para Java e C++ via JNI
@@ -48,6 +49,7 @@ Sistema modular unificado de carregamento de assets que:
 ### 1.3 Requisitos
 
 **Client-Side:**
+
 - Android NDK 26.2+
 - C++17
 - Java/Kotlin
@@ -55,6 +57,7 @@ Sistema modular unificado de carregamento de assets que:
 - Arquitetura Monolito Modular
 
 **Inicialização:**
+
 - Assets de `app/src/main/assets/` (APK)
 - Destino: `data/data/com.samp.mobile/files/`
 - Cópia única na primeira execução
@@ -90,11 +93,11 @@ Sistema modular unificado de carregamento de assets que:
 │          ┌───────────────────┼───────────────────┐                │
 │          │                   │                   │                │
 │          ▼                   ▼                   ▼                │
-│  ┌──────────────┐   ┌──────────────┐                            │
-│  │FilesDirProv. │   │APKProvider   │                            │
-│  │(data/data/)  │   │(assets/)     │                            │
-│  │✅ IMPLEMENTAR│   │✅ IMPLEMENTAR│                            │
-│  └──────────────┘   └──────────────┘                            │
+│  ┌──────────────┐   ┌──────────────┐   ┌──────────────┐         │
+│  │ SAFProvider  │   │FilesDirProv. │   │APKProvider   │         │
+│  │ (SAF URIs)   │   │(data/data/)  │   │(assets/)     │         │
+│  │✅ IMPLEMENTAR│   │✅ IMPLEMENTAR│   │✅ IMPLEMENTAR│         │
+│  └──────────────┘   └──────────────┘   └──────────────┘         │
 │                              │                                     │
 │                              ▼                                     │
 │  ┌─────────────────────────────────────────────────────────┐     │
@@ -131,6 +134,7 @@ platform/
     │
     ├── providers/
     │   ├── IAssetProvider.h         # Interface base
+    │   ├── SAFProvider.h/cpp        # Storage Access Framework ✅
     │   ├── APKAssetProvider.h/cpp   # Assets do APK (fallback) ✅
     │   ├── FilesDirProvider.h/cpp   # data/data/ ✅
     │   ├── NetworkProvider.h        # Futuro: interface apenas ⏳
@@ -207,10 +211,11 @@ public:
 
 ```cpp
 enum class AssetProviderType {
-    FilesDir,      // data/data/com.samp.mobile/files/ (prioritário)
-    APK,           // assets/ (fallback)
-    External,      // Futuro: storage externo
-    Network        // Futuro: download
+    SAF,        // Storage Access Framework (prioridade 150) - Ver SAF_INTEGRATION_SPECIFICATION.md
+    FilesDir,   // data/data/com.samp.mobile/files/ (prioridade 100)
+    APK,        // assets/ (prioridade 50)
+    External,   // Futuro: storage externo
+    Network     // Futuro: download
 };
 ```
 
@@ -236,17 +241,23 @@ public:
 
 A ordem de busca dos providers segue a prioridade:
 
-1. **FilesDirProvider** (prioridade 100)
+1. **SAFProvider** (prioridade 150)
+   - Caminho: URIs do Storage Access Framework (`content://...`)
+   - Uso: Arquivos selecionados pelo usuário via SAF
+   - Acesso: Via JNI (`SAFStorageManager`) e `DocumentFile`
+   - **Documentação completa:** Ver `SAF_INTEGRATION_SPECIFICATION.md`
+
+2. **FilesDirProvider** (prioridade 100)
    - Caminho: `data/data/com.samp.mobile/files/`
    - Uso: Assets migrados e modificados pelo usuário
    - Acesso: Via JNI (`AssetStorageManager`)
 
-2. **APKAssetProvider** (prioridade 50)
+3. **APKAssetProvider** (prioridade 50)
    - Caminho: `assets/` dentro do APK
    - Uso: Fallback para assets padrão do jogo
    - Acesso: Via `AssetManager` do Android
 
-**Nota:** NetworkProvider e ExternalProvider serão adicionados futuramente através da interface `IAssetProvider`. O sistema atual suporta apenas FilesDir e APK.
+**Nota:** NetworkProvider e ExternalProvider serão adicionados futuramente através da interface `IAssetProvider`. O sistema atual suporta SAF, FilesDir e APK.
 
 ### 4.3 FilesDirProvider
 
@@ -616,6 +627,7 @@ bool AssetManager::IsPathSafe(const std::string& path) {
 ### 9.3 Exemplo de Substituição Direta
 
 **Antes (sistema antigo):**
+
 ```cpp
 // hooks.cpp - NvFOpen hook (REMOVER COMPLETAMENTE)
 stFile* NvFOpen(const char* r0, const char* r1, int r2, int r3) {
@@ -630,6 +642,7 @@ char* g_pszStorage = nullptr; // ❌ REMOVER
 ```
 
 **Depois (novo sistema):**
+
 ```cpp
 // Onde antes usava NvFOpen, agora usa AssetManager diretamente
 auto asset = AssetManager::Get()->LoadAsset(logicalPath);
@@ -742,6 +755,7 @@ O sistema foi projetado para ser modular e extensível. Embora não implementemo
 3. O sistema automaticamente usará quando necessário (baseado em prioridade)
 
 **Exemplo futuro (NetworkProvider):**
+
 ```cpp
 // providers/NetworkProvider.h - Apenas interface por enquanto
 class NetworkProvider : public IAssetProvider {
@@ -768,9 +782,13 @@ public:
 };
 ```
 
+**Extensões Implementadas:**
+
+- ✅ **Importação de assets (via SAF - Storage Access Framework)** - Ver `SAF_INTEGRATION_SPECIFICATION.md`
+
 **Futuras Extensões (não implementadas agora):**
+
 - Download de assets (via NetworkProvider)
-- Importação de assets (via SAF - Storage Access Framework)
 - Modificação de assets (escrita em FilesDirProvider)
 - Verificação de integridade (checksums)
 - Deleção de assets

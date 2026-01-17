@@ -43,7 +43,6 @@ void* UpdateTCPInterfaceLoop( void* arguments );
 #ifdef _DO_PRINTF
 #endif
 
-
 #ifdef _MSC_VER
 #pragma warning( push )
 #endif
@@ -181,7 +180,6 @@ PlayerID TCPInterface::Connect(const char* host, unsigned short remotePort)
 	memset(&serverAddress, 0, sizeof(serverAddress));
 	serverAddress.sin_family = AF_INET;
 	serverAddress.sin_port = htons( remotePort );
-	
 
 #if !defined(_COMPATIBILITY_1)
 	memcpy((char *)&serverAddress.sin_addr.s_addr, (char *)server->h_addr, server->h_length);
@@ -358,8 +356,7 @@ void* UpdateTCPInterfaceLoop( void* arguments )
 					sts->DeleteRemoteClient(sts->remoteClients[i], &exceptionFD);
 					sts->remoteClients.RemoveAtIndex(i);
 
-
-					/*
+/*
 					playerId=sts->lostConnections.WriteLock();
 					*playerId=sts->remoteClients[i]->playerId;
 					sts->lostConnections.WriteUnlock();
@@ -502,9 +499,7 @@ void* UpdateTCPInterfaceLoop( void* arguments )
 #endif
 		}
 
-
-
-	}
+}
 	sts->threadRunning=false;
 
 	return 0;

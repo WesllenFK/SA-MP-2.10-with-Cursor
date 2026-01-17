@@ -9,7 +9,6 @@
 #ifndef P2MACROS_H
 #define P2MACROS_H
 
-
 /****************************************************************************
  Global Defines
  */
@@ -61,7 +60,6 @@
 
 #define RxPipelineNodeParamGetHeap(_param) \
     ( (_param)->heap )
-
 
 /* RWPUBLICEND */
 

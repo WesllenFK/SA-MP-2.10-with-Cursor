@@ -4,7 +4,6 @@
 #include "common.h"
 #include "rgba.h"
 
-
 enum eCoronaType {
     CORONATYPE_SHINYSTAR,
     CORONATYPE_HEADLIGHT,

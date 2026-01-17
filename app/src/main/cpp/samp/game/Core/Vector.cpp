@@ -7,7 +7,7 @@
 
 #include "Vector.h"
 #include "Vector2D.h"
-#include "game/General.h"
+#include "../General.h"
 #include "Matrix.h"
 
 void CVector::InjectHooks()
@@ -169,7 +169,6 @@ void CVector::operator /= (float divisor)
     z /= divisor;
 }
 
-
 CVector CVector::Average(const CVector* begin, const CVector* end) {
     return std::accumulate(begin, end, CVector{}) / (float)std::distance(begin, end);
 }
@@ -181,7 +180,6 @@ float CVector::Heading(bool limitAngle) const {
     }
     return heading;
 }
-
 
 CVector* CrossProduct(CVector* out, CVector* a, CVector* b)
 {

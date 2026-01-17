@@ -4,7 +4,6 @@
 
 #pragma once
 
-
 #include "CompressedVector.h"
 #include "Entity/PlayerPedGta.h"
 #include "Entity/Object.h"

@@ -18,7 +18,7 @@
 #include "materialtextgenerator.h"
 #include <queue>
 #include <mutex>
-#include "../game/Core/Quaternion.h"
+#include "Core/Quaternion.h"
 
 class CGame
 {
@@ -70,8 +70,7 @@ public:
 	bool IsAnimationLoaded(const char* szAnimLib);
 	void RequestAnimation(const char* szAnimLib);
 
-
-	static const char* GetDataDirectory();
+static const char* GetDataDirectory();
 
 	// 0.3.7
 	CPlayerPed* FindPlayerPed() {

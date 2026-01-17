@@ -99,9 +99,7 @@ public:
     */
     void Flush();
 
-
-
-    /// Create the next subtask of `task`
+/// Create the next subtask of `task`
     /*!
     * @addr 0x681920
     * @brief Set the next sub task of `task`
@@ -173,8 +171,7 @@ public:
     auto& GetPrimaryTasks() const { return m_aPrimaryTasks; }
     auto& GetSecondaryTasks() const { return m_aSecondaryTasks; }
 
-
-    CTask* FindActiveTaskFromList(std::initializer_list<eTaskType> types) {
+CTask* FindActiveTaskFromList(std::initializer_list<eTaskType> types) {
         for (auto type : types) {
             if (const auto task = FindActiveTaskByType(type)) {
                 return task;

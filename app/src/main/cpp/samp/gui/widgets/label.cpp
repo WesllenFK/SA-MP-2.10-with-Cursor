@@ -2,7 +2,6 @@
 #include "..//widget.h"
 #include "label.h"
 
-
 Label::Label(const std::string& text, const ImColor& color, bool outlined, float font_size)
 	: Widget()
 {
@@ -107,8 +106,6 @@ ImVec2 Label::calculateTextSize(const char* begin, const char* end) const
 	ImFont* font = ImGui::GetIO().Fonts->Fonts[0];
 	return font->CalcTextSizeA(m_fontSize == 0.0f ? font->FontSize : m_fontSize, FLT_MAX, 0.0f, begin, end);
 }
-
-
 
 //LabelImage
 

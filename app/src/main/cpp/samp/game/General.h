@@ -10,7 +10,7 @@
 #include <random>
 #include <concepts>
 
-#include "game/Core/Vector2D.h"
+#include "Core/Vector2D.h"
 
 //! If you see this value USE THE INTEGER VERSION of `GetRandomNumberInRange`
 //constexpr float RAND_MAX_INT_RECIPROCAL = 1.0f / static_cast<float>(RAND_MAX + 1); // 1.0 / 32768.0 == 1.0 / (RAND_MAX + 1) = 0.0000305175781

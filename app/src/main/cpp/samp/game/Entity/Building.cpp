@@ -6,7 +6,6 @@
 #include "../../vendor/armhook/patch.h"
 #include "../Enums/eEntityType.h"
 
-
 int32 gBuildings;
 
 void CBuilding::InjectHooks()

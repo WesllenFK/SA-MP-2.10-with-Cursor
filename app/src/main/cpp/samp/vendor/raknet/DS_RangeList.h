@@ -17,8 +17,7 @@ namespace DataStructures
         range_type maxIndex;
     };
 
-
-    template <class range_type>
+template <class range_type>
     int RangeNodeComp(const range_type &a, const RangeNode<range_type> &b)
     {
         if (a<b.minIndex)

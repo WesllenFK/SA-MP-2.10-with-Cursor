@@ -1,5 +1,5 @@
 #include "AnimBlendClumpData.h"
-#include "game/MemoryMgr.h"
+#include "../MemoryMgr.h"
 
 void CAnimBlendClumpData::InjectHooks() {
 

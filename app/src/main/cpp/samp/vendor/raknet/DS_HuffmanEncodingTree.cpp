@@ -65,7 +65,6 @@ void HuffmanEncodingTree::FreeMemory( void )
 	root = 0;
 }
 
-
 ////#include <stdio.h>
 
 // Given a frequency table of 256 elements, all with a frequency of 1 or more, generate the tree
@@ -94,9 +93,8 @@ void HuffmanEncodingTree::GenerateFromFrequencyTable( unsigned int frequencyTabl
 		
 		InsertNodeIntoSortedList( node, &huffmanEncodingTreeNodeList ); // Insert and maintain sort order.
 	}
-	
-	
-	// 2.  While there is more than one tree, take the two smallest trees and merge them so that the two trees are the left and right
+
+// 2.  While there is more than one tree, take the two smallest trees and merge them so that the two trees are the left and right
 	// children of a new node, where the new node has the weight the sum of the weight of the left and right child nodes.
 #ifdef _MSC_VER
 #pragma warning( disable : 4127 ) // warning C4127: conditional expression is constant

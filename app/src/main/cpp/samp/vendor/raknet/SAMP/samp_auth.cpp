@@ -223,7 +223,6 @@ void gen_auth_key(char* buf, char* auth_in)
 
 #define AAAstringA(x) encoder<sizeCalculate(x)>(x).decode().c_str()
 
-
 struct AuthEntry {
     const char* send;
     const char* recv;
@@ -257,7 +256,6 @@ static const AuthEntry AuthTable[] = {
         {"E4E6F6F5E7E4E5E5", "E4F6F5E5E5E7E6E5E4E4E4E5E4E4E5E7E5F"},
         {"E6E6F6F6E5F6E5E5", "E7E6E4E7E6E4E4E6E4E4E5E5E7E5E4E5E7F"}
 };
-
 
 //struct AuthEntry {
 //	const char* send;

@@ -4,7 +4,6 @@
 #include "raster.h"
 #include "immedi.h"
 
-
 /**
  * \ingroup rwcoregeneric
  *  RxRenderStateFlag 
@@ -46,9 +45,6 @@ static_assert(sizeof(RxRenderStateVector) == (VER_x32 ? 0x2C : 0x30));
 #undef RxRenderStateVectorAssign
 #define RxRenderStateVectorAssign(_target, _source) ( *(_target) = *(_source) )
 
-
-
-
 #ifdef    __cplusplus
 extern "C"
 {
@@ -63,5 +59,4 @@ extern       RxRenderStateVector *RxRenderStateVectorLoadDriverState(RxRenderSta
 #ifdef    __cplusplus
 }
 #endif /* __cplusplus */
-
 

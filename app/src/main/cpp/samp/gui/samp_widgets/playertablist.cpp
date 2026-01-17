@@ -1,8 +1,7 @@
-﻿#include "../gui.h"
+#include "../gui.h"
 #include "../../game/game.h"
 #include "../../net/netgame.h"
 #include "../../main.h"
-
 
 #include <iomanip>
 
@@ -39,8 +38,7 @@ void PlayerTabList::show()
 	pGame->EnableGameInput(false);
 	pUI->keyboard()->setVisible(false);
 
-
-	setVisible(true);
+setVisible(true);
 }
 
 void PlayerTabList::hide()
@@ -106,7 +104,7 @@ void PlayerTabList::assemble()
 
 	for (int i = 0; i < MAX_PLAYERS; i++)
 	{
-		// remote player активен 
+		// remote player ??????? 
 		if (pPlayerPool->GetAt(i) && !pPlayerPool->IsPlayerNPC(i))
 		{
 			ImColor rc = UI::fixcolor(pPlayerPool->GetAt(i)->GetPlayerColor());

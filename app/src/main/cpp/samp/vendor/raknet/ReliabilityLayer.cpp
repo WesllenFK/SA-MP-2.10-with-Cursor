@@ -72,7 +72,6 @@ int SplitPacketIndexComp( SplitPacketIndexType const &key, InternalPacket* const
 	return 1;
 }
 
-
 //-------------------------------------------------------------------------------------------------------
 // Constructor
 //-------------------------------------------------------------------------------------------------------
@@ -297,8 +296,7 @@ void ReliabilityLayer::FreeThreadSafeMemory( void )
 	}
 	resendQueue.ClearAndForceAllocation( DEFAULT_HAS_RECEIVED_PACKET_QUEUE_SIZE );
 
-
-	for ( i = 0; i < NUMBER_OF_PRIORITIES; i++ )
+for ( i = 0; i < NUMBER_OF_PRIORITIES; i++ )
 	{
 		j = 0;
 		for ( ; j < sendPacketSet[ i ].Size(); j++ )
@@ -411,8 +409,7 @@ bool ReliabilityLayer::HandleSocketReceiveFromConnectedPlayer( const char *buffe
 
 //				internalPacketPool.ReleasePointer( internalPacket );
 
-
-				if ( resendList.IsEmpty() )
+if ( resendList.IsEmpty() )
 				{
 					lastAckTime = 0; // Not resending anything so clear this var so we don't drop the connection on not getting any more acks
 				}
@@ -424,8 +421,7 @@ bool ReliabilityLayer::HandleSocketReceiveFromConnectedPlayer( const char *buffe
 		}
 	}
 
-
-	// Parse the bitstream to create an internal packet
+// Parse the bitstream to create an internal packet
 	InternalPacket* internalPacket = CreateInternalPacketFromBitStream( &socketData, time );
 
 	if (internalPacket==0)
@@ -561,15 +557,13 @@ bool ReliabilityLayer::HandleSocketReceiveFromConnectedPlayer( const char *buffe
 				{
 					statistics.sequencedMessagesInOrder++;
 
-
-					// Is this a split packet?
+// Is this a split packet?
 					if ( internalPacket->splitPacketCount > 0 )
 					{
 						// Generate the split
 						// Verify some parameters to make sure we don't get junk data
 
-
-						// Check for a rebuilt packet
+// Check for a rebuilt packet
 						InsertIntoSplitPacketList( internalPacket, time );
 
 						// Sequenced
@@ -913,8 +907,7 @@ bool ReliabilityLayer::Send( char *data, int numberOfBitsToSend, PacketPriority 
 
 	++messageNumber;
 
-
-	if ( internalPacket->reliability == RELIABLE_SEQUENCED || internalPacket->reliability == UNRELIABLE_SEQUENCED )
+if ( internalPacket->reliability == RELIABLE_SEQUENCED || internalPacket->reliability == UNRELIABLE_SEQUENCED )
 	{
 		// Assign the sequence stream and index
 		internalPacket->orderingChannel = orderingChannel;
@@ -1361,11 +1354,9 @@ unsigned ReliabilityLayer::GenerateDatagram( RakNet::BitStream *output, int MTUS
 		}
 	}
 
+onlySendUnreliable = false;
 
-	onlySendUnreliable = false;
-
-
-	// From highest to lowest priority, fill up the output bitstream from the send lists
+// From highest to lowest priority, fill up the output bitstream from the send lists
 	for ( i = 0; i < NUMBER_OF_PRIORITIES; i++ )
 	{
 		while ( sendPacketSet[ i ].Size() )
@@ -1384,8 +1375,7 @@ unsigned ReliabilityLayer::GenerateDatagram( RakNet::BitStream *output, int MTUS
 				continue;
 			}
 
-
-			if ( output->GetNumberOfBitsUsed() + nextPacketBitLength > maxDataBitSize )
+if ( output->GetNumberOfBitsUsed() + nextPacketBitLength > maxDataBitSize )
 			{
 				// This output won't fit.
 				sendPacketSet[ i ].PushAtHead( internalPacket ); // Push this back at the head so it is the next thing to go out
@@ -1690,7 +1680,6 @@ int ReliabilityLayer::WriteToBitStreamFromInternalPacket( RakNet::BitStream *bit
 
 	// Acknowledgment packets have no more data than the messageNumber and whether it is anacknowledgment
 
-
 #ifdef _DEBUG
 	assert( internalPacket->dataBitLength > 0 );
 #endif
@@ -1896,8 +1885,7 @@ InternalPacket* ReliabilityLayer::CreateInternalPacketFromBitStream( RakNet::Bit
 	//bitStream->ReadBits(&zero, 8 - (bitStream->GetNumberOfBitsUsed() %8));
 	//assert(zero==0);
 
-
-	unsigned short length;
+unsigned short length;
 
 	bitStreamSucceeded = bitStream->ReadCompressed( length );
 

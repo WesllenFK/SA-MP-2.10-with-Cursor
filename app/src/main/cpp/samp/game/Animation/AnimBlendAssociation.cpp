@@ -1,8 +1,8 @@
 #include "AnimBlendAssociation.h"
-#include "game/MemoryMgr.h"
+#include "../MemoryMgr.h"
 #include "AnimBlendFrameData.h"
 #include "AnimBlendClumpData.h"
-#include "game/Plugins/RpAnimBlendPlugin/RpAnimBlend.h"
+#include "../Plugins/RpAnimBlendPlugin/RpAnimBlend.h"
 #include "AnimManager.h"
 
 void CAnimBlendAssociation::InjectHooks() {

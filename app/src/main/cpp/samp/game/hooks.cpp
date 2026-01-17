@@ -1389,144 +1389,9 @@ void NvUtilInit_hook()
     // Chama a função original da libGTASA.so
     NvUtilInit();
 
-    // Verifica se o storage path já foi definido via JNI
-    if (g_bStoragePathSetViaJNI && g_pszStorage != nullptr && g_pszStorage[0] != '\0') {
-        // Path já foi definido via JNI, não sobrescrever
-        FLog("Storage path already set via JNI: %s", g_pszStorage);
-    } else {
-        // Fallback: usa o buffer da libGTASA.so (comportamento antigo)
-        g_pszStorage = (char*)(g_libGTASA + (VER_x32 ? 0x6D687C : 0x8B46A8)); // StorageRootBuffer
-        FLog("Storage path from libGTASA buffer: %s", g_pszStorage);
-
-        // Aviso: este path pode estar incorreto no Android 11+
-        FLog("WARNING: Using libGTASA buffer - may not work on Android 11+");
-    }
-
-    // Verifica se o path é válido
-    if (g_pszStorage == nullptr || g_pszStorage[0] == '\0') {
-        FLog("ERROR: Storage path is empty or null!");
-    } else if (access(g_pszStorage, F_OK) != 0) {
-        FLog("ERROR: Storage path does not exist: %s", g_pszStorage);
-    } else {
-        FLog("Storage path OK: %s", g_pszStorage);
-    }
-
     ReadSettingFile();
 
     ApplyFPSPatch(120);
-}
-
-struct stFile
-{
-    int isFileExist;
-    FILE *f;
-};
-
-char lastFile[123];
-
-stFile* NvFOpen(const char* r0, const char* r1, int r2, int r3)
-{
-    // Verifica se g_pszStorage é válido
-    if (g_pszStorage == nullptr || g_pszStorage[0] == '\0') {
-        FLog("NvFOpen failed: storage path not set");
-        return nullptr;
-    }
-
-    strcpy(lastFile, r1);
-
-    static char path[255]{};
-    memset(path, 0, sizeof(path));
-
-    sprintf(path, "%s%s", g_pszStorage, r1);
-
-    // ----------------------------
-    if(!strncmp(r1+12, "mainV1.scm", 10))
-    {
-        sprintf(path, "%sSAMP/main.scm", g_pszStorage);
-        FLog("Loading %s", path);
-    }
-    // ----------------------------
-    if(!strncmp(r1+12, "SCRIPTV1.IMG", 12))
-    {
-        sprintf(path, "%sSAMP/script.img", g_pszStorage);
-        FLog("Loading script.img..");
-    }
-    // ----------------------------
-    if(!strncmp(r1, "DATA/PEDS.IDE", 13))
-    {
-        sprintf(path, "%sSAMP/peds.ide", g_pszStorage);
-        FLog("Loading peds.ide..");
-    }
-    // ----------------------------
-    if(!strncmp(r1, "DATA/VEHICLES.IDE", 17))
-    {
-        sprintf(path, "%sSAMP/vehicles.ide", g_pszStorage);
-        FLog("Loading vehicles.ide..");
-    }
-
-    if (!strncmp(r1, "DATA/GTA.DAT", 12))
-    {
-        sprintf(path, "%sSAMP/gta.dat", g_pszStorage);
-        FLog("Loading gta.dat..");
-    }
-
-    if (!strncmp(r1, "DATA/HANDLING.CFG", 17))
-    {
-        sprintf(path, "%sSAMP/handling.cfg", g_pszStorage);
-        FLog("Loading handling.cfg..");
-    }
-
-    if (!strncmp(r1, "DATA/WEAPON.DAT", 15))
-    {
-        sprintf(path, "%sSAMP/weapon.dat", g_pszStorage);
-        FLog("Loading weapon.dat..");
-    }
-
-    if (!strncmp(r1, "DATA/FONTS.DAT", 15))
-    {
-        sprintf(path, "%sdata/fonts.dat", g_pszStorage);
-        FLog("Loading weapon.dat..");
-    }
-
-    if (!strncmp(r1, "DATA/PEDSTATS.DAT", 15))
-    {
-        sprintf(path, "%sdata/pedstats.dat", g_pszStorage);
-        FLog("Loading weapon.dat..");
-    }
-
-    if (!strncmp(r1, "DATA/TIMECYC.DAT", 15))
-    {
-        sprintf(path, "%sdata/timecyc.dat", g_pszStorage);
-        FLog("Loading weapon.dat..");
-    }
-
-    if (!strncmp(r1, "DATA/POPCYCLE.DAT", 15))
-    {
-        sprintf(path, "%sdata/popcycle.dat", g_pszStorage);
-        FLog("Loading weapon.dat..");
-    }
-
-#if VER_x32
-    auto *st = (stFile*)malloc(8);
-#else
-    auto *st = (stFile*)malloc(0x10);
-#endif
-    st->isFileExist = false;
-
-    FILE *f  = fopen(path, "rb");
-
-    if(f)
-    {
-        st->isFileExist = true;
-        st->f = f;
-        return st;
-    }
-    else
-    {
-        FLog("NVFOpen hook | Error: file not found (%s)", path);
-        free(st);
-        return nullptr;
-    }
 }
 
 bool g_bPlaySAMP = false;
@@ -1980,7 +1845,7 @@ void InstallSpecialHooks()
     CHook::RET("_ZN12CCutsceneMgr16LoadCutsceneDataEPKc"); // LoadCutsceneData
     CHook::RET("_ZN12CCutsceneMgr10InitialiseEv");			// CCutsceneMgr::Initialise
 
-    CHook::Redirect("_Z7NvFOpenPKcS0_bb", &NvFOpen);
+    // NvFOpen hook removed - now using AssetManager directly
 
     CHook::InlineHook("_ZN14MainMenuScreen6UpdateEf", &MainMenuScreen__Update_hook, &MainMenuScreen__Update);
 

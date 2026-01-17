@@ -15,13 +15,9 @@ struct ES2VertexBuffer : RQVertexBuffer
 public:
     static inline const void *curCPUBuffer;
 
-
 public:
     static void InjectHooks();
 };
 
 static_assert(sizeof (ES2VertexBuffer) == 0xc);
-
-
-
 

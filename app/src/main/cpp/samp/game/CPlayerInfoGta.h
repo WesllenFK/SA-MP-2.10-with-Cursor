@@ -5,9 +5,9 @@
 #pragma once
 
 #include "common.h"
-#include "game/Entity/CPedGTA.h"
+#include "Entity/CPedGTA.h"
 #include "PlayerPedData.h"
-#include "game/Entity/PlayerPedGta.h"
+#include "Entity/PlayerPedGta.h"
 
 struct CVehicleGTA;
 

@@ -57,9 +57,8 @@ public:
 	void Say(char* szMessage);
 
 	void SetTeam(uint8_t byteTeam) { m_byteTeam = byteTeam; }
-	
 
-	CPlayerPed* GetPlayerPed() { return m_pPlayerPed; }
+CPlayerPed* GetPlayerPed() { return m_pPlayerPed; }
 
 	void StoreOnFootFullSyncData(ONFOOT_SYNC_DATA *ofSync, uint32_t dwTime);
 	void StoreInCarFullSyncData(INCAR_SYNC_DATA* picSync, uint32_t dwTime);
@@ -131,9 +130,8 @@ private:
 	bool			m_bPassengerDriveByMode;
 	uint32_t		m_dwAnimation;
 	uint8_t			m_byteSeatID;
-	
-	
-	CVector			m_vecOnFootTargetPos;
+
+CVector			m_vecOnFootTargetPos;
 	CVector			m_vecOnFootTargetSpeed;
 	CVector			m_vecPositionInaccuracy;
 	CQuaternion		m_quat;
@@ -144,8 +142,7 @@ private:
 	INCAR_SYNC_DATA			m_icSync;
 	PASSENGER_SYNC_DATA		m_psSync;
 
-
-	uint32_t		m_dwLastRecvTick;
+uint32_t		m_dwLastRecvTick;
 	uint32_t		m_dwLastStoredSyncDataTime;
 
 	CPlayerPed*		m_pPlayerPed;

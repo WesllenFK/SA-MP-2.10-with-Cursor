@@ -9,8 +9,8 @@
 #include "../Enums/eSurfaceType.h"
 #include "ColPoint.h"
 #include "../CompressedVector.h"
-#include "game/Core/Rect.h"
-#include "game/StoredCollPoly.h"
+#include "../Core/Rect.h"
+#include "../StoredCollPoly.h"
 #include "ColTrianglePlane.h"
 #include "../rgba.h"
 

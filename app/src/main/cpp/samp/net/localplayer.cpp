@@ -1,4 +1,4 @@
-﻿#include "../main.h"
+#include "../main.h"
 #include "../game/game.h"
 #include "netgame.h"
 #include "localplayer.h"

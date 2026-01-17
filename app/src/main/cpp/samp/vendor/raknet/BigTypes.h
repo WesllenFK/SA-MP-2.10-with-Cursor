@@ -39,7 +39,6 @@
 # include <string>
 #endif
 
-
 #ifdef _MSC_VER
 #pragma warning( push )
 #endif
@@ -65,9 +64,8 @@ namespace big
 #define BIGONETYPE template<class T> /* supports only one class */
 #define BIGTWOTYPES template<class T, class Bigger> /* sizeof Bigger >= sizeof T */
 #define BIGSMALLTYPE template<class Smaller> /* sizeof self >= sizeof Smaller */
-	
-	
-	//// big types ////
+
+//// big types ////
 	
 #define BIGWORDCOUNT_FROMBITCOUNT(bits) ((bits) / 8 / sizeof(big::word))
 #define BIGWORDCOUNT(T) (sizeof(T) / sizeof(big::word))
@@ -89,9 +87,8 @@ namespace big
 	// variable of varying size.
 #define BIGDOUBLESIZE(T, var_name) big::word (var_name)[BIGWORDCOUNT(T) * 2] /* WARNING: invalid w/ u32768 */
 #define BIGHALFSIZE(T, var_name) big::word (var_name)[BIGWORDCOUNT(T) / 2] /* WARNING: invalid w/ u128 */
-	
-	
-	//// library summary ////
+
+//// library summary ////
 	
 	// assignment
 	BIGONETYPE INLINE void zero( T &n ); // n = 0
@@ -188,9 +185,8 @@ namespace big
 	BIGONETYPE void fromString( std::string s, T &n, bool sign, u16 radix ); // s -> n
 	
 #endif
-	
-	
-	//////// wrapper class ////////
+
+//////// wrapper class ////////
 	
 #define BIGINTFAST INLINE Int<T> & /* operation is done to self, returns itself */
 #define BIGINTSLOW Int<T> /* new object is created and returned */
@@ -279,9 +275,8 @@ namespace big
 #endif
 		
 	};
-	
-	
-	//////// assignment ////////
+
+//////// assignment ////////
 	
 	// n = 0
 	BIGONETYPE INLINE void zero( T &n )
@@ -344,9 +339,8 @@ namespace big
 	{
 		memcpy( a, b + BIGWORDCOUNT( Bigger ) - BIGWORDCOUNT( T ), sizeof( T ) );
 	}
-	
-	
-	//////// comparison ////////
+
+//////// comparison ////////
 	
 	// a > b
 	BIGONETYPE bool ugreater( T &a, T &b )
@@ -423,9 +417,8 @@ namespace big
 				
 		return true;
 	}
-	
-	
-	//////// binary ////////
+
+//////// binary ////////
 	
 	// a &= b
 	BIGONETYPE void bAND( T &a, T &b )
@@ -454,9 +447,8 @@ namespace big
 		for ( u32 ii = 0; ii < BIGWORDCOUNT( T ); ++ii )
 			n[ ii ] = ~n[ ii ];
 	}
-	
-	
-	//////// shifting ////////
+
+//////// shifting ////////
 	
 	// n <<= 1
 	BIGONETYPE void shiftLeft1( T &n )
@@ -603,9 +595,8 @@ namespace big
 			}
 		}
 	}
-	
-	
-	//////// addition/subtraction ////////
+
+//////// addition/subtraction ////////
 	
 #if defined(NO_TEMPLATE_INLINE_ASSEMBLY) && defined(ASSEMBLY_INTEL_SYNTAX)
 	void BorlandAdd( void *a, void *b, u32 c )
@@ -850,9 +841,8 @@ namespace big
 			if ( n[ ii ] -- )
 				break;
 	}
-	
-	
-	//////// negation ////////
+
+//////// negation ////////
 	
 	// n = -n
 	BIGONETYPE void negate( T &n )
@@ -862,9 +852,8 @@ namespace big
 			
 		increment( n );
 	}
-	
-	
-	//////// multiplication ////////
+
+//////// multiplication ////////
 	
 	// a *= a, unsigned
 	BIGONETYPE void usquare( T &a )
@@ -1159,9 +1148,8 @@ namespace big
 		if ( sign_a ^ sign_b )
 			negate( a0 );
 	}
-	
-	
-	//////// division/remainder ////////
+
+//////// division/remainder ////////
 	
 	// {q, r} = a / b (&q != &r), unsigned
 	BIGONETYPE void udivide( T &a, T &b0, T &q, T &r )
@@ -1486,9 +1474,8 @@ namespace big
 		if ( sign_a )
 			negate( r );
 	}
-	
-	
-	//////// converting to/from strings ////////
+
+//////// converting to/from strings ////////
 	
 #ifdef BIG_USES_STRINGS
 	
@@ -1572,9 +1559,8 @@ namespace big
 	}
 	
 #endif // BIG_USES_STRINGS
-	
-	
-	//////// class wrapper ////////
+
+//////// class wrapper ////////
 	
 	BIGONETYPE INLINE Int<T>::Int()
 	{
@@ -1606,9 +1592,8 @@ namespace big
 	{
 		return raw;
 	}
-	
-	
-	BIGONETYPE BIGINTFAST Int<T>::zero()
+
+BIGONETYPE BIGINTFAST Int<T>::zero()
 	{
 		big::zero( raw );
 		return *this;
@@ -1627,9 +1612,8 @@ namespace big
 		;
 		return *this;
 	}
-	
-	
-	BIGONETYPE BIGINTFAST Int<T>::operator<<=( u32 s )
+
+BIGONETYPE BIGINTFAST Int<T>::operator<<=( u32 s )
 	{
 		shiftLeft( raw, s );
 		return *this;
@@ -1652,9 +1636,8 @@ namespace big
 		Int<T> temp( raw );
 		return temp >>= s;
 	}
-	
-	
-	BIGONETYPE BIGINTFAST Int<T>::operator+=( T &n )
+
+BIGONETYPE BIGINTFAST Int<T>::operator+=( T &n )
 	{
 		add ( raw, n )
 		
@@ -1705,17 +1688,15 @@ namespace big
 		decrement( raw );
 		return temp;
 	}
-	
-	
-	BIGONETYPE BIGINTSLOW Int<T>::operator-( int )   // negation
+
+BIGONETYPE BIGINTSLOW Int<T>::operator-( int )   // negation
 	{
 		Int<T> temp( raw );
 		negate( temp );
 		return temp;
 	}
-	
-	
-	BIGONETYPE BIGINTSLOW Int<T>::operator*( T &n )
+
+BIGONETYPE BIGINTSLOW Int<T>::operator*( T &n )
 	{
 		Int<T> temp( raw );
 		return temp *= n;
@@ -1726,9 +1707,8 @@ namespace big
 		square( raw );
 		return *this;
 	}
-	
-	
-	BIGONETYPE BIGINTFAST Int<T>::operator/=( T &n )
+
+BIGONETYPE BIGINTFAST Int<T>::operator/=( T &n )
 	{
 		T discard;
 		divide( raw, n, raw, discard );
@@ -1752,9 +1732,8 @@ namespace big
 		Int<T> temp( raw );
 		return temp %= n;
 	}
-	
-	
-	BIGONETYPE INLINE /* fast */ bool Int<T>::operator>( T &n )
+
+BIGONETYPE INLINE /* fast */ bool Int<T>::operator>( T &n )
 	{
 		return sgreater( raw, n );
 	}

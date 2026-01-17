@@ -255,8 +255,7 @@ namespace DataStructures
 		return const_cast<const SingleProducerConsumerType *>(&readPointer->object) == data;
 	}
 
-
-	template <class SingleProducerConsumerType>
+template <class SingleProducerConsumerType>
 		bool SingleProducerConsumer<SingleProducerConsumerType>::ReadIsLocked(void) const
 	{
 		return readAheadPointer!=readPointer;

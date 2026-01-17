@@ -124,8 +124,7 @@ void Channel::Push(const uint32_t packetNumber, const uint8_t* const dataPtr, co
         //if (BlackList::IsPlayerBlocked(speaker))
            // return;
 
-
-        FLog("[sv:dbg:channel:push] : playing channel (speaker:%hu)", this->speaker);
+FLog("[sv:dbg:channel:push] : playing channel (speaker:%hu)", this->speaker);
 
         BASS_ChannelPlay(this->handle, 0);
 

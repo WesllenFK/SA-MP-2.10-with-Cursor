@@ -5,7 +5,7 @@
     Do not delete this comment block. Respect others' work!
 */
 #pragma once
-#include "game/common.h"
+#include "../common.h"
 enum ePedBones : int16 {
     BONE_UNKNOWN     = -1,
 

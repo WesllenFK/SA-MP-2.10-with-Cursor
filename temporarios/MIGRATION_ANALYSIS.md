@@ -1386,17 +1386,77 @@ target_link_libraries(samp
 
 ---
 
-## 13. Priorização de Riscos
+## 13. Status de Implementação (Última Atualização: 2024-12-19)
 
-| Risco | Impacto | Probabilidade | Prioridade |
-|-------|---------|---------------|------------|
-| Dependências circulares | Alto | Certa | 🔴 P1 |
-| Globals não thread-safe | Alto | Alta | 🔴 P1 |
-| Memory leaks (GUI) | Médio | Alta | 🟡 P2 |
-| Offsets hardcoded | Alto | Baixa* | 🟡 P2 |
-| Ordem de inicialização | Alto | Média | 🟡 P2 |
-| Casts inseguros | Médio | Média | 🟢 P3 |
-| Macros complexas | Baixo | Baixa | 🟢 P3 |
+### Progresso Geral: ~30%
+
+| Componente | Planejado | Implementado | Status |
+|------------|-----------|--------------|--------|
+| **Infraestrutura Core** | | | |
+| Service Locator | ✅ | ❌ | 0% |
+| Event Bus | ✅ | ❌ | 0% |
+| Interfaces | ✅ | ❌ | 0% |
+| Bootstrap | ✅ | ❌ | 0% |
+| **Game Module** | | | |
+| `game/engine/` | ✅ | ✅ | 100% |
+| `game/entities/` | ✅ | ✅ | 100% |
+| `game/hooks/` | ✅ | ✅ | 100% |
+| `game/input/` | ✅ | ✅ | 100% |
+| `game/rendering/RW/` | ✅ | ⚠️ | 50% (ainda `game/RW/`) |
+| `game/physics/Collision/` | ✅ | ⚠️ | 50% (ainda `game/Collision/`) |
+| **Multiplayer Module** | | | |
+| Estrutura `multiplayer/` | ✅ | ⚠️ | 30% (só `player/`, `public/`) |
+| Migração de `net/` | ✅ | ❌ | 0% (`net/` ainda existe) |
+| **UI Module** | | | |
+| Estrutura `ui/` | ✅ | ⚠️ | 20% (só `components/`, `public/`) |
+| Migração de `gui/` | ✅ | ❌ | 0% (`gui/` ainda existe) |
+| **Audio Module** | | | |
+| Estrutura `audio/` | ✅ | ⚠️ | 10% (só `public/`) |
+| Migração de `voice_new/` | ✅ | ❌ | 0% (`voice_new/` ainda existe) |
+| **Platform Module** | | | |
+| Estrutura `platform/` | ✅ | ⚠️ | 50% (estrutura criada, arquivos não movidos) |
+
+### Estatísticas Atuais
+
+| Métrica | Quantidade | Mudança Desde Início |
+|---------|------------|---------------------|
+| Globals expostos | 43 arquivos usando `extern` | Mesmo (não migrado) |
+| Arquivos em `net/` | 18+ arquivos | Mesmo (não movido) |
+| Arquivos em `gui/` | 25+ arquivos | Mesmo (não movido) |
+| Arquivos em `voice_new/` | 53 arquivos | Mesmo (não movido) |
+| Diretórios criados | 7 novos diretórios | ✅ Progresso |
+
+### Bloqueadores Críticos
+
+1. ❌ **Service Locator não implementado** → Globals ainda em uso
+2. ❌ **Event Bus não implementado** → Dependências diretas não podem ser removidas
+3. ❌ **Interfaces não implementadas** → Acoplamento direto entre módulos
+4. ❌ **Arquivos duplicados** → `net/` e `gui/` ainda existem
+
+### Próximos Passos Prioritários
+
+1. **Implementar Service Locator** (`core/services/ServiceLocator.h/cpp`)
+2. **Implementar Event Bus** (`core/events/EventBus.h/cpp`)
+3. **Criar Interfaces** (`core/interfaces/`)
+4. **Criar Bootstrap** (`core/bootstrap/Bootstrap.h/cpp`)
+
+**Recomendação:** Não mover mais arquivos até que os componentes de infraestrutura estejam implementados.
+
+---
+
+## 14. Priorização de Riscos
+
+| Risco | Impacto | Probabilidade | Prioridade | Status |
+|-------|---------|---------------|------------|--------|
+| Dependências circulares | Alto | Certa | 🔴 P1 | ❌ Não resolvido |
+| Globals não thread-safe | Alto | Alta | 🔴 P1 | ❌ Não resolvido |
+| Memory leaks (GUI) | Médio | Alta | 🟡 P2 | ⚠️ Identificado |
+| Offsets hardcoded | Alto | Baixa* | 🟡 P2 | ⚠️ Conhecido |
+| Ordem de inicialização | Alto | Média | 🟡 P2 | ❌ Não resolvido |
+| Casts inseguros | Médio | Média | 🟢 P3 | ⚠️ Conhecido |
+| Macros complexas | Baixo | Baixa | 🟢 P3 | ⚠️ Conhecido |
+
+*Baixa probabilidade enquanto versão do GTA não mudar
 
 *Baixa probabilidade enquanto versão do GTA não mudar
 

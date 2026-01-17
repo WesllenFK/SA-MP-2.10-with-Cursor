@@ -7,7 +7,7 @@
 #pragma once
 
 #include "Box.h"
-#include "game/Enums/eSurfaceType.h"
+#include "../Enums/eSurfaceType.h"
 #include "ColPoint.h"
 #include "ColSurface.h"
 

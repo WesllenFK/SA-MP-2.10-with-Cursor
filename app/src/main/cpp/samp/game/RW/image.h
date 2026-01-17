@@ -145,7 +145,6 @@ static_assert(sizeof(rwImageFormat) == (VER_x32 ? 0x220 : 0x238));
 #define RwImageGetPaletteMacro(_image)              \
     ((_image)->palette)
 
-
 #if !(defined(RWDEBUG) || defined(RWSUPPRESSINLINE))
 
 #define RwImageSetStride(_image, _stride)           \

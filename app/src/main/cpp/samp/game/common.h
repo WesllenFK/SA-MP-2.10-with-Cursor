@@ -1,8 +1,8 @@
-﻿#pragma once
+#pragma once
 
 #include <cstdint>
 #include "Vector.h"
-#include "game/Enums/eWeaponType.h"
+#include "Enums/eWeaponType.h"
 
 #define PADDING(x,y) uint8_t x[y]
 
@@ -46,36 +46,36 @@ typedef unsigned char byte;
 
 constexpr float E              = 2.71828f;          // e
 constexpr float E_CONST        = 0.577f;            // Euler-Mascheroni constant
-constexpr float FRAC_1_TAU     = 0.159154f;         // 1 / τ
-constexpr float FRAC_1_PI      = 0.318309f;         // 1 / π
-constexpr float FRAC_2_TAU     = 0.318309f;         // 2 / τ
-constexpr float FRAC_2_PI      = 0.636619f;         // 2 / π
-constexpr float FRAC_2_SQRT_PI = 1.12837f;          // 2 / √π
-constexpr float FRAC_4_TAU     = 0.636619f;         // 4 / τ
-constexpr float FRAC_1_SQRT_2  = 0.707106f;         // 1 / √2
-constexpr float FRAC_PI_2      = 1.57079f;          // π / 2
-constexpr float FRAC_PI_3      = 1.04719f;          // π / 3
-constexpr float FRAC_PI_4      = 0.785398f;         // π / 4
-constexpr float FRAC_PI_6      = 0.523598f;         // π / 6
-constexpr float FRAC_PI_8      = 0.392699f;         // π / 8
-constexpr float FRAC_TAU_2     = 3.14159f;          // τ / 2 = π
-constexpr float FRAC_TAU_3     = 2.09439f;          // τ / 3
-constexpr float FRAC_TAU_4     = 1.57079f;          // τ / 4
-constexpr float FRAC_TAU_6     = 1.04719f;          // τ / 6
-constexpr float FRAC_TAU_8     = 0.785398f;         // τ / 8
-constexpr float FRAC_TAU_12    = 0.523598f;         // τ / 12
+constexpr float FRAC_1_TAU     = 0.159154f;         // 1 / t
+constexpr float FRAC_1_PI      = 0.318309f;         // 1 / p
+constexpr float FRAC_2_TAU     = 0.318309f;         // 2 / t
+constexpr float FRAC_2_PI      = 0.636619f;         // 2 / p
+constexpr float FRAC_2_SQRT_PI = 1.12837f;          // 2 / vp
+constexpr float FRAC_4_TAU     = 0.636619f;         // 4 / t
+constexpr float FRAC_1_SQRT_2  = 0.707106f;         // 1 / v2
+constexpr float FRAC_PI_2      = 1.57079f;          // p / 2
+constexpr float FRAC_PI_3      = 1.04719f;          // p / 3
+constexpr float FRAC_PI_4      = 0.785398f;         // p / 4
+constexpr float FRAC_PI_6      = 0.523598f;         // p / 6
+constexpr float FRAC_PI_8      = 0.392699f;         // p / 8
+constexpr float FRAC_TAU_2     = 3.14159f;          // t / 2 = p
+constexpr float FRAC_TAU_3     = 2.09439f;          // t / 3
+constexpr float FRAC_TAU_4     = 1.57079f;          // t / 4
+constexpr float FRAC_TAU_6     = 1.04719f;          // t / 6
+constexpr float FRAC_TAU_8     = 0.785398f;         // t / 8
+constexpr float FRAC_TAU_12    = 0.523598f;         // t / 12
 constexpr float LN_2           = 0.693147f;         // ln(2)
 constexpr float LN_10          = 2.30258f;          // ln(10)
 constexpr float LOG2_E         = 1.44269f;          // log2(e)
 constexpr float LOG10_E        = 0.434294f;         // log10(e)
 constexpr float LOG10_2        = 0.301029f;         // log10(2)
 constexpr float LOG2_10        = 3.32192f;          // log2(10)
-constexpr float PI             = 3.14159f;          // π
-constexpr float HALF_PI        = PI / 2.0f;         // π / 2
-constexpr float PI_6           = PI / 6.0f;         // π / 6
-constexpr float SQRT_2         = 1.41421f;          // √2
-constexpr float SQRT_3         = 1.73205f;          // √3
-constexpr float TWO_PI         = 6.28318f;          // τ (TAU)
+constexpr float PI             = 3.14159f;          // p
+constexpr float HALF_PI        = PI / 2.0f;         // p / 2
+constexpr float PI_6           = PI / 6.0f;         // p / 6
+constexpr float SQRT_2         = 1.41421f;          // v2
+constexpr float SQRT_3         = 1.73205f;          // v3
+constexpr float TWO_PI         = 6.28318f;          // t (TAU)
 
 constexpr float COS_45 = SQRT_2; // cos(45deg)
 
@@ -140,8 +140,6 @@ typedef struct _DAMAGE_MANAGER_INTERFACE            // 28 bytes due to the way i
 	uint32_t Panels;            // 4 bits per panel
 } DAMAGE_MANAGER_INTERFACE;
 #pragma pack(pop)
-
-
 
 enum ePanels
 {
@@ -212,7 +210,6 @@ static_assert(sizeof(CWeapon) == (VER_x32 ? 0x1C : 0x20), "Invalid size CPlaceab
 //-----------------------------------------------------------
 
 //-----------------------------------------------------------
-
 
 struct VehicleAudioPropertiesStruct
 {

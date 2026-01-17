@@ -66,6 +66,5 @@ enum RpSkinType
 };
 typedef enum RpSkinType RpSkinType;
 
-
 RpSkin* RpSkinGeometryGetSkin(RpGeometry* geometry);
 RpHAnimHierarchy* RpSkinAtomicGetHAnimHierarchy(const RpAtomic* atomic);

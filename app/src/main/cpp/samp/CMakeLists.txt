@@ -30,6 +30,21 @@ file(GLOB_RECURSE SOURCES
         ${CMAKE_CURRENT_LIST_DIR}/**/**/**/**/**/**/**/**/**/*.c*
         )
 
+# Exclude test files
+list(FILTER SOURCES EXCLUDE REGEX ".*/vendor/rapidjson/test/.*")
+list(FILTER SOURCES EXCLUDE REGEX ".*/vendor/rapidjson/example/.*")
+list(FILTER SOURCES EXCLUDE REGEX ".*/vendor/rapidjson/doc/.*")
+
+# Exclude duplicate files from old structure (keeping modular structure)
+list(FILTER SOURCES EXCLUDE REGEX ".*/game/actor\\.cpp$")
+list(FILTER SOURCES EXCLUDE REGEX ".*/game/game\\.cpp$")
+list(FILTER SOURCES EXCLUDE REGEX ".*/game/object\\.cpp$")
+list(FILTER SOURCES EXCLUDE REGEX ".*/game/playerped\\.cpp$")
+list(FILTER SOURCES EXCLUDE REGEX ".*/game/vehicle\\.cpp$")
+list(FILTER SOURCES EXCLUDE REGEX ".*/game/patches\\.cpp$")
+list(FILTER SOURCES EXCLUDE REGEX ".*/game/pad\\.cpp$")
+list(FILTER SOURCES EXCLUDE REGEX ".*/game/Entity/Object\\.cpp$")
+
 # Add include directories
 include_directories(
         ${CMAKE_CURRENT_LIST_DIR}

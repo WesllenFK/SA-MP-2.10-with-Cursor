@@ -14,10 +14,6 @@
 #include "vendor/bass/bass.h"
 #include "vendor/bass/bass_fx.h"
 
-extern char* g_pszStorage;
-
-// Flag para indicar se o storage path foi definido via JNI
-extern bool g_bStoragePathSetViaJNI;
 
 #ifndef SAFE_DELETE
 	#define SAFE_DELETE(p) { if (p) { delete (p); (p) = NULL; } }
@@ -38,6 +34,16 @@ extern bool g_bStoragePathSetViaJNI;
 extern uintptr_t g_libGTASA;
 
 extern JavaVM* javaVM;
+
+class CGame;
+class CNetGame;
+class UI;
+class MaterialTextGenerator;
+
+extern UI* pUI;
+extern CGame* pGame;
+extern CNetGame* pNetGame;
+extern MaterialTextGenerator* pMaterialTextGenerator;
 
 uint32_t GetTickCount();
 void LogVoice(const char* fmt, ...);

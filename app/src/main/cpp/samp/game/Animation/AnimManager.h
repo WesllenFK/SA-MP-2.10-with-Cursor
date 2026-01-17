@@ -10,7 +10,7 @@
 
 #include "AnimBlendAssociation.h"
 #include "AnimBlock.h"
-#include "game/Core/LinkList.h"
+#include "../Core/LinkList.h"
 #include "AnimBlendAssocGroup.h"
 
 constexpr auto MAX_ANIM_BLOCK_NAME = 16;

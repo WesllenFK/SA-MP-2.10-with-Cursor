@@ -15,7 +15,6 @@
 /// Software Foundation; either version 2 of the License, or (at your
 /// option) any later version.
 
-
 #ifndef __RAK_NET_STATISTICS_H
 #define __RAK_NET_STATISTICS_H
 

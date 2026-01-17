@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "game/common.h"
+#include "../common.h"
 #include "TextureListingContainer.h"
 #include "TextureDatabaseEntry.h"
 
@@ -37,7 +37,6 @@ struct TextureCategory
     uint16 defaultStreamMode;
 };
 VALIDATE_SIZE(TextureCategory, (VER_x32 ? 0x14 : 0x18));
-
 
 class TextureDatabase {
 public:

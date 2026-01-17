@@ -466,7 +466,6 @@ public:
 	/// \internal
 	virtual RPCMap *GetRPCMap( const PlayerID playerId)=0;
 
-
 };
 
 #endif

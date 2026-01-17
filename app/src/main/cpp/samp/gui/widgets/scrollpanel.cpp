@@ -7,7 +7,6 @@ ScrollPanel::ScrollPanel()
 	m_scrollableY = true;
 }
 
-
 void ScrollPanel::setScrollX(float x)
 {
 	if (children().empty()) return;

@@ -291,7 +291,6 @@ void CTaskManager::FlushImmediately() {
 //    }
 //}
 
-
 void CTaskManager::InjectHooks() {
 
 }

@@ -12,7 +12,7 @@
 #include "ColLine.h"
 #include "ColTriangle.h"
 #include "ColTrianglePlane.h"
-#include "game/Core/Link.h"
+#include "../Core/Link.h"
 #include "ColDisk.h"
 
 namespace ColHelpers {

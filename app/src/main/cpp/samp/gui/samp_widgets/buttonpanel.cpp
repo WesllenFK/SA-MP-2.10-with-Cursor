@@ -86,7 +86,6 @@ ButtonPanel::ButtonPanel()
 	this->addChild(m_b2);
 	this->addChild(m_bOpen);
 
-
-	//m_bOpen->setPosition(ImVec2(5.0f, 140.0f));
+//m_bOpen->setPosition(ImVec2(5.0f, 140.0f));
 	//m_bF->setColor(ImColor(0.11f, 0.11f, 0.11f, 0.80f));
 }

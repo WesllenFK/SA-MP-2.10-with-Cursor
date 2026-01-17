@@ -115,8 +115,7 @@ Packet* TelnetTransport::Receive( void )
 		return 0;
 	}
 
-
-	// Echo
+// Echo
 #ifdef ECHO_INPUT
 	tcpInterface->Send((const char *)p->data, p->length, p->playerId);
 #endif

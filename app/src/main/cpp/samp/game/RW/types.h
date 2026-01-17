@@ -36,7 +36,6 @@
 #undef RWFORCEENUMSIZEINT
 #define RWFORCEENUMSIZEINT ((RwInt32)((~((RwUInt32)0))>>1))
 
-
 typedef long        RwFixed;
 typedef int32_t     RwInt32;
 typedef uint32_t    RwUInt32;
@@ -48,7 +47,6 @@ typedef int8_t      RwInt8;
 typedef char        RwChar;
 typedef float       RwReal;
 typedef RwInt32     RwBool;
-
 
 /* ------------------------------ RwV2d -------------------------*/
 typedef struct RwV2d RwV2d;
@@ -111,7 +109,6 @@ struct RwSphere
     RwReal radius;  /**< Sphere radius */
 };
 #define RwSphereAssign(_target, _source) ( *(_target) = *(_source) )
-
 
 /* ------------------------------ RwObject -------------------------*/
 typedef struct RwObject RwObject;
@@ -237,7 +234,6 @@ struct RwLLLink
     ((linkvar)->next)
 /* ------------------------------ RwLLLink end -------------------------*/
 
-
 /* ------------------------------ RwLinkList -------------------------*/
 typedef struct RwLinkList RwLinkList;
 /**
@@ -275,7 +271,6 @@ struct RwLinkList
 
 /* ------------------------------ RwLinkList end -------------------------*/
 
-
 /* ------------------------------ RwSurfaceProperties -------------------------*/
 typedef struct RwSurfaceProperties RwSurfaceProperties;
 
@@ -297,7 +292,6 @@ struct RwSurfaceProperties
 #undef RwSurfacePropertiesAssign
 #define RwSurfacePropertiesAssign(_target, _source) ( *(_target) = *(_source) )
 
-
 /* ------------------------------ RwLine -------------------------*/
 typedef struct RwLine RwLine;
 /**
@@ -315,7 +309,6 @@ struct RwLine
 #undef RwLineAssign
 #define RwLineAssign(_target, _source) ( *(_target) = *(_source) )
 
-
 /* ------------------------------ RwPlane -------------------------*/
 typedef struct RwPlane RwPlane;
 
@@ -327,7 +320,6 @@ struct RwPlane
     RwV3d normal;    /**< Normal to the plane */
     RwReal distance; /**< Distance to plane from origin in normal direction*/
 };
-
 
 enum RwPlaneType
 {

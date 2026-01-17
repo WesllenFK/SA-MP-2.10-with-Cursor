@@ -2,8 +2,6 @@
 #include "../vendor/armhook/patch.h"
 #include "game.h"
 
-extern CGame pGame;
-
 // inlined
 CPlayerInfoGta& FindPlayerInfo(int32 playerId) {
     return CWorld::Players[playerId < 0 ? CWorld::PlayerInFocus : playerId];

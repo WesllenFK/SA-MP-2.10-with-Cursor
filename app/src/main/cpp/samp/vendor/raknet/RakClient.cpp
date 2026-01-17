@@ -156,9 +156,8 @@ Packet* RakClient::Receive( void )
 				DeallocatePacket( packet );
 				return 0;
 			}
-			
-			
-			if ( packet->data[ 0 ] == ID_REMOTE_DISCONNECTION_NOTIFICATION ||
+
+if ( packet->data[ 0 ] == ID_REMOTE_DISCONNECTION_NOTIFICATION ||
 				packet->data[ 0 ] == ID_REMOTE_CONNECTION_LOST )
 			{
 				i = GetOtherClientIndexByPlayerID( packet->playerId );

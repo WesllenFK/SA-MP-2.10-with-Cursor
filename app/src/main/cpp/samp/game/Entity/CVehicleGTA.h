@@ -5,12 +5,11 @@
 #pragma once
 
 #include "CPhysical.h"
-#include "game/common.h"
-#include "game/Enums/eVehicleType.h"
-#include "game/tHandlingData.h"
-#include "game/Entity/CPhysical.h"
-#include "game/Enums/eVehicleHandlingFlags.h"
-#include "game/RideAnimData.h"
+#include "../common.h"
+#include "../Enums/eVehicleType.h"
+#include "../tHandlingData.h"
+#include "../Enums/eVehicleHandlingFlags.h"
+#include "../RideAnimData.h"
 struct CPedGTA;
 
 enum eVehicleCreatedBy : uint8 {
